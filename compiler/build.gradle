@@ -1,0 +1,36 @@
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+
+    // Apply the application plugin to add support for building an application
+    id 'application'
+
+    // ANTLR parser generator
+    id 'antlr'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    antlr 'org.antlr:antlr4:4.+'
+}
+
+// Define the main class for the application
+mainClassName = 'rml.compiler.Compiler'
+
+// use System.in in child processes
+run {
+    standardInput = System.in
+}
+
+// make the JAR executable
+jar {
+    manifest {
+        attributes 'Main-Class': 'rml.compiler.Compiler'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
