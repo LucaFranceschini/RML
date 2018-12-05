@@ -1,7 +1,7 @@
 grammar rml;
 
 @header {
-    package rml.compiler;
+    package rml.parser;
 }
 
 spec: (decl NEWLINE)* ;

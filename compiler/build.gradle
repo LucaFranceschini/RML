@@ -35,7 +35,7 @@ dependencies {
 }
 
 // Define the main class for the application
-mainClassName = 'rml.compiler.CompilerKt'
+mainClassName = 'rml.CompilerKt'
 
 // use System.in in child processes
 run {
@@ -45,7 +45,7 @@ run {
 jar {
     // make it executable
     manifest {
-        attributes 'Main-Class': 'rml.compiler.CompilerKt'
+        attributes 'Main-Class': 'rml.CompilerKt'
     }
     
     // include dependencies (fat-JAR)

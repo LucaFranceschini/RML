@@ -1,8 +1,10 @@
-package rml.compiler
+package rml
 
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.RecognitionException
+import rml.parser.rmlLexer
+import rml.parser.rmlParser
 import java.io.IOException
 
 fun main(args: Array<String>) {
