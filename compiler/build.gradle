@@ -1,3 +1,16 @@
+// Kotlin support https://kotlinlang.org/docs/reference/using-gradle.html
+buildscript {
+    ext.kotlin_version = '1.3.10'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version'
+    }
+}
+
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
@@ -7,6 +20,9 @@ plugins {
 
     // ANTLR parser generator
     id 'antlr'
+
+    // JVM target for Kotlin compiler
+    id 'org.jetbrains.kotlin.jvm' version '1.3.10'
 }
 
 repositories {
@@ -15,10 +31,11 @@ repositories {
 
 dependencies {
     antlr 'org.antlr:antlr4:4.+'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8' // use JDK8 extended version since we're that's the target
 }
 
 // Define the main class for the application
-mainClassName = 'rml.compiler.Compiler'
+mainClassName = 'rml.compiler.CompilerKt'
 
 // use System.in in child processes
 run {
@@ -28,9 +45,12 @@ run {
 // make the JAR executable
 jar {
     manifest {
-        attributes 'Main-Class': 'rml.compiler.Compiler'
+        attributes 'Main-Class': 'rml.compiler.CompilerKt'
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
+
+// first generate ANTLR parser, then compile source code
+compileKotlin.dependsOn generateGrammarSource
