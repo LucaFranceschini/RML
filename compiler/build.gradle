@@ -42,11 +42,13 @@ run {
     standardInput = System.in
 }
 
-// make the JAR executable
 jar {
+    // make it executable
     manifest {
         attributes 'Main-Class': 'rml.compiler.CompilerKt'
     }
+    
+    // include dependencies (fat-JAR)
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
