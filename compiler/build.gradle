@@ -47,7 +47,7 @@ jar {
     manifest {
         attributes 'Main-Class': 'rml.CompilerKt'
     }
-    
+
     // include dependencies (fat-JAR)
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
@@ -56,3 +56,8 @@ jar {
 
 // first generate ANTLR parser, then compile source code
 compileKotlin.dependsOn generateGrammarSource
+
+generateGrammarSource {
+    // generate visitor rather than listener
+    arguments += ['-visitor', '-no-listener']
+}
