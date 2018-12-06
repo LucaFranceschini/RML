@@ -10,7 +10,7 @@ texp: texp '*' texp # catTExp
     | texp '/\\' texp # andTExp
     | texp '\\/' texp # orTExp
     | texp '|' texp # shufTExp
-    | 'empty' # exptyTExp
+    | 'empty' # emptyTExp
     | '{' 'var' vars ';' texp '}' # blockTExp
     | TEXP_ID ('<' vars '>')? # varTExp
     | evtype # evtypeTExp
