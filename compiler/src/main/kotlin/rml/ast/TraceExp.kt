@@ -22,4 +22,6 @@ data class BlockTraceExp(val declaredVars: List<VarId>, val traceExp: TraceExp):
 // occurrence of trace expression identifier with possibly generic arguments
 data class TraceExpVar(val id: TraceExpId, val genericVars: List<VarId>): TraceExp()
 
-data class EventTypeTraceExp(val id: EventTypeId, val terms: List<Term>): TraceExp()
+data class EventTypeTraceExp(val id: Id, val terms: List<Term>): TraceExp() {
+    data class Id(val name: String): AbstractId(name)
+}

@@ -43,7 +43,7 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
 
     override fun visitEvtypeTExp(ctx: rmlParser.EvtypeTExpContext?): EventTypeTraceExp =
             EventTypeTraceExp(
-                    EventTypeId(ctx!!.evtype().LOWERCASE_ID().text),
+                    EventTypeTraceExp.Id(ctx!!.evtype().LOWERCASE_ID().text),
                     ctx.evtype().terms().term().map { it.accept(TermAstBuilder) }.toList()
             )
 

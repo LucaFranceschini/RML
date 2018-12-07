@@ -5,7 +5,7 @@ package rml.ast
    Declaring the property abstract does not work since the init block would find it uninitialized.
    So, every data subclass must declare the property and forward it to the constructor.
  */
-abstract class Id(name: String) {
+abstract class AbstractId(name: String) {
     // whatever the subclass, empty identifiers make no sense
     init {
         if (name.isEmpty())
@@ -14,10 +14,7 @@ abstract class Id(name: String) {
 }
 
 // variables from parametric and generic trace expressions
-data class VarId(val name: String) : Id(name)
+data class VarId(val name: String) : AbstractId(name)
 
 // variables representing trace expression terms
-data class TraceExpId(val name: String) : Id(name)
-
-// event type identifiers
-data class EventTypeId(val name: String): Id(name)
+data class TraceExpId(val name: String) : AbstractId(name)
