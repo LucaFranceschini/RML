@@ -15,4 +15,4 @@ To run:
 The executable JAR archive (including dependencies) is built in `compiler/build/lib`.
 
 ## Usage
-The program currently reads a specification from standard input, parse it and prints on standard output.
+The program currently reads a specification from standard input, parse it and prints the abstract syntax tree.
