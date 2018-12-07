@@ -6,10 +6,9 @@ package rml.ast
    So, every data subclass must declare the property and forward it to the constructor.
  */
 abstract class AbstractId(name: String) {
-    // whatever the subclass, empty identifiers make no sense
+    // whatever the subclass, blank identifiers make no sense
     init {
-        if (name.isEmpty())
-            throw IllegalArgumentException("empty id not allowed")
+        require(name.isNotBlank()) { "blank id not allowed" }
     }
 }
 

@@ -3,8 +3,7 @@ package rml.ast
 // top-level trace expression specification
 data class Specification(val declarations: List<Declaration>) {
     init {
-        if (declarations.isEmpty())
-            throw IllegalArgumentException("specification must contain at least one trace expression")
+        require(declarations.isNotEmpty()) { "specification must contain at least one trace expression" }
     }
 }
 
