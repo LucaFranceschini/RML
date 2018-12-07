@@ -15,5 +15,5 @@ abstract class AbstractId(name: String) {
 // variables from parametric and generic trace expressions
 data class VarId(val name: String) : AbstractId(name)
 
-// variables representing trace expression terms
+// variables representing trace expression eventTerms
 data class TraceExpId(val name: String) : AbstractId(name)

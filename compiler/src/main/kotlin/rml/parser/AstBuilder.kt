@@ -57,10 +57,10 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
             constructor(left.accept(this), right.accept(this))
 }
 
-object TermAstBuilder: rmlBaseVisitor<Term>() {
-    override fun visitVarTerm(ctx: rmlParser.VarTermContext?): VarTerm = VarTerm(VarId(ctx!!.text))
-    override fun visitIntTerm(ctx: rmlParser.IntTermContext?): IntTerm = IntTerm(ctx!!.text.toInt())
-    override fun visitStringTerm(ctx: rmlParser.StringTermContext?): StringTerm = StringTerm(ctx!!.text)
+object TermAstBuilder: rmlBaseVisitor<EventTerm>() {
+    override fun visitVarTerm(ctx: rmlParser.VarTermContext?): VarEventTerm = VarEventTerm(VarId(ctx!!.text))
+    override fun visitIntTerm(ctx: rmlParser.IntTermContext?): IntEventTerm = IntEventTerm(ctx!!.text.toInt())
+    override fun visitStringTerm(ctx: rmlParser.StringTermContext?): StringEventTerm = StringEventTerm(ctx!!.text)
 }
 
 // visitVars already exists in BaseVisitor with the same signature, avoid confusion
