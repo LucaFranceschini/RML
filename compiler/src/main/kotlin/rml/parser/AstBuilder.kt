@@ -44,7 +44,7 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
     override fun visitEvtypeTExp(ctx: rmlParser.EvtypeTExpContext?): EventTypeTraceExp =
             EventTypeTraceExp(
                     EventTypeId(ctx!!.evtype().LOWERCASE_ID().text),
-                    ctx.evtype().expSeq().exp().map { it.accept(ExpAstBuilder) }.toList()
+                    ctx.evtype().terms().term().map { it.accept(TermAstBuilder) }.toList()
             )
 
     override fun visitParTExp(ctx: rmlParser.ParTExpContext?): TraceExp =
@@ -57,10 +57,10 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
             constructor(left.accept(this), right.accept(this))
 }
 
-object ExpAstBuilder: rmlBaseVisitor<Exp>() {
-    override fun visitVarExp(ctx: rmlParser.VarExpContext?): VarExp = VarExp(VarId(ctx!!.text))
-    override fun visitIntExp(ctx: rmlParser.IntExpContext?): IntExp = IntExp(ctx!!.text.toInt())
-    override fun visitStringExp(ctx: rmlParser.StringExpContext?): StringExp = StringExp(ctx!!.text)
+object TermAstBuilder: rmlBaseVisitor<Term>() {
+    override fun visitVarTerm(ctx: rmlParser.VarTermContext?): VarTerm = VarTerm(VarId(ctx!!.text))
+    override fun visitIntTerm(ctx: rmlParser.IntTermContext?): IntTerm = IntTerm(ctx!!.text.toInt())
+    override fun visitStringTerm(ctx: rmlParser.StringTermContext?): StringTerm = StringTerm(ctx!!.text)
 }
 
 // visitVars already exists in BaseVisitor with the same signature, avoid confusion

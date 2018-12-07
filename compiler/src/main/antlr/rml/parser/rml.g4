@@ -17,12 +17,12 @@ texp: texp '*' texp # catTExp
     | '(' texp ')' # parTExp
     ;
 vars: LOWERCASE_ID (',' LOWERCASE_ID)*;
-evtype: LOWERCASE_ID ('(' expSeq ')')? ;
-expSeq: exp (',' exp)* ;
-exp: LOWERCASE_ID # varExp
-   | INT # intExp
-   | STRING # stringExp
-   ;
+evtype: LOWERCASE_ID ('(' terms ')')? ;
+terms: term (',' term)* ;
+term: LOWERCASE_ID # varTerm
+    | INT # intTerm
+    | STRING # stringTerm
+    ;
 
 NEWLINE: [\r\n]+ ;
 UPPERCASE_ID: [A-Z] ID_CHAR* ;
