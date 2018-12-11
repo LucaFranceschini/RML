@@ -42,7 +42,7 @@ fun toProlog(traceExp: TraceExpVar): PrologTerm {
 }
 
 fun toProlog(eventTerm: EventTerm): PrologTerm = when(eventTerm) {
-    is VarEventTerm -> VarTerm(eventTerm.id.name)
+    is VarEventTerm -> FunctionTerm("var", FunctionTerm.constant(eventTerm.id.name))
     is IntEventTerm -> IntTerm(eventTerm.number)
     is StringEventTerm -> FunctionTerm.constant(eventTerm.string)
 }
