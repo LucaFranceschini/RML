@@ -2,7 +2,7 @@ package rml.ast
 
 sealed class TraceExp
 
-abstract class BinaryTraceExp: TraceExp() {
+sealed class BinaryTraceExp: TraceExp() {
     // declare it abstract and override it in subclasses to avoid duplicating the field
     // (can't define the property here because data classes need to define at least one property)
     abstract val left: TraceExp
