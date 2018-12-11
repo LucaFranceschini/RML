@@ -48,6 +48,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
             writer.write(")")
         } else { // prefix notation otherwise
             writer.write(functor)
+            writer.write("(")
             compile(term.args.first())
             for (arg in term.args.drop(1)) {
                 writer.write(", ")
