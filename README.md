@@ -15,5 +15,5 @@ Or run the automatically generated executable JAR:
     $ java -jar build/libs/rml-compiler.jar
 
 ## Usage
-The program currently reads a specification from standard input and outputs a Prolog program encoding the 
-specification.
+The program reads a RML specification and produces a Prolog program encoding it.
+Run with `--help` for options.

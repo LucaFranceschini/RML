@@ -32,6 +32,7 @@ repositories {
 dependencies {
     antlr 'org.antlr:antlr4:4.+'
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8' // use JDK8 extended version since we're that's the target
+    compile 'com.xenomachina:kotlin-argparser:2.0.7'
 }
 
 // Define the main class for the application
