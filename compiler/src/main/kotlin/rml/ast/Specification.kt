@@ -1,9 +1,11 @@
 package rml.ast
 
 // top-level trace expression specification
-data class Specification(val declarations: List<Declaration>) {
+data class Specification(val declarations: List<Declaration>, val mainTraceExp: TraceExpId) {
     init {
         require(declarations.isNotEmpty()) { "specification must contain at least one trace expression" }
+        require(declarations.any { it.id == mainTraceExp }) { "main trace expression not declared" }
+        require(declarations.distinct() == declarations) { "trace expression declared multiple times" }
     }
 }
 

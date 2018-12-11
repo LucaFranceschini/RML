@@ -2,8 +2,11 @@ package rml.parser
 
 import rml.ast.*
 
-fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification =
-        Specification(ctx.decl().map(::buildDeclarationAst).toList())
+fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification {
+    val declarations = ctx.decl().map(::buildDeclarationAst).toList()
+    // assume the first declaration to be the main one
+    return Specification(declarations, declarations[0].id)
+}
 
 fun buildDeclarationAst(ctx: rmlParser.DeclContext): Declaration =
         Declaration(
@@ -44,7 +47,7 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
     override fun visitEvtypeTExp(ctx: rmlParser.EvtypeTExpContext?): EventTypeTraceExp =
             EventTypeTraceExp(
                     EventTypeTraceExp.Id(ctx!!.evtype().LOWERCASE_ID().text),
-                    ctx.evtype().terms().term().map { it.accept(TermAstBuilder) }.toList()
+                    ctx.evtype()?.terms()?.term()?.map { it.accept(TermAstBuilder) }?.toList() ?: emptyList()
             )
 
     override fun visitParTExp(ctx: rmlParser.ParTExpContext?): TraceExp =
