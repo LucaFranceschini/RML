@@ -13,4 +13,5 @@ To run:
 The executable JAR archive (including dependencies) is built in `compiler/build/lib`.
 
 ## Usage
-The program currently reads a specification from standard input, parse it and prints the abstract syntax tree.
+The program currently reads a specification from standard input and outputs a Prolog program encoding the 
+specification.

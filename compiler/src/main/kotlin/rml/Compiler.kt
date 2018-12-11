@@ -3,6 +3,8 @@ package rml
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.RecognitionException
+import prolog.PrologCompiler
+import rml.ast.toProlog
 import rml.parser.buildSpecificationAst
 import rml.parser.rmlLexer
 import rml.parser.rmlParser
@@ -15,7 +17,11 @@ fun main(args: Array<String>) {
         val tokenStream = CommonTokenStream(lexer)
         val parser = rmlParser(tokenStream)
         val parseTree = parser.spec()
-        println(buildSpecificationAst(parseTree))
+        val rmlAst = buildSpecificationAst(parseTree)
+        val prologAst = toProlog(rmlAst, "test_trace_expression")
+        val writer = System.out.bufferedWriter()
+        PrologCompiler(writer).compile(prologAst)
+        writer.close()
     } catch (e: IOException) {
         System.err.println(e.message)
     } catch (e: RecognitionException) {
