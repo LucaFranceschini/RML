@@ -4,7 +4,8 @@ grammar rml;
     package rml.parser;
 }
 
-spec: decl (NEWLINE decl)* ;
+spec: decls ;
+decls: decl (NEWLINE decl)* ;
 decl: UPPERCASE_ID ('<' vars '>')? '=' texp ;
 texp: texp '*' texp # catTExp
     | texp '/\\' texp # andTExp

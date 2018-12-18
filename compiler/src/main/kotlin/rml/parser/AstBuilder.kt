@@ -3,7 +3,7 @@ package rml.parser
 import rml.ast.*
 
 fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification {
-    val declarations = ctx.decl().map(::buildDeclarationAst).toList()
+    val declarations = ctx.decls().decl().map(::buildDeclarationAst).toList()
     // assume the first declaration to be the main one
     return Specification(declarations, declarations[0].id)
 }
