@@ -8,8 +8,8 @@ fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification {
     return Specification(declarations, declarations[0].id)
 }
 
-fun buildDeclarationAst(ctx: rmlParser.TexpDeclContext): Declaration =
-        Declaration(
+fun buildDeclarationAst(ctx: rmlParser.TexpDeclContext): TraceExpDecl =
+        TraceExpDecl(
                 TraceExpId(ctx.UPPERCASE_ID().text),
                 visitVarsAux(ctx.vars()),
                 ctx.texp().accept(TraceExpAstBuilder)

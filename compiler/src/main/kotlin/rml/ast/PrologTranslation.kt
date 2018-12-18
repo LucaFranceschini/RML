@@ -10,7 +10,7 @@ fun toProlog(spec: Specification, id: String) = LogicProgram(Clause(
 ))
 
 // output T = trace-expression
-fun toProlog(declaration: Declaration): Atom = Atom(
+fun toProlog(declaration: TraceExpDecl): Atom = Atom(
         "=",
         VarTerm(declaration.id.name),
         toProlog(declaration.traceExp))
