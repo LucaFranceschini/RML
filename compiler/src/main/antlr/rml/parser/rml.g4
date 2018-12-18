@@ -25,7 +25,6 @@ term: LOWERCASE_ID # varTerm
     | STRING # stringTerm
     ;
 
-NEWLINE: [\r\n]+ ;
 UPPERCASE_ID: [A-Z] ID_CHAR* ;
 LOWERCASE_ID: [a-z] ID_CHAR* ;
 fragment ID_CHAR: [a-zA-Z0-9_] ;
@@ -33,3 +32,5 @@ INT: [0-9]+ ;
 STRING: '"' [ a-zA-Z0-0_] '"' ;
 
 WHITESPACE: [ \t\r\n]+ -> skip ;
+// don't use [^\r\n]*, it's not the same
+COMMENT: '//' ~[\r\n]* -> skip ;
