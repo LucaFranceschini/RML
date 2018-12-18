@@ -3,12 +3,12 @@ package rml.parser
 import rml.ast.*
 
 fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification {
-    val declarations = ctx.decls().decl().map(::buildDeclarationAst).toList()
+    val declarations = ctx.texpDecls().texpDecl().map(::buildDeclarationAst).toList()
     // assume the first declaration to be the main one
     return Specification(declarations, declarations[0].id)
 }
 
-fun buildDeclarationAst(ctx: rmlParser.DeclContext): Declaration =
+fun buildDeclarationAst(ctx: rmlParser.TexpDeclContext): Declaration =
         Declaration(
                 TraceExpId(ctx.UPPERCASE_ID().text),
                 visitVarsAux(ctx.vars()),
