@@ -5,7 +5,7 @@ grammar rml;
 }
 
 spec: decls ;
-decls: decl (NEWLINE decl)* ;
+decls: decl (';' decl)* ;
 decl: UPPERCASE_ID ('<' vars '>')? '=' texp ;
 texp: texp '*' texp # catTExp
     | texp '/\\' texp # andTExp
