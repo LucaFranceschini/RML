@@ -17,3 +17,6 @@ data class VarId(val name: String): AbstractId(name)
 
 // variables representing trace expression eventTerms
 data class TraceExpId(val name: String): AbstractId(name)
+
+// object field key in event type definitions
+data class KeyId(val name: String): AbstractId(name)

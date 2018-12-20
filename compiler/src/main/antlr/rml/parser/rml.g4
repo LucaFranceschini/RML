@@ -4,7 +4,17 @@ grammar rml;
     package rml.parser;
 }
 
-spec: texpDecl+ ;
+spec: evtypeDecl* texpDecl+ ;
+evtypeDecl: evtype 'matches' object (',' object)* ';' # directEvtypeDecl
+          | evtype 'matches' evtype (',' evtype)* ';' # derivedEvtypeDecl
+          ;
+object: '{' field (',' field)* '}' ;
+field: LOWERCASE_ID ':' value ;
+value: object # objectValue
+     | STRING # stringValue
+     | INT # intValue
+     | LOWERCASE_ID # varValue
+     ;
 texpDecl: UPPERCASE_ID ('<' vars '>')? '=' texp ';' ;
 texp: texp '*' texp # catTExp
     | texp '/\\' texp # andTExp

@@ -6,7 +6,7 @@ import prolog.ast.*
 
 fun toProlog(spec: Specification, id: String) = LogicProgram(Clause(
         Atom("trace_expression", FunctionTerm.constant(id), VarTerm(spec.mainTraceExp.name)), // head
-        spec.declarations.map { toProlog(it) }
+        spec.traceExpDecls.map { toProlog(it) }
 ))
 
 // output T = trace-expression

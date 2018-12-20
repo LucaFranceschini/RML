@@ -24,4 +24,6 @@ data class TraceExpVar(val id: TraceExpId, val genericVars: List<VarId>): TraceE
 
 data class EventTypeTraceExp(val id: Id, val eventTerms: List<EventTerm>): TraceExp() {
     data class Id(val name: String): AbstractId(name)
+
+    constructor(id: String, eventTerms: List<EventTerm>): this(Id(id), eventTerms)
 }
