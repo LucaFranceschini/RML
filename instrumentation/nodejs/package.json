@@ -1,0 +1,14 @@
+{
+  "name": "RML-nodejs",
+  "description": "Node.js instrumentation for RML",
+  "repository": "https://github.com/Canop/JSON.prune",
+  "license": "Apache-2.0",
+  "version": "0.1.0",
+  "dependencies": {
+    "json-prune": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
