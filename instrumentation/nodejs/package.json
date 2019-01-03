@@ -1,0 +1,14 @@
+{
+  "name": "RML-Node.js",
+  "version": "0.1.0",
+  "description": "Node.js instrumentation for Node.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "jalangi": "node node_modules/jalangi2/src/js/commands/jalangi.js"
+  },
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "jalangi2": "^0.2.5"
+  }
+}
