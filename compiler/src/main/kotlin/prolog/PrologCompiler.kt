@@ -83,7 +83,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
         }
     }
 
-    private fun compile(clause: Clause): Unit {
+    private fun compile(clause: Clause) {
         compile(clause.head)
 
         if (clause.body.isNotEmpty()) {
@@ -98,7 +98,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
         writer.write(".")
     }
 
-    fun compile(program: LogicProgram): Unit {
+    fun compile(program: LogicProgram) {
         for (clause in program.clauses) {
             compile(clause)
             writer.newLine()
