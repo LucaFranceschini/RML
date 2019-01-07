@@ -21,7 +21,7 @@ fun toProlog(traceExp: TraceExp): PrologTerm = when(traceExp) {
             ListTerm(traceExp.declaredVars.map { ConstantTerm(it.name) }.toList()),
             toProlog(traceExp.traceExp))
     is TraceExpVar -> toProlog(traceExp)
-    is EventTypeTraceExp -> FunctionTerm(traceExp.id.name, traceExp.eventTerms.map { toProlog(it) }.toList())
+    is EventTypeTraceExp -> FunctionTerm(traceExp.id.name, traceExp.dataValues.map { toProlog(it) }.toList())
     is ConcatTraceExp -> toProlog(traceExp, "*")
     is AndTraceExp -> toProlog(traceExp, "/\\")
     is OrTraceExp -> toProlog(traceExp, "\\/")
