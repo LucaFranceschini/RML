@@ -4,7 +4,7 @@ import prolog.ast.*
 import java.io.BufferedWriter
 
 class PrologCompiler(private val writer: BufferedWriter) {
-    fun compile(term: PrologTerm): Unit = when (term) {
+    private fun compile(term: PrologTerm): Unit = when (term) {
         is IntTerm -> writer.write(term.number)
         is VarTerm -> writer.write(term.name)
         is FunctionTerm -> compile(term)
@@ -33,7 +33,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
         }
     }
 
-    fun compile(term: FunctionTerm): Unit {
+    private fun compile(term: FunctionTerm) {
         val functor = term.functionSymbol.name
 
         // constants
@@ -59,7 +59,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
         }
     }
 
-    fun compile(atom: Atom): Unit {
+    private fun compile(atom: Atom) {
         val symbol = atom.symbol.name
 
         // print unification as infix
@@ -83,7 +83,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
         }
     }
 
-    fun compile(clause: Clause): Unit {
+    private fun compile(clause: Clause): Unit {
         compile(clause.head)
 
         if (clause.body.isNotEmpty()) {
