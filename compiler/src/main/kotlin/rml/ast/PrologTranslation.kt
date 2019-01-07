@@ -98,6 +98,9 @@ fun toProlog(traceExp: TraceExp): PrologTerm = when(traceExp) {
     is AndTraceExp -> toProlog(traceExp, "/\\")
     is OrTraceExp -> toProlog(traceExp, "\\/")
     is ShuffleTraceExp -> toProlog(traceExp, "|")
+    is FilterTraceExp -> FunctionTerm(">>",
+            toProlog(traceExp.evtype),
+            toProlog(traceExp.traceExp))
 }
 
 fun toProlog(traceExp: BinaryTraceExp, opSymbol: String): PrologTerm =
