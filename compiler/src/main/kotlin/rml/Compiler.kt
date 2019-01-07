@@ -43,7 +43,7 @@ fun compile(inputStream: InputStream, outputStream: OutputStream) {
         val parser = rmlParser(tokenStream)
         val parseTree = parser.spec()
         val rmlAst = buildSpecificationAst(parseTree)
-        val prologAst = toProlog(rmlAst, "test_trace_expression")
+        val prologAst = toProlog(rmlAst)
         val writer = outputStream.bufferedWriter()
         PrologCompiler(writer).compile(prologAst)
         writer.close()
