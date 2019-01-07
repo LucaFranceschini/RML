@@ -12,11 +12,17 @@ main :-
 	read_trace(TraceFile),
 	halt.
 main :-
-	write('expected args: <spec file> <trace file>'), nl,
+	(current_prolog_flag(argv, [_, _])
+	 -> write('internal error\n')
+	 ;  write('expected args: <spec file> <trace file>\n')
+	),
 	halt(1).
 
 read_trace(TraceFile) :-
-    open(TraceFile, read, TraceStream),
+    catch(
+    	open(TraceFile, read, TraceStream),
+    	_,
+    	(write('trace file not found'), nl, halt(1))),
     read_events(TraceStream, Events),
     close(TraceStream),
     trace_expression(_, TraceExp),
