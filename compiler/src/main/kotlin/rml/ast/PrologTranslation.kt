@@ -41,8 +41,8 @@ fun toProlog(traceExp: TraceExpVar): PrologTerm {
             ListTerm(traceExp.genericVars.map { FunctionTerm.constant(it.name) }.toList()))
 }
 
-fun toProlog(eventTerm: EventTerm): PrologTerm = when(eventTerm) {
-    is VarEventTerm -> FunctionTerm("var", FunctionTerm.constant(eventTerm.id.name))
-    is IntEventTerm -> IntTerm(eventTerm.number)
-    is StringEventTerm -> FunctionTerm.constant(eventTerm.string)
+fun toProlog(value: SimpleValue): PrologTerm = when(value) {
+    is VarValue -> FunctionTerm("var", ConstantTerm(value.id.name))
+    is IntValue -> IntTerm(value.number)
+    is StringValue -> ConstantTerm(value.string)
 }

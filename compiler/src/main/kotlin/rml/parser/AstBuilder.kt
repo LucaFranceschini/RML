@@ -11,13 +11,14 @@ fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification {
 
 fun buildEventTypeAst(ctx: rmlParser.EvtypeContext) = EventTypeTraceExp(
         ctx.LOWERCASE_ID().text,
-        ctx.terms().term().map { it.accept(TermAstBuilder) }.toList()
+        ctx.simpleValues()?.simpleValue()?.map { it.accept(SimpleValueAstBuilder) }?.toList()
+                ?: emptyList()
 )
 
 fun buildObjectValueAst(ctx: rmlParser.ObjectContext) = ObjectValue(ctx.field().map(::buildFieldAst).toList())
 
 fun buildFieldAst(ctx: rmlParser.FieldContext): ObjectValue.Field =
-        ObjectValue.Field(ctx.LOWERCASE_ID().text, ctx.value().accept(EvtypeValueAstBuilder))
+        ObjectValue.Field(ctx.LOWERCASE_ID().text, ctx.value().accept(DataValueAstBuilder))
 
 fun buildDeclarationAst(ctx: rmlParser.TexpDeclContext) = TraceExpDecl(
                 TraceExpId(ctx.UPPERCASE_ID().text),
@@ -39,7 +40,14 @@ object EvtypeDeclAstBuilder: rmlBaseVisitor<EvtypeDecl>() {
     )
 }
 
-object EvtypeValueAstBuilder: rmlBaseVisitor<EvtypeValue>() {
+object DataValueAstBuilder: rmlBaseVisitor<DataValue>() {
+    override fun visitSimpleVal(ctx: rmlParser.SimpleValContext?): SimpleValue =
+            ctx!!.accept(SimpleValueAstBuilder)
+    override fun visitObjectVal(ctx: rmlParser.ObjectValContext?) =
+            ObjectValue(ctx!!.`object`().field().map(::buildFieldAst).toList())
+}
+
+object SimpleValueAstBuilder: rmlBaseVisitor<SimpleValue>() {
     override fun visitVarValue(ctx: rmlParser.VarValueContext?) = VarValue(ctx!!.LOWERCASE_ID().text)
     override fun visitIntValue(ctx: rmlParser.IntValueContext?) = IntValue(ctx!!.INT().text.toInt())
     override fun visitStringValue(ctx: rmlParser.StringValueContext?) =
@@ -85,12 +93,6 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
             right: rmlParser.TexpContext,
             constructor: (TraceExp, TraceExp) -> T): T =
             constructor(left.accept(this), right.accept(this))
-}
-
-object TermAstBuilder: rmlBaseVisitor<EventTerm>() {
-    override fun visitVarTerm(ctx: rmlParser.VarTermContext?): VarEventTerm = VarEventTerm(VarId(ctx!!.text))
-    override fun visitIntTerm(ctx: rmlParser.IntTermContext?): IntEventTerm = IntEventTerm(ctx!!.text.toInt())
-    override fun visitStringTerm(ctx: rmlParser.StringTermContext?): StringEventTerm = StringEventTerm(ctx!!.text)
 }
 
 // visitVars already exists in BaseVisitor with the same signature, avoid confusion

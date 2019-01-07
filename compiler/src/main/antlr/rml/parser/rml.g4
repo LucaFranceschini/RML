@@ -10,11 +10,13 @@ evtypeDecl: evtype 'matches' object (',' object)* ';' # directEvtypeDecl
           ;
 object: '{' field (',' field)* '}' ;
 field: LOWERCASE_ID ':' value ;
-value: object # objectValue
-     | STRING # stringValue
-     | INT # intValue
-     | LOWERCASE_ID # varValue
+value: object # objectVal
+     | simpleValue # simpleVal
      ;
+simpleValue: STRING # stringValue
+           | INT # intValue
+           | LOWERCASE_ID # varValue
+           ;
 texpDecl: UPPERCASE_ID ('<' vars '>')? '=' texp ';' ;
 texp: texp '*' texp # catTExp
     | texp '/\\' texp # andTExp
@@ -27,12 +29,8 @@ texp: texp '*' texp # catTExp
     | '(' texp ')' # parTExp
     ;
 vars: LOWERCASE_ID (',' LOWERCASE_ID)*;
-evtype: LOWERCASE_ID ('(' terms ')')? ;
-terms: term (',' term)* ;
-term: LOWERCASE_ID # varTerm
-    | INT # intTerm
-    | STRING # stringTerm
-    ;
+evtype: LOWERCASE_ID ('(' simpleValues ')')? ;
+simpleValues: simpleValue (',' simpleValue)* ;
 
 UPPERCASE_ID: [A-Z] ID_CHAR* ;
 LOWERCASE_ID: [a-z] ID_CHAR* ;

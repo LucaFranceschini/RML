@@ -1,14 +1,15 @@
 package rml.ast
 
-sealed class EvtypeValue
-data class StringValue(val string: String): EvtypeValue()
-data class IntValue(val number: Int): EvtypeValue()
-data class VarValue(val id: VarId): EvtypeValue() {
+sealed class DataValue
+sealed class SimpleValue: DataValue()
+data class StringValue(val string: String): SimpleValue()
+data class IntValue(val number: Int): SimpleValue()
+data class VarValue(val id: VarId): SimpleValue() {
     constructor(id: String): this(VarId(id))
 }
-data class ObjectValue(val fields: List<Field>): EvtypeValue() {
-    data class Field(val key: KeyId, val value: EvtypeValue) {
-        constructor(key: String, value: EvtypeValue): this(KeyId(key), value)
+data class ObjectValue(val fields: List<Field>): DataValue() {
+    data class Field(val key: KeyId, val value: DataValue) {
+        constructor(key: String, value: DataValue): this(KeyId(key), value)
     }
 
     init {
