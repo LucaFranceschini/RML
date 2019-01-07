@@ -39,9 +39,7 @@ dependencies {
 mainClassName = 'rml.CompilerKt'
 
 // use System.in in child processes
-run {
-    standardInput = System.in
-}
+run.standardInput = System.in
 
 jar {
     // make it executable
