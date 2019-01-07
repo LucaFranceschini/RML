@@ -28,4 +28,13 @@ data class ListTerm(val headTerms: List<PrologTerm>, val tail: PrologTerm? = nul
     init {
         require(headTerms.isNotEmpty() || tail == null) { "can't have tail term without other terms first" }
     }
+
+    constructor(vararg headTerms: PrologTerm): this(headTerms.toList())
+}
+
+// name/arity
+data class PredicateIndicatorTerm(val name: String, val arity: Int): PrologTerm() {
+    init {
+        require(arity > 0) { "negative arity in predicate indicator" }
+    }
 }
