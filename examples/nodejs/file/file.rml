@@ -4,5 +4,5 @@ close matches { event: 'func_pre',  name: 'fs.close' };
 
 relevant matches open, write, close;
 
-File = empty \/ open Use;
+File = relevant >> (empty \/ open Use);
 Use = close \/ write Use;
