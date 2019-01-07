@@ -3,19 +3,58 @@ package rml.parser
 import rml.ast.*
 
 fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification {
-    val declarations = ctx.texpDecl().map(::buildDeclarationAst).toList()
+    val texpDecls = ctx.texpDecl().map(::buildDeclarationAst).toList()
+    val evtypeDecls = ctx.evtypeDecl().map { it.accept(EvtypeDeclAstBuilder) }.toList()
     // assume the first declaration to be the main one
-    return Specification(declarations, declarations[0].id)
+    return Specification(evtypeDecls, texpDecls, texpDecls[0].id)
 }
 
-fun buildDeclarationAst(ctx: rmlParser.TexpDeclContext): TraceExpDecl =
-        TraceExpDecl(
+fun buildEventTypeAst(ctx: rmlParser.EvtypeContext) = EventTypeTraceExp(
+        ctx.LOWERCASE_ID().text,
+        ctx.simpleValues()?.simpleValue()?.map { it.accept(SimpleValueAstBuilder) }?.toList()
+                ?: emptyList()
+)
+
+fun buildObjectValueAst(ctx: rmlParser.ObjectContext) = ObjectValue(ctx.field().map(::buildFieldAst).toList())
+
+fun buildFieldAst(ctx: rmlParser.FieldContext): ObjectValue.Field =
+        ObjectValue.Field(ctx.LOWERCASE_ID().text, ctx.value().accept(DataValueAstBuilder))
+
+fun buildDeclarationAst(ctx: rmlParser.TexpDeclContext) = TraceExpDecl(
                 TraceExpId(ctx.UPPERCASE_ID().text),
                 visitVarsAux(ctx.vars()),
                 ctx.texp().accept(TraceExpAstBuilder)
         )
 
-// use two different visitors because the result type is not the same
+// use different visitors because the result types are not the same
+
+object EvtypeDeclAstBuilder: rmlBaseVisitor<EvtypeDecl>() {
+    override fun visitDirectEvtypeDecl(ctx: rmlParser.DirectEvtypeDeclContext?) = DirectEvtypeDecl(
+            buildEventTypeAst(ctx!!.evtype()),
+            ctx.`object`().map(::buildObjectValueAst).toList()
+    )
+
+    override fun visitDerivedEvtypeDecl(ctx: rmlParser.DerivedEvtypeDeclContext?) = DerivedEvtypeDecl(
+            buildEventTypeAst(ctx!!.evtype().first()),
+            ctx.evtype().drop(1).map(::buildEventTypeAst).toList()
+    )
+}
+
+object DataValueAstBuilder: rmlBaseVisitor<DataValue>() {
+    override fun visitSimpleVal(ctx: rmlParser.SimpleValContext?): SimpleValue =
+            ctx!!.accept(SimpleValueAstBuilder)
+    override fun visitObjectVal(ctx: rmlParser.ObjectValContext?) =
+            ObjectValue(ctx!!.`object`().field().map(::buildFieldAst).toList())
+}
+
+object SimpleValueAstBuilder: rmlBaseVisitor<SimpleValue>() {
+    override fun visitVarValue(ctx: rmlParser.VarValueContext?) = VarValue(ctx!!.LOWERCASE_ID().text)
+    override fun visitIntValue(ctx: rmlParser.IntValueContext?) = IntValue(ctx!!.INT().text.toInt())
+    override fun visitStringValue(ctx: rmlParser.StringValueContext?) =
+            StringValue(ctx!!.text.removePrefix("\"").removeSuffix("\""))
+    override fun visitObjectValue(ctx: rmlParser.ObjectValueContext?): ObjectValue =
+            ObjectValue(ctx!!.`object`().field().map(::buildFieldAst).toList())
+}
 
 object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
     override fun visitCatTExp(ctx: rmlParser.CatTExpContext?): ConcatTraceExp =
@@ -44,11 +83,7 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
                     visitVarsAux(ctx.vars())
             )
 
-    override fun visitEvtypeTExp(ctx: rmlParser.EvtypeTExpContext?): EventTypeTraceExp =
-            EventTypeTraceExp(
-                    EventTypeTraceExp.Id(ctx!!.evtype().LOWERCASE_ID().text),
-                    ctx.evtype()?.terms()?.term()?.map { it.accept(TermAstBuilder) }?.toList() ?: emptyList()
-            )
+    override fun visitEvtypeTExp(ctx: rmlParser.EvtypeTExpContext?): EventTypeTraceExp = buildEventTypeAst(ctx!!.evtype())
 
     override fun visitParTExp(ctx: rmlParser.ParTExpContext?): TraceExp =
             ctx!!.texp().accept(this)
@@ -58,12 +93,6 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
             right: rmlParser.TexpContext,
             constructor: (TraceExp, TraceExp) -> T): T =
             constructor(left.accept(this), right.accept(this))
-}
-
-object TermAstBuilder: rmlBaseVisitor<EventTerm>() {
-    override fun visitVarTerm(ctx: rmlParser.VarTermContext?): VarEventTerm = VarEventTerm(VarId(ctx!!.text))
-    override fun visitIntTerm(ctx: rmlParser.IntTermContext?): IntEventTerm = IntEventTerm(ctx!!.text.toInt())
-    override fun visitStringTerm(ctx: rmlParser.StringTermContext?): StringEventTerm = StringEventTerm(ctx!!.text)
 }
 
 // visitVars already exists in BaseVisitor with the same signature, avoid confusion

@@ -20,11 +20,9 @@ data class FunctionTerm(val functionSymbol: FunctionSymbol, val args: List<Prolo
 
     // also use varargs
     constructor(name: String, vararg args: PrologTerm): this(FunctionSymbol(name), args.toList())
-
-    companion object {
-        fun constant(name: String): FunctionTerm = FunctionTerm(name, emptyList())
-    }
 }
+
+data class ConstantTerm(val string: String): PrologTerm()
 
 data class ListTerm(val headTerms: List<PrologTerm>, val tail: PrologTerm? = null): PrologTerm() {
     init {
