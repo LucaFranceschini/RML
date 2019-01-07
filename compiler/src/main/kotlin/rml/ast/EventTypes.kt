@@ -17,14 +17,20 @@ data class ObjectValue(val fields: List<Field>): DataValue() {
     }
 }
 
-sealed class EvtypeDecl(open val evtype: EventTypeTraceExp)
-data class DirectEvtypeDecl(override val evtype: EventTypeTraceExp, val objects: List<ObjectValue>): EvtypeDecl(evtype) {
+sealed class EvtypeDecl(open val evtype: EventType)
+data class DirectEvtypeDecl(override val evtype: EventType, val objects: List<ObjectValue>): EvtypeDecl(evtype) {
     init {
         require(objects.isNotEmpty()) { "at least one object pattern expected" }
     }
 }
-data class DerivedEvtypeDecl(override val evtype: EventTypeTraceExp, val parents: List<EventTypeTraceExp>): EvtypeDecl(evtype) {
+data class DerivedEvtypeDecl(override val evtype: EventType, val parents: List<EventType>): EvtypeDecl(evtype) {
     init {
         require(parents.isNotEmpty()) { "at least one parent expected" }
     }
+}
+
+data class EventType(val id: Id, val dataValues: List<SimpleValue>) {
+    data class Id(val name: String): AbstractId(name)
+
+    constructor(id: String, dataValues: List<SimpleValue>): this(Id(id), dataValues)
 }

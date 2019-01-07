@@ -93,7 +93,9 @@ fun toProlog(traceExp: TraceExp): PrologTerm = when(traceExp) {
             ListTerm(traceExp.declaredVars.map { ConstantTerm(it.name) }.toList()),
             toProlog(traceExp.traceExp))
     is TraceExpVar -> toProlog(traceExp)
-    is EventTypeTraceExp -> FunctionTerm(traceExp.id.name, traceExp.dataValues.map { toProlog(it) }.toList())
+    is EventTypeTraceExp -> FunctionTerm(":",
+            toProlog(traceExp.eventType),
+            toProlog(EmptyTraceExp))
     is ConcatTraceExp -> toProlog(traceExp, if (traceExp.left is EventTypeTraceExp) ":" else "*")
     is AndTraceExp -> toProlog(traceExp, "/\\")
     is OrTraceExp -> toProlog(traceExp, "\\/")
@@ -102,6 +104,10 @@ fun toProlog(traceExp: TraceExp): PrologTerm = when(traceExp) {
             toProlog(traceExp.evtype),
             toProlog(traceExp.traceExp))
 }
+
+fun toProlog(eventType: EventType) = FunctionTerm(
+        eventType.id.name,
+        eventType.dataValues.map { toProlog(it) }.toList())
 
 fun toProlog(traceExp: BinaryTraceExp, opSymbol: String): PrologTerm =
         FunctionTerm(opSymbol, toProlog(traceExp.left), toProlog(traceExp.right))

@@ -9,7 +9,7 @@ fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification {
     return Specification(evtypeDecls, texpDecls, texpDecls[0].id)
 }
 
-fun buildEventTypeAst(ctx: rmlParser.EvtypeContext) = EventTypeTraceExp(
+fun buildEventTypeAst(ctx: rmlParser.EvtypeContext) = EventType(
         ctx.LOWERCASE_ID().text,
         ctx.simpleValues()?.simpleValue()?.map { it.accept(SimpleValueAstBuilder) }?.toList()
                 ?: emptyList()
@@ -86,7 +86,8 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
                     visitVarsAux(ctx.vars())
             )
 
-    override fun visitEvtypeTExp(ctx: rmlParser.EvtypeTExpContext?): EventTypeTraceExp = buildEventTypeAst(ctx!!.evtype())
+    override fun visitEvtypeTExp(ctx: rmlParser.EvtypeTExpContext?) =
+            EventTypeTraceExp(buildEventTypeAst(ctx!!.evtype()))
 
     override fun visitParTExp(ctx: rmlParser.ParTExpContext?): TraceExp =
             ctx!!.texp().accept(this)

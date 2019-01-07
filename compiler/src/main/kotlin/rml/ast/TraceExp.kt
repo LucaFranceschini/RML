@@ -14,7 +14,7 @@ data class AndTraceExp(override val left: TraceExp, override val right: TraceExp
 data class OrTraceExp(override val left: TraceExp, override val right: TraceExp): BinaryTraceExp()
 data class ShuffleTraceExp(override val left: TraceExp, override val right: TraceExp): BinaryTraceExp()
 
-data class FilterTraceExp(val evtype: EventTypeTraceExp, val traceExp: TraceExp): TraceExp()
+data class FilterTraceExp(val evtype: EventType, val traceExp: TraceExp): TraceExp()
 
 object EmptyTraceExp: TraceExp()
 
@@ -24,8 +24,4 @@ data class BlockTraceExp(val declaredVars: List<VarId>, val traceExp: TraceExp):
 // occurrence of trace expression identifier with possibly generic arguments
 data class TraceExpVar(val id: TraceExpId, val genericVars: List<VarId>): TraceExp()
 
-data class EventTypeTraceExp(val id: Id, val dataValues: List<SimpleValue>): TraceExp() {
-    data class Id(val name: String): AbstractId(name)
-
-    constructor(id: String, dataValues: List<SimpleValue>): this(Id(id), dataValues)
-}
+data class EventTypeTraceExp(val eventType: EventType): TraceExp()
