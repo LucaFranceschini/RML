@@ -28,7 +28,7 @@ In order to build this instrumentation you need Node.js installed as well as its
 
 To run a program with the instrumentation use the convenient Bash script:
 
-    $ instrumentation/nodejs/instrument.sh log-file.txt program.js [program-args ...]
+    $ ./instrument.sh log-file.txt program.js [program-args ...]
 
 The log file will contain the execution trace.
 
