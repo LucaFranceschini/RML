@@ -22,6 +22,7 @@ texp: texp texp # catTExp
     | texp '/\\' texp # andTExp
     | texp '\\/' texp # orTExp
     | texp '|' texp # shufTExp
+    | evtype '>>' texp # filterExp
     | 'empty' # emptyTExp
     | '{' 'var' vars ';' texp '}' # blockTExp
     | UPPERCASE_ID ('<' vars '>')? # varTExp
