@@ -23,21 +23,16 @@ fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
     // generate a clause for each pattern
     return when (evtypeDecl) {
         is DirectEvtypeDecl -> {
-            val clauses = mutableListOf<Clause>()
-            for (objPattern in evtypeDecl.objects) {
-                // generate a dictionary access for each field
-                val body = toProlog(objPattern, eventVar)
-                clauses.add(Clause(head, body))
-            }
-            clauses
+            evtypeDecl.objects.map {
+                val body = toProlog(it, eventVar)
+                Clause(head, body)
+            }.toList()
         }
         is DerivedEvtypeDecl -> {
-            val clauses = mutableListOf<Clause>()
-            for (parentEvtype in evtypeDecl.parents) {
-                val bodyAtom = Atom("match", eventVar, toProlog(parentEvtype))
-                clauses.add(Clause(head, bodyAtom))
-            }
-            clauses
+            evtypeDecl.parents.map {
+                val bodyAtom = Atom("match", eventVar, toProlog(it))
+                Clause(head, bodyAtom)
+            }.toList()
         }
     }
 }
