@@ -18,7 +18,7 @@ fun toProlog(declaration: TraceExpDecl): Atom = Atom(
 fun toProlog(traceExp: TraceExp): PrologTerm = when(traceExp) {
     EmptyTraceExp -> FunctionTerm("eps")
     is BlockTraceExp -> FunctionTerm("var",
-            ListTerm(traceExp.declaredVars.map { FunctionTerm.constant(it.name) }.toList()),
+            ListTerm(traceExp.declaredVars.map { ConstantTerm(it.name) }.toList()),
             toProlog(traceExp.traceExp))
     is TraceExpVar -> toProlog(traceExp)
     is EventTypeTraceExp -> FunctionTerm(traceExp.id.name, traceExp.eventTerms.map { toProlog(it) }.toList())
@@ -38,7 +38,7 @@ fun toProlog(traceExp: TraceExpVar): PrologTerm {
         return variable
 
     return FunctionTerm("app", variable,
-            ListTerm(traceExp.genericVars.map { FunctionTerm.constant(it.name) }.toList()))
+            ListTerm(traceExp.genericVars.map { ConstantTerm(it.name) }.toList()))
 }
 
 fun toProlog(value: SimpleValue): PrologTerm = when(value) {
