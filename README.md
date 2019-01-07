@@ -8,7 +8,7 @@ To build `cd` into `compiler` and type:
 
     $ ./gradlew build
 
-To run the compiler execute the automatically generated executable JAR:
+To run the compiler execute the automatically generated JAR:
 
     $ java -jar build/libs/rml-compiler.jar
 
