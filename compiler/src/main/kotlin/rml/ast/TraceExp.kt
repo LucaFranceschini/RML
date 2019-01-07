@@ -14,6 +14,8 @@ data class AndTraceExp(override val left: TraceExp, override val right: TraceExp
 data class OrTraceExp(override val left: TraceExp, override val right: TraceExp): BinaryTraceExp()
 data class ShuffleTraceExp(override val left: TraceExp, override val right: TraceExp): BinaryTraceExp()
 
+data class FilterTraceExp(val evtype: EventTypeTraceExp, val traceExp: TraceExp): TraceExp()
+
 object EmptyTraceExp: TraceExp()
 
 // scoped declaration of one or more variables

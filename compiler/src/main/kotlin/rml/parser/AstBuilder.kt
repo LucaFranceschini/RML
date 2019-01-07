@@ -67,6 +67,11 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
     override fun visitShufTExp(ctx: rmlParser.ShufTExpContext?): ShuffleTraceExp =
             visitBinTExp(ctx!!.texp(0), ctx.texp(1), ::ShuffleTraceExp)
 
+    override fun visitFilterExp(ctx: rmlParser.FilterExpContext?) = FilterTraceExp(
+            buildEventTypeAst(ctx!!.evtype()),
+            ctx.texp().accept(this)
+    )
+
     override fun visitEmptyTExp(ctx: rmlParser.EmptyTExpContext?): EmptyTraceExp = EmptyTraceExp
 
     override fun visitBlockTExp(ctx: rmlParser.BlockTExpContext?): BlockTraceExp =
