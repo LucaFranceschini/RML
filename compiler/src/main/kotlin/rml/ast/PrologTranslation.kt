@@ -88,7 +88,7 @@ fun toProlog(traceExp: TraceExp): PrologTerm = when(traceExp) {
             toProlog(traceExp.traceExp))
     is TraceExpVar -> toProlog(traceExp)
     is EventTypeTraceExp -> FunctionTerm(traceExp.id.name, traceExp.dataValues.map { toProlog(it) }.toList())
-    is ConcatTraceExp -> toProlog(traceExp, "*")
+    is ConcatTraceExp -> toProlog(traceExp, if (traceExp.left is EventTypeTraceExp) ":" else "*")
     is AndTraceExp -> toProlog(traceExp, "/\\")
     is OrTraceExp -> toProlog(traceExp, "\\/")
     is ShuffleTraceExp -> toProlog(traceExp, "|")
