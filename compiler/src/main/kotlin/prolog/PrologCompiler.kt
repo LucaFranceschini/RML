@@ -9,6 +9,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
         is VarTerm -> writer.write(term.name)
         is FunctionTerm -> compile(term)
         is ConstantTerm -> writer.write("'${term.string}'")
+        is PredicateIndicatorTerm -> writer.write("${term.name}/${term.arity}")
         is ListTerm -> {
             writer.write("[")
 
@@ -95,13 +96,21 @@ class PrologCompiler(private val writer: BufferedWriter) {
             }
         }
 
-        writer.write(".")
+        writer.write(".\n")
+    }
+
+    private fun compile(directive: Directive) {
+        writer.write(":- ")
+        compile(directive.body.first())
+        for (atom in directive.body.drop(1)) {
+            writer.write(", ")
+            compile(atom)
+        }
+        writer.write(".\n")
     }
 
     fun compile(program: LogicProgram) {
-        for (clause in program.clauses) {
-            compile(clause)
-            writer.newLine()
-        }
+        program.directives.map(::compile)
+        program.clauses.map(::compile)
     }
 }

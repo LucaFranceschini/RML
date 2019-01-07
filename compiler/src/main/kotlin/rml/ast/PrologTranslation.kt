@@ -5,12 +5,18 @@ import prolog.ast.*
 // translates from RML AST to Prolog AST
 
 fun toProlog(spec: Specification): LogicProgram {
+    // export as a module
+    val moduleDeclaration = Directive(Atom("module", ConstantTerm("spec"), ListTerm(
+            PredicateIndicatorTerm("trace_expression", 2),
+            PredicateIndicatorTerm("match", 2)
+    )))
+
     // generate a match clause for each event type pattern
     val matchClauses = spec.evtypeDecls.map(::toProlog).flatten()
     val traceExpClause = toProlog(spec.traceExpDecls, spec.mainTraceExp)
 
     // spread operator can only be applied to arrays
-    return LogicProgram(*matchClauses.toTypedArray(), traceExpClause)
+    return LogicProgram(listOf(moduleDeclaration), matchClauses + traceExpClause)
 }
 
 // build match clauses

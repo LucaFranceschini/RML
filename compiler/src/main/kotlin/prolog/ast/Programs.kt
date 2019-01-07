@@ -17,6 +17,13 @@ data class Clause(val head: Atom, val body: List<Atom>) {
     constructor(head: Atom, vararg bodyAtoms: Atom): this(head, bodyAtoms.toList())
 }
 
-data class LogicProgram(val clauses: List<Clause>) {
-    constructor(vararg clauses: Clause): this(clauses.toList())
+// :- atom.
+data class Directive(val body: List<Atom>) {
+    init {
+        require(body.isNotEmpty()) { "empty directive" }
+    }
+
+    constructor(vararg body: Atom): this(body.toList())
 }
+
+data class LogicProgram(val directives: List<Directive>, val clauses: List<Clause>)
