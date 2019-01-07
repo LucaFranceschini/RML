@@ -13,7 +13,9 @@ data class Atom(val symbol: PredicateSymbol, val args: List<PrologTerm>) {
     constructor(symbol: String, vararg args: PrologTerm): this(PredicateSymbol(symbol), args.toList())
 }
 
-data class Clause(val head: Atom, val body: List<Atom>)
+data class Clause(val head: Atom, val body: List<Atom>) {
+    constructor(head: Atom, vararg bodyAtoms: Atom): this(head, bodyAtoms.toList())
+}
 
 data class LogicProgram(val clauses: List<Clause>) {
     constructor(vararg clauses: Clause): this(clauses.toList())
