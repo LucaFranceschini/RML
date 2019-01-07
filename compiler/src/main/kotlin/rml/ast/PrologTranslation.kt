@@ -93,16 +93,44 @@ fun toProlog(traceExp: TraceExp): PrologTerm = when(traceExp) {
             ListTerm(traceExp.declaredVars.map { ConstantTerm(it.name) }.toList()),
             toProlog(traceExp.traceExp))
     is TraceExpVar -> toProlog(traceExp)
-    is EventTypeTraceExp -> FunctionTerm(":",
-            toProlog(traceExp.eventType),
-            toProlog(EmptyTraceExp))
-    is ConcatTraceExp -> toProlog(traceExp, if (traceExp.left is EventTypeTraceExp) ":" else "*")
+    is EventTypeTraceExp -> toProlog(traceExp.eventType)
+    is ConcatTraceExp -> toProlog(traceExp)
     is AndTraceExp -> toProlog(traceExp, "/\\")
     is OrTraceExp -> toProlog(traceExp, "\\/")
     is ShuffleTraceExp -> toProlog(traceExp, "|")
     is FilterTraceExp -> FunctionTerm(">>",
             toProlog(traceExp.evtype),
             toProlog(traceExp.traceExp))
+}
+
+fun toProlog(concat: ConcatTraceExp): FunctionTerm {
+    val left = concat.left
+    val right = concat.right
+
+    if (left is EventTypeTraceExp && right is EventTypeTraceExp)
+        // left:(right:eps)
+        return FunctionTerm(":",
+                toProlog(left),
+                FunctionTerm(":",
+                        toProlog(right),
+                        toProlog(EmptyTraceExp)))
+
+    if (left is EventTypeTraceExp && right !is EventTypeTraceExp)
+        // left:right
+        return FunctionTerm(":",
+                toProlog(left),
+                toProlog(right))
+
+    if (left !is EventTypeTraceExp && right is EventTypeTraceExp)
+        // left*(right:eps)
+        return FunctionTerm("*",
+                toProlog(left),
+                FunctionTerm(":",
+                        toProlog(right),
+                        toProlog(EmptyTraceExp)))
+
+    // both left and right not event types
+    return FunctionTerm("*", toProlog(left), toProlog(right))
 }
 
 fun toProlog(eventType: EventType) = FunctionTerm(
