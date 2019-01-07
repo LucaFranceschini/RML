@@ -42,6 +42,8 @@ verify([], TE, _) :-
 	;  write('Unexpected end of trace\n').
 
 verify([E|Es], TE, N) :-
-	next(TE, E, TE2)
-	-> (write('matched event #'), write(N), nl, N2 is N+1, verify(Es, TE2, N2))
-	;  (write('ERROR on event '), write(E)).
+	dict_pairs(E, _, Fields),
+	(next(TE, E, TE2)
+	 -> (write('matched event #'), write(N), nl, N2 is N+1, verify(Es, TE2, N2))
+	 ;  (write('ERROR on event '), write(Fields), nl)
+	).
