@@ -4,10 +4,81 @@ import prolog.ast.*
 
 // translates from RML AST to Prolog AST
 
-fun toProlog(spec: Specification, id: String) = LogicProgram(Clause(
-        Atom("trace_expression", FunctionTerm.constant(id), VarTerm(spec.mainTraceExp.name)), // head
-        spec.traceExpDecls.map { toProlog(it) }
-))
+fun toProlog(spec: Specification): LogicProgram {
+    // generate a match clause for each event type pattern
+    val matchClauses = spec.evtypeDecls.map(::toProlog).flatten()
+    val traceExpClause = toProlog(spec.traceExpDecls, spec.mainTraceExp)
+
+    // spread operator can only be applied to arrays
+    return LogicProgram(*matchClauses.toTypedArray(), traceExpClause)
+}
+
+// build match clauses
+fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
+    // match(E, eventType(...))
+    val eventVar = VarTerm("E")
+    val eventType = toProlog(evtypeDecl.evtype)
+    val head = Atom("match", eventVar, eventType)
+
+    // generate a clause for each pattern
+    return when (evtypeDecl) {
+        is DirectEvtypeDecl -> {
+            val clauses = mutableListOf<Clause>()
+            for (objPattern in evtypeDecl.objects) {
+                // generate a dictionary access for each field
+                val body = toProlog(objPattern, eventVar)
+                clauses.add(Clause(head, body))
+            }
+            clauses
+        }
+        is DerivedEvtypeDecl -> {
+            val clauses = mutableListOf<Clause>()
+            for (parentEvtype in evtypeDecl.parents) {
+                val bodyAtom = Atom("match", eventVar, toProlog(parentEvtype))
+                clauses.add(Clause(head, bodyAtom))
+            }
+            clauses
+        }
+    }
+}
+
+object UniqueVarGenerator {
+    private var id = 1
+
+    fun get() = VarTerm("UNIQUE_VAR${id++}")
+}
+
+// convert object to list of dictionary accesses
+fun toProlog(objectValue: ObjectValue, dict: PrologTerm): List<Atom> {
+    val result = mutableListOf<Atom>()
+
+    for (field in objectValue.fields) {
+        val key = ConstantTerm(field.key.name)
+
+        when(field.value) {
+            // if it is a primitive value just add the access
+            is SimpleValue -> {
+                val value = toProlog(field.value)
+                result.add(Atom("get_dict", key, dict, value))
+            }
+            is ObjectValue -> {
+                // retrieve inner dict
+                val innerDict = UniqueVarGenerator.get()
+                result.add(Atom("get_dict", key, dict, innerDict))
+                // recursively add all the accesses from the inner dict
+                result.addAll(toProlog(field.value, innerDict))
+            }
+        }
+    }
+
+    return result
+}
+
+fun toProlog(declarations: List<TraceExpDecl>, mainTraceExp: TraceExpId): Clause {
+    val head = Atom("trace_expression", ConstantTerm(mainTraceExp.name), VarTerm(mainTraceExp.name))
+    val body = declarations.map(::toProlog)
+    return Clause(head, body)
+}
 
 // output T = trace-expression
 fun toProlog(declaration: TraceExpDecl): Atom = Atom(
