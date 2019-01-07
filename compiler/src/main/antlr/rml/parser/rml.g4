@@ -18,7 +18,7 @@ simpleValue: STRING # stringValue
            | LOWERCASE_ID # varValue
            ;
 texpDecl: UPPERCASE_ID ('<' vars '>')? '=' texp ';' ;
-texp: texp '*' texp # catTExp
+texp: texp texp # catTExp
     | texp '/\\' texp # andTExp
     | texp '\\/' texp # orTExp
     | texp '|' texp # shufTExp
