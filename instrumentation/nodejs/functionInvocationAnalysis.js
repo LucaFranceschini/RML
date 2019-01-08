@@ -103,6 +103,8 @@
 	// to deal with --initParam (Davide)
 	if(J$.initParams.func_post)
 		J$.initParams.func_post=JSON.parse(J$.initParams.func_post);
+	else // do everything by default
+		J$.initParams.func_post=true;
 	J$.initParams.names=J$.initParams.names||null;
 	J$.initParams.names=JSON.parse(J$.initParams.names);
 	
