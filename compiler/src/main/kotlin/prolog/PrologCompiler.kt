@@ -11,6 +11,23 @@ class PrologCompiler(private val writer: BufferedWriter) {
         is ConstantTerm -> writer.write("'${term.string}'")
         is StringTerm -> writer.write("\"${term.string}\"")
         is PredicateIndicatorTerm -> writer.write("${term.name}/${term.arity}")
+        is DictionaryTerm -> {
+            writer.write("_{")
+
+            val first = term.map.entries.first()
+            compile(first.key)
+            writer.write(":")
+            compile(first.value)
+
+            term.map.entries.drop(1).map {
+                writer.write(",")
+                compile(it.key)
+                writer.write(":")
+                compile(it.value)
+            }
+
+            writer.write("}")
+        }
         is ListTerm -> {
             writer.write("[")
 

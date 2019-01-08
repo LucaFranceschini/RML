@@ -19,60 +19,21 @@ fun toProlog(spec: Specification): LogicProgram {
     return LogicProgram(listOf(moduleDeclaration), matchClauses + traceExpClause)
 }
 
-// build match clauses
-fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
-    // match(E, eventType(...))
-    val eventVar = VarTerm("E")
-    val eventType = toProlog(evtypeDecl.evtype)
-    val head = Atom("match", eventVar, eventType)
-
-    // generate a clause for each pattern
-    return when (evtypeDecl) {
-        is DirectEvtypeDecl -> {
-            evtypeDecl.objects.map {
-                val body = toProlog(it, eventVar)
-                Clause(head, body)
-            }.toList()
-        }
-        is DerivedEvtypeDecl -> {
-            evtypeDecl.parents.map {
-                val bodyAtom = Atom("match", eventVar, toProlog(it))
-                Clause(head, bodyAtom)
-            }.toList()
-        }
+// build a match clause for each pattern
+fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> = when (evtypeDecl) {
+    is DirectEvtypeDecl -> evtypeDecl.objects.map {
+        Clause(Atom("match", toProlog(it), toProlog(evtypeDecl.evtype)))
+    }
+    is DerivedEvtypeDecl -> evtypeDecl.parents.map {
+        Clause(Atom("match", toProlog(evtypeDecl.evtype), toProlog(it)))
     }
 }
 
-object UniqueVarGenerator {
-    private var id = 1
-
-    fun get() = VarTerm("UNIQUE_VAR${id++}")
-}
-
-// convert object to list of dictionary accesses
-fun toProlog(objectValue: ObjectValue, dict: PrologTerm): List<Atom> {
-    val result = mutableListOf<Atom>()
-
-    for (field in objectValue.fields) {
-        val key = ConstantTerm(field.key.name)
-
-        when(field.value) {
-            // if it is a primitive value just add the access
-            is SimpleValue -> {
-                val value = toProlog(field.value)
-                result.add(Atom("get_dict", key, dict, value))
-            }
-            is ObjectValue -> {
-                // retrieve inner dict
-                val innerDict = UniqueVarGenerator.get()
-                result.add(Atom("get_dict", key, dict, innerDict))
-                // recursively add all the accesses from the inner dict
-                result.addAll(toProlog(field.value, innerDict))
-            }
-        }
-    }
-
-    return result
+fun toProlog(dataValue: DataValue): PrologTerm = when (dataValue) {
+    is ObjectValue -> DictionaryTerm.from(
+            dataValue.fields.map { Pair(it.key.name, toProlog(it.value)) }.toMap())
+    is ListValue -> ListTerm(dataValue.values.map(::toProlog))
+    is SimpleValue -> toProlog(dataValue)
 }
 
 fun toProlog(declarations: List<TraceExpDecl>, mainTraceExp: TraceExpId): Clause {
@@ -139,7 +100,7 @@ fun toProlog(eventType: EventType) = FunctionTerm(
         eventType.id.name,
         eventType.dataValues.map { toProlog(it) }.toList())
 
-fun toProlog(traceExp: BinaryTraceExp, opSymbol: String): PrologTerm =
+fun toProlog(traceExp: BinaryTraceExp, opSymbol: String) =
         FunctionTerm(opSymbol, toProlog(traceExp.left), toProlog(traceExp.right))
 
 fun toProlog(traceExp: TraceExpVar): PrologTerm {

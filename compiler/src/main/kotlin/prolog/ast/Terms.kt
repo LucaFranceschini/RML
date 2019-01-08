@@ -40,3 +40,12 @@ data class PredicateIndicatorTerm(val name: String, val arity: Int): PrologTerm(
         require(arity > 0) { "negative arity in predicate indicator" }
     }
 }
+
+// _{foo:Term, bar:Term, ...}
+data class DictionaryTerm(val map: Map<ConstantTerm, PrologTerm>): PrologTerm() {
+    // factory method (can't write another constructor due to type erasure
+    companion object {
+        fun from(map: Map<String, PrologTerm>) =
+                DictionaryTerm(map.entries.map { Pair(ConstantTerm(it.key), it.value) }.toMap())
+    }
+}
