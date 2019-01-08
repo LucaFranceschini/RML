@@ -155,5 +155,5 @@ fun toProlog(traceExp: TraceExpVar): PrologTerm {
 fun toProlog(value: SimpleValue): PrologTerm = when(value) {
     is VarValue -> FunctionTerm("var", ConstantTerm(value.id.name))
     is IntValue -> IntTerm(value.number)
-    is StringValue -> ConstantTerm(value.string)
+    is StringValue -> StringTerm(value.string)
 }
