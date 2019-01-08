@@ -46,7 +46,7 @@ object DataValueAstBuilder: rmlBaseVisitor<DataValue>() {
     override fun visitObjectVal(ctx: rmlParser.ObjectValContext?) =
             ObjectValue(ctx!!.`object`().field().map(::buildFieldAst).toList())
     override fun visitListVal(ctx: rmlParser.ListValContext?) =
-            ListValue(ctx!!.value().map { it.accept(this) })
+            ListValue(ctx!!.value()?.map { it.accept(this) } ?: emptyList())
 }
 
 object SimpleValueAstBuilder: rmlBaseVisitor<SimpleValue>() {
@@ -55,7 +55,7 @@ object SimpleValueAstBuilder: rmlBaseVisitor<SimpleValue>() {
     override fun visitStringValue(ctx: rmlParser.StringValueContext?) =
             StringValue(ctx!!.text.removePrefix("'").removeSuffix("'"))
     override fun visitListValue(ctx: rmlParser.ListValueContext?) =
-            ListSimpleValue(ctx!!.simpleValues().simpleValue().map { it.accept(this) })
+            ListSimpleValue(ctx!!.simpleValues()?.simpleValue()?.map { it.accept(this) } ?: emptyList())
 }
 
 object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
