@@ -156,4 +156,5 @@ fun toProlog(value: SimpleValue): PrologTerm = when(value) {
     is VarValue -> FunctionTerm("var", ConstantTerm(value.id.name))
     is IntValue -> IntTerm(value.number)
     is StringValue -> StringTerm(value.string)
+    is ListSimpleValue -> ListTerm(value.values.map(::toProlog))
 }
