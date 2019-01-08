@@ -24,6 +24,8 @@ data class FunctionTerm(val functionSymbol: FunctionSymbol, val args: List<Prolo
 
 data class ConstantTerm(val string: String): PrologTerm()
 
+data class StringTerm(val string: String): PrologTerm()
+
 data class ListTerm(val headTerms: List<PrologTerm>, val tail: PrologTerm? = null): PrologTerm() {
     init {
         require(headTerms.isNotEmpty() || tail == null) { "can't have tail term without other terms first" }

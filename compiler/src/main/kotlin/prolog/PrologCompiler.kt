@@ -9,6 +9,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
         is VarTerm -> writer.write(term.name)
         is FunctionTerm -> compile(term)
         is ConstantTerm -> writer.write("'${term.string}'")
+        is StringTerm -> writer.write("\"${term.string}\"")
         is PredicateIndicatorTerm -> writer.write("${term.name}/${term.arity}")
         is ListTerm -> {
             writer.write("[")
