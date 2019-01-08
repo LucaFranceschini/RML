@@ -33,7 +33,7 @@ To run a program with the instrumentation use the convenient Bash script:
 The log file will contain the execution trace.
 
 ## Step #3: Verify
-Our monitor is implemented in [SWI-Prolog](http://www.swi-prolog.org/), so you need to install it.
+Our monitor is implemented in [SWI-Prolog](http://www.swi-prolog.org/), so you need to install it. Version 7+ needed.
 
 To verify a trace `trace.txt` against a compiled specification `spec.pl` type:
 
