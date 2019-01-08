@@ -38,3 +38,6 @@ Our monitor is implemented in [SWI-Prolog](http://www.swi-prolog.org/), so you n
 To verify a trace `trace.txt` against a compiled specification `spec.pl` type:
 
     $ swipl monitor/monitor.pl -- spec.pl trace.txt
+
+## Examples
+See folder `examples` for RML specifications of Node.js properties, together with programs to monitor.
