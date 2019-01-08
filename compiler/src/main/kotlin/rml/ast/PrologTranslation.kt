@@ -85,15 +85,17 @@ fun toProlog(declarations: List<TraceExpDecl>, mainTraceExp: TraceExpId): Clause
 fun toProlog(declaration: TraceExpDecl): Atom = Atom(
         "=",
         VarTerm(declaration.id.name),
-        toProlog(declaration.traceExp))
+        toProlog(declaration.traceExp, topLevel = true))
 
-fun toProlog(traceExp: TraceExp): PrologTerm = when(traceExp) {
+fun toProlog(traceExp: TraceExp, topLevel: Boolean = false): PrologTerm = when(traceExp) {
     EmptyTraceExp -> FunctionTerm("eps")
     is BlockTraceExp -> FunctionTerm("var",
             ListTerm(traceExp.declaredVars.map { ConstantTerm(it.name) }.toList()),
             toProlog(traceExp.traceExp))
     is TraceExpVar -> toProlog(traceExp)
-    is EventTypeTraceExp -> toProlog(traceExp.eventType)
+    is EventTypeTraceExp ->
+        if (topLevel) FunctionTerm(":", toProlog(traceExp.eventType), toProlog(EmptyTraceExp))
+        else toProlog(traceExp.eventType)
     is ConcatTraceExp -> toProlog(traceExp)
     is AndTraceExp -> toProlog(traceExp, "/\\")
     is OrTraceExp -> toProlog(traceExp, "\\/")
