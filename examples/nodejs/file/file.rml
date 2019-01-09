@@ -1,6 +1,6 @@
-open  matches { event: 'func_post', name: 'fs.open'  };
-write matches { event: 'func_pre',  name: 'fs.write' };
-close matches { event: 'func_pre',  name: 'fs.close' };
+open  matches { event: 'func_pre', name: 'fs.open'  };
+write matches { event: 'func_pre', name: 'fs.write' };
+close matches { event: 'func_pre', name: 'fs.close' };
 callback matches { event: 'cb_pre' };
 
 relevant matches open | write | close | callback;

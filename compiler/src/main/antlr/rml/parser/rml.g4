@@ -5,12 +5,13 @@ grammar rml;
 }
 
 spec: evtypeDecl* texpDecl+ ;
-evtypeDecl: evtype 'matches' object ('|' object)* ';' # directEvtypeDecl
+evtypeDecl: evtype 'matches' value';' # directEvtypeDecl
           | evtype 'matches' evtype ('|' evtype)* ';' # derivedEvtypeDecl
           ;
 object: '{' field (',' field)* '}' ;
 field: LOWERCASE_ID ':' value ;
-value: object # objectVal
+value: value '|' value # orPatternVal
+     | object # objectVal
      | '[' (value (',' value)*)? ']' # listVal
      | simpleValue # simpleVal
      ;
