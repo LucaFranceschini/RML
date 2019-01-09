@@ -3,7 +3,7 @@ write matches { event: 'func_pre',  name: 'fs.write' };
 close matches { event: 'func_pre',  name: 'fs.close' };
 callback matches { event: 'cb_pre' };
 
-relevant matches open, write, close, callback;
+relevant matches open | write | close | callback;
 
 File = relevant >> (empty \/ open callback Use);
 Use = close callback \/ write callback Use;
