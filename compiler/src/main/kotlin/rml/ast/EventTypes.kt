@@ -14,6 +14,10 @@ data class VarValue(val id: VarId): SimpleValue() {
 }
 data class ListSimpleValue(val values: List<SimpleValue>): SimpleValue()
 
+object UnusedValue: DataValue() {
+    override fun unfoldOrPatterns() = setOf(this)
+}
+
 data class ObjectValue(val fields: List<Field>): DataValue() {
     data class Field(val key: KeyId, val value: DataValue) {
         constructor(key: String, value: DataValue): this(KeyId(key), value)

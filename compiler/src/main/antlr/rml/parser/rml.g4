@@ -14,6 +14,7 @@ value: value '|' value # orPatternVal
      | object # objectVal
      | '[' (value (',' value)*)? ']' # listVal
      | simpleValue # simpleVal
+     | '_' # unusedVal
      ;
 simpleValue: STRING # stringValue
            | INT # intValue

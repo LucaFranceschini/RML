@@ -38,6 +38,7 @@ object EvtypeDeclAstBuilder: rmlBaseVisitor<EvtypeDecl>() {
 }
 
 object DataValueAstBuilder: rmlBaseVisitor<DataValue>() {
+    override fun visitUnusedVal(ctx: rmlParser.UnusedValContext?) = UnusedValue
     override fun visitSimpleVal(ctx: rmlParser.SimpleValContext?): SimpleValue =
             ctx!!.accept(SimpleValueAstBuilder)
     override fun visitObjectVal(ctx: rmlParser.ObjectValContext?) =
