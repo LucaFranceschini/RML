@@ -22,7 +22,11 @@ fun toProlog(spec: Specification): LogicProgram {
 // build a match clause for each pattern
 fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> = when (evtypeDecl) {
     is DirectEvtypeDecl -> evtypeDecl.objects.map {
-        Clause(Atom("match", toProlog(it), toProlog(evtypeDecl.evtype)))
+        val eventDict = VarTerm("Event")
+        Clause(
+                Atom("match", eventDict, toProlog(evtypeDecl.evtype)),
+                // the dictionary specified by the pattern must be a sub-dictionary of the observed event
+                Atom(":<", toProlog(it), eventDict))
     }
     is DerivedEvtypeDecl -> evtypeDecl.parents.map {
         Clause(Atom("match", toProlog(evtypeDecl.evtype), toProlog(it)))
