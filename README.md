@@ -32,12 +32,12 @@ To run a program with the instrumentation use the convenient Bash script:
 
 The log file will contain the execution trace.
 
-## Step #3: Verify
+## Step #3: Verification
 Our monitor is implemented in [SWI-Prolog](http://www.swi-prolog.org/), so you need to install it. Version 7+ needed.
 
-To verify a trace `trace.txt` against a compiled specification `spec.pl` type:
+To verify a trace `trace.txt` against a compiled specification `spec.pl`:
 
-    $ swipl monitor/monitor.pl -- spec.pl trace.txt
+    $ monitor/monitor.sh spec.pl trace.txt
 
 ## Examples
 See folder `examples` for RML specifications of Node.js properties, together with programs to monitor.
