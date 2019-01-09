@@ -71,7 +71,7 @@ data class ListValue(val values: List<DataValue>): DataValue() {
 
     override fun unfoldOrPatterns(): Set<ListValue> {
         if (values.isEmpty())
-            return emptySet()
+            return setOf(this)
 
         val head = values.first()
         val tail = ListValue(values.drop(1))
