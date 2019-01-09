@@ -135,3 +135,14 @@ fun toProlog(value: SimpleValue): PrologTerm = when(value) {
     is ListSimpleValue -> ListTerm(value.values.map { toProlog(it) })
     is UnusedValue -> VarTerm("_")
 }
+
+fun toValidPrologVarName(string: String): String {
+    if (string.startsWith("_"))
+        return string
+
+    val first = string.first()
+    if (first.isLetter())
+        return string.replaceFirst(first, first.toUpperCase())
+
+    throw Exception("invalid Prolog variable name, can't fix")
+}

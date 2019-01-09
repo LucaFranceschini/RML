@@ -4,7 +4,14 @@ sealed class PrologTerm
 
 data class IntTerm(val number: Int): PrologTerm()
 
-data class VarTerm(val name: String): PrologTerm()
+data class VarTerm(val name: String): PrologTerm() {
+    init {
+        require(name.isNotBlank()) { "blank variable" }
+        require(name.first() == '_' || name.first().isUpperCase()) {
+            "first character must be underscore or uppercase letter"
+        }
+    }
+}
 
 data class FunctionTerm(val functionSymbol: FunctionSymbol, val args: List<PrologTerm>): PrologTerm() {
     val arity: Int = args.size
