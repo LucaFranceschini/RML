@@ -1,0 +1,10 @@
+open matches { event: 'func_pre', name: 'fs.open' };
+write(fd) matches { event: 'func_pre', name: 'fs.write', args: [fd, _, _] };
+close(fd) matches { event: 'func_pre', name: 'fs.close', args: [fd, _] };
+callback matches { event: 'cb_pre' };
+openCallback(fd) matches { event: 'cb_pre', args: [_, fd] };
+
+relevant matches open | write(_) | close(_) | callback;
+
+File = relevant >> (empty \/ open {var fd; openCallback(fd) Use<fd>});
+Use<fd> = close(fd) callback \/ write(fd) callback Use<fd>;
