@@ -2,16 +2,19 @@
 ## Step #1: Specification
 The specification is written in RML and compiled to Prolog.
 
-In order to build the compiler you need the [Gradle build tool](https://gradle.org/). The compiler is written using ANTLR, Java and Kotlin.
+In order to build the compiler you need the [Gradle build tool](https://gradle.org/).
+The compiler is written in ANTLR, Java and Kotlin.
 
-To build `cd` into `compiler` and type:
+To build the compiler, `cd` into `compiler` and type:
 
     $ ./gradlew build
 
-To run the compiler execute the automatically generated JAR:
+An executable JAR will be produced in `build/libs`.
+To run the compiler:
 
     $ java -jar build/libs/rml-compiler.jar
 
+By default it will read a specification from standard input and print Prolog code to standard output.
 Run with `--help` for options.
 
 ## Step #2: Instrumentation
@@ -28,9 +31,9 @@ In order to build this instrumentation you need Node.js installed as well as its
 
 To run a program with the instrumentation use the convenient Bash script:
 
-    $ ./instrument.sh log-file.txt program.js [program-args ...]
+    $ ./instrument.sh trace.txt program.js [program-args ...]
 
-The log file will contain the execution trace.
+The text file will contain the execution trace.
 
 ## Step #3: Verification
 Our monitor is implemented in [SWI-Prolog](http://www.swi-prolog.org/), so you need to install it. Version 7+ needed.
