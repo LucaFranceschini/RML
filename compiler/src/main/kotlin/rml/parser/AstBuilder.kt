@@ -15,8 +15,6 @@ fun buildEventTypeAst(ctx: rmlParser.EvtypeContext) = EventType(
                 ?: emptyList()
 )
 
-fun buildObjectValueAst(ctx: rmlParser.ObjectContext) = ObjectValue(ctx.field().map(::buildFieldAst).toList())
-
 fun buildFieldAst(ctx: rmlParser.FieldContext): ObjectValue.Field =
         ObjectValue.Field(ctx.LOWERCASE_ID().text, ctx.value().accept(DataValueAstBuilder))
 
