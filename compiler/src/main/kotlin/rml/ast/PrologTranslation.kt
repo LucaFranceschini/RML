@@ -11,12 +11,17 @@ fun toProlog(spec: Specification): LogicProgram {
             PredicateIndicatorTerm("match", 2)
     )))
 
+    // import deep_subdict
+    val deepSubdictImport = Directive(Atom("use_module",
+            FunctionTerm("monitor", ConstantTerm("deep_subdict"))))
+
     // generate a match clause for each event type pattern
     val matchClauses = spec.evtypeDecls.map(::toProlog).flatten()
     val traceExpClause = toProlog(spec.traceExpDecls, spec.mainTraceExp)
 
     // spread operator can only be applied to arrays
-    return LogicProgram(listOf(moduleDeclaration), matchClauses + traceExpClause)
+    return LogicProgram(listOf(moduleDeclaration, deepSubdictImport),
+            matchClauses + traceExpClause)
 }
 
 // build a match clause for each pattern
