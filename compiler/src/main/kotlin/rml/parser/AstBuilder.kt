@@ -31,8 +31,7 @@ fun buildDeclarationAst(ctx: rmlParser.TexpDeclContext) = TraceExpDecl(
 object EvtypeDeclAstBuilder: rmlBaseVisitor<EvtypeDecl>() {
     override fun visitDirectEvtypeDecl(ctx: rmlParser.DirectEvtypeDeclContext?) = DirectEvtypeDecl(
             buildEventTypeAst(ctx!!.evtype()),
-            ctx.`object`().map(::buildObjectValueAst).toList()
-    )
+            ctx.value().accept(DataValueAstBuilder))
 
     override fun visitDerivedEvtypeDecl(ctx: rmlParser.DerivedEvtypeDeclContext?) = DerivedEvtypeDecl(
             buildEventTypeAst(ctx!!.evtype().first()),

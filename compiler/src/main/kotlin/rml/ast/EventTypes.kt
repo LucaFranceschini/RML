@@ -23,9 +23,17 @@ data class ObjectValue(val fields: List<Field>): DataValue() {
 data class ListValue(val values: List<DataValue>): DataValue()
 
 sealed class EvtypeDecl(open val evtype: EventType)
-data class DirectEvtypeDecl(override val evtype: EventType, val objects: List<ObjectValue>): EvtypeDecl(evtype) {
+data class DirectEvtypeDecl(override val evtype: EventType, val patternValue: DataValue): EvtypeDecl(evtype) {
     init {
-        require(objects.isNotEmpty()) { "at least one object pattern expected" }
+        require(checkOnlyOrAndObjects(patternValue)) {
+            "(or-pattern of) objects expected at top-level event type declaration"
+        }
+    }
+
+    private fun checkOnlyOrAndObjects(value: DataValue): Boolean = when (value) {
+        is ObjectValue -> true
+        is OrPatternValue -> checkOnlyOrAndObjects(value.left) && checkOnlyOrAndObjects(value.right)
+        else -> false
     }
 }
 data class DerivedEvtypeDecl(override val evtype: EventType, val parents: List<EventType>): EvtypeDecl(evtype) {

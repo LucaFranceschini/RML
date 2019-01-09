@@ -5,7 +5,7 @@ grammar rml;
 }
 
 spec: evtypeDecl* texpDecl+ ;
-evtypeDecl: evtype 'matches' object ';' # directEvtypeDecl
+evtypeDecl: evtype 'matches' value';' # directEvtypeDecl
           | evtype 'matches' evtype ('|' evtype)* ';' # derivedEvtypeDecl
           ;
 object: '{' field (',' field)* '}' ;
