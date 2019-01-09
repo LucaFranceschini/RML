@@ -12,7 +12,9 @@ data class IntValue(val number: Int): SimpleValue()
 data class VarValue(val id: VarId): SimpleValue() {
     constructor(id: String): this(VarId(id))
 }
-data class ListSimpleValue(val values: List<SimpleValue>): SimpleValue()
+data class ListSimpleValue(
+        val values: List<SimpleValue>,
+        val hasEllipsis: Boolean = false): SimpleValue()
 object UnusedValue: SimpleValue()
 
 data class ObjectValue(val fields: List<Field>): DataValue() {
@@ -62,9 +64,17 @@ data class ObjectValue(val fields: List<Field>): DataValue() {
     }
 }
 
-data class ListValue(val values: List<DataValue>): DataValue() {
-    constructor(head: DataValue, tail: ListValue):
-            this(listOf(head) + tail.values)
+data class ListValue(
+        val values: List<DataValue>,
+        val hasEllipsis: Boolean = false): DataValue() {
+    constructor(head: DataValue, tail: ListValue, hasEllipsis: Boolean = false):
+            this(listOf(head) + tail.values, hasEllipsis)
+
+    init {
+        require(values.isNotEmpty() || !hasEllipsis) {
+            "ellipsis with no elements not supported yet"
+        }
+    }
 
     override fun unfoldOrPatterns(): Set<ListValue> {
         if (values.isEmpty())
@@ -77,7 +87,7 @@ data class ListValue(val values: List<DataValue>): DataValue() {
         val result: MutableSet<ListValue> = mutableSetOf()
         for (unfoldedHead in head.unfoldOrPatterns())
             for (unfoldedTail in tail.unfoldOrPatterns())
-                result.add(ListValue(unfoldedHead, unfoldedTail))
+                result.add(ListValue(unfoldedHead, unfoldedTail, hasEllipsis))
 
         return result
     }

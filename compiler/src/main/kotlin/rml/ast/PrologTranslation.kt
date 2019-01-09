@@ -46,7 +46,9 @@ fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
 fun toProlog(dataValue: DataValue, isMatchClause: Boolean = false): PrologTerm = when (dataValue) {
     is ObjectValue -> DictionaryTerm.from(
             dataValue.fields.map { Pair(it.key.name, toProlog(it.value, isMatchClause)) }.toMap())
-    is ListValue -> ListTerm(dataValue.values.map { toProlog(it, isMatchClause) })
+    is ListValue -> ListTerm(
+            dataValue.values.map { toProlog(it, isMatchClause) },
+            if (dataValue.hasEllipsis) VarTerm("_") else null)
     is SimpleValue -> toProlog(dataValue, isMatchClause)
     is OrPatternValue -> throw Exception("internal error: or-patterns should be unfolded by now")
 }
@@ -158,7 +160,9 @@ fun toProlog(value: SimpleValue, isMatchClause: Boolean = false): PrologTerm = w
         else FunctionTerm("var", FunctionTerm(value.id.name))
     is IntValue -> IntTerm(value.number)
     is StringValue -> StringTerm(value.string)
-    is ListSimpleValue -> ListTerm(value.values.map { toProlog(it) })
+    is ListSimpleValue -> ListTerm(
+            value.values.map { toProlog(it) },
+            if (value.hasEllipsis) VarTerm("_") else null)
     is UnusedValue -> VarTerm("_")
 }
 
