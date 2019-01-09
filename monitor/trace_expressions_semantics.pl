@@ -85,7 +85,7 @@ next((ET?T1;T2), E, T, S) :- !,
 %% match(E,ET,S) :- copy_term(ET,FreshET),match(E,FreshET),unifiable(ET,FreshET,S). %% old version
 match(E,ET,Subs) :- copy_term_with_vars(ET,FreshET,Subs), match(E,FreshET). %%,write('matching '),write(E),write(' with '),writeln(FreshET),match(E,FreshET),write('matched ').
 %% debugging version
-%% match(E,ET,Subs) :- copy_term_with_vars(ET,FreshET,Subs),write('matching '),write(E),write(' with '),write(FreshET),match(E,FreshET),writeln('matched ').
+%%match(E,ET,Subs) :- copy_term_with_vars(ET,FreshET,Subs),write('matching '),write(E),write(' with '),write(FreshET),match(E,FreshET),writeln('... matched\n').
 
 %% solve predicate
 %% solve(P,Subs) :- !,copy_term_with_vars(P,[],FreshP,Subs),FreshP.
