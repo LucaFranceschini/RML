@@ -14,12 +14,12 @@ value: value '|' value # orPatternVal
      | object # objectVal
      | '[' (value (',' value)*)? ']' # listVal
      | simpleValue # simpleVal
-     | '_' # unusedVal
      ;
 simpleValue: STRING # stringValue
            | INT # intValue
            | LOWERCASE_ID # varValue
            | '[' simpleValues? ']' # listValue
+           | '_' # unusedVal
            ;
 texpDecl: UPPERCASE_ID ('<' vars '>')? '=' texp ';' ;
 texp: <assoc=right> texp texp # catTExp

@@ -38,7 +38,6 @@ object EvtypeDeclAstBuilder: rmlBaseVisitor<EvtypeDecl>() {
 }
 
 object DataValueAstBuilder: rmlBaseVisitor<DataValue>() {
-    override fun visitUnusedVal(ctx: rmlParser.UnusedValContext?) = UnusedValue
     override fun visitSimpleVal(ctx: rmlParser.SimpleValContext?): SimpleValue =
             ctx!!.accept(SimpleValueAstBuilder)
     override fun visitObjectVal(ctx: rmlParser.ObjectValContext?) =
@@ -50,6 +49,7 @@ object DataValueAstBuilder: rmlBaseVisitor<DataValue>() {
 }
 
 object SimpleValueAstBuilder: rmlBaseVisitor<SimpleValue>() {
+    override fun visitUnusedVal(ctx: rmlParser.UnusedValContext?) = UnusedValue
     override fun visitVarValue(ctx: rmlParser.VarValueContext?) = VarValue(ctx!!.LOWERCASE_ID().text)
     override fun visitIntValue(ctx: rmlParser.IntValueContext?) = IntValue(ctx!!.INT().text.toInt())
     override fun visitStringValue(ctx: rmlParser.StringValueContext?) =

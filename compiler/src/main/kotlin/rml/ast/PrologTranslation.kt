@@ -49,7 +49,6 @@ fun toProlog(dataValue: DataValue): PrologTerm = when (dataValue) {
     is ListValue -> ListTerm(dataValue.values.map(::toProlog))
     is SimpleValue -> toProlog(dataValue)
     is OrPatternValue -> throw Exception("internal error: or-patterns should be unfolded by now")
-    is UnusedValue -> VarTerm("_")
 }
 
 fun toProlog(declarations: List<TraceExpDecl>, mainTraceExp: TraceExpId): Clause {
@@ -133,5 +132,6 @@ fun toProlog(value: SimpleValue): PrologTerm = when(value) {
     is VarValue -> FunctionTerm("var", ConstantTerm(value.id.name))
     is IntValue -> IntTerm(value.number)
     is StringValue -> StringTerm(value.string)
-    is ListSimpleValue -> ListTerm(value.values.map(::toProlog))
+    is ListSimpleValue -> ListTerm(value.values.map { toProlog(it) })
+    is UnusedValue -> VarTerm("_")
 }
