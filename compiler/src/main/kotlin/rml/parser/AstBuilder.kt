@@ -46,6 +46,8 @@ object DataValueAstBuilder: rmlBaseVisitor<DataValue>() {
             ObjectValue(ctx!!.`object`().field().map(::buildFieldAst).toList())
     override fun visitListVal(ctx: rmlParser.ListValContext?) =
             ListValue(ctx!!.value()?.map { it.accept(this) } ?: emptyList())
+    override fun visitOrPatternVal(ctx: rmlParser.OrPatternValContext?) =
+            OrPatternValue(ctx!!.value(0).accept(this), ctx.value(1).accept(this))
 }
 
 object SimpleValueAstBuilder: rmlBaseVisitor<SimpleValue>() {
