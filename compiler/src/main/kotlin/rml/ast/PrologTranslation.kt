@@ -29,7 +29,7 @@ fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
     val eventDict = VarTerm("Event")
 
     return when (evtypeDecl) {
-        is DirectEvtypeDecl -> evtypeDecl.objects.map {
+        is DirectEvtypeDecl -> evtypeDecl.patternValue.unfoldOrPatterns().map {
             Clause(
                     Atom("match", eventDict, toProlog(evtypeDecl.evtype)),
                     // the dictionary specified by the pattern must be a sub-dictionary of the observed event
@@ -48,6 +48,7 @@ fun toProlog(dataValue: DataValue): PrologTerm = when (dataValue) {
             dataValue.fields.map { Pair(it.key.name, toProlog(it.value)) }.toMap())
     is ListValue -> ListTerm(dataValue.values.map(::toProlog))
     is SimpleValue -> toProlog(dataValue)
+    is OrPatternValue -> throw Exception("internal error: or-patterns should be unfolded by now")
 }
 
 fun toProlog(declarations: List<TraceExpDecl>, mainTraceExp: TraceExpId): Clause {
