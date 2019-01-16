@@ -5,11 +5,18 @@ import prolog.ast.*
 // translates from RML AST to Prolog AST
 
 fun toProlog(spec: Specification): LogicProgram {
+    // predicates to be exported
+    val traceExpressionIndicator = PredicateIndicatorTerm("trace_expression", 2)
+    val matchIndicator = PredicateIndicatorTerm("match", 2)
+
+    // only export match if there are actually match clauses
+    // SWI-Prolog will give an error otherwise)
+    val exportedPredicates = ListTerm(
+            if (spec.evtypeDecls.isEmpty()) listOf(traceExpressionIndicator)
+            else listOf(traceExpressionIndicator, matchIndicator))
+
     // export as a module
-    val moduleDeclaration = Directive(Atom("module", ConstantTerm("spec"), ListTerm(
-            PredicateIndicatorTerm("trace_expression", 2),
-            PredicateIndicatorTerm("match", 2)
-    )))
+    val moduleDeclaration = Directive(Atom("module", ConstantTerm("spec"), exportedPredicates))
 
     // import deep_subdict
     val deepSubdictImport = Directive(Atom("use_module",
