@@ -1,5 +1,5 @@
 # RML
-![overview](overview.pdf)
+![overview](overview.png)
 
 RML (Runtime Monitoring Language) is a system-agnostic formal specification language designed for runtime verification.
 In order to be completely independent from the system under monitoring, the instrumentation layer and the monitor are kept strictly separate.
