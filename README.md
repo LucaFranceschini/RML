@@ -1,4 +1,12 @@
 # RML
+![overview](overview.png)
+
+RML (Runtime Monitoring Language) is a system-agnostic formal specification language designed for runtime verification.
+In order to be completely independent from the system under monitoring, the instrumentation layer and the monitor are kept strictly separate.
+The instrumentation observes relevant events, encodes them in JSON and send them to the monitor for verification.
+
+# Usage
+
 ## Step #1: Specification
 The specification is written in RML and compiled to Prolog.
 
@@ -42,5 +50,5 @@ To verify a trace `trace.txt` against a compiled specification `spec.pl`:
 
     $ monitor/monitor.sh spec.pl trace.txt
 
-## Examples
+# Examples
 See folder `examples` for RML specifications of Node.js properties, together with programs to monitor.
