@@ -7,6 +7,7 @@
 /*                              PARAMETRIC TRACE EXPRESSIONS                                                   */
 /*    Aug 11, 2017: fixed bug with coinduction                                                                   */
 /*    March 2, 2018: test with generic trace expressions                                                    */
+/*    January, 2019: support for RML                                                                                  */
 /*******************************************************************************************/
 
 /* Transition rules */
@@ -38,7 +39,7 @@ next(T1/\T2, E, T, S) :- !,next(T1, E, T3, S1),next(T2, E, T4, S2),merge(S1, S2,
 %% version with split (really optimized?) %% important, the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coindcution
 next(var(X, T), E, T3, RetSubs) :- !,next(T, E, T1, Subs1),split(X,Subs1,XSubs,RetSubs),apply_sub_trace_exp(XSubs,T1,T2),!,(XSubs==[]->T3=var(X,T2);T3=T2).
 
-%% (strong) conditional filter
+%% (permanent) conditional filter
 %% (ET>>T1;T2) = T1/\ET* | T2/\notET*
 %% beware of this: the new symbol for conditional filter is now (_>>_;_)  (old symbol was ?/3)
 %% the new symbol for if-then-else is (_?_;_) (old one was ifelse/3)  
@@ -47,22 +48,22 @@ next((ET>>T1;T2), E, T, S) :- !,(match(E,ET,S1) -> next(T1,E,T3,S2),T4=T2,merge(
 
 %% next('?'(ET,T1,T2), E, '?'(ET,T3,T4), S) :- !,match(E,ET,S1) -> next(T1,E,T3,S2),T4=T2,merge(S1, S2, S);next(T2,E,T4,S),T3=T1.       
 
-%% (strong) filter
+%% (permanent) filter
 %% ET>>T1 = T1/\ET* | notET*
 
 next(ET>>T, E, T2, S) :- !,(match(E, ET, S1) -> next(T, E, T1, S2),merge(S1, S2, S);T1=T,S=[]),filter(ET,T1,T2).
 
 
-%% weak filter
+%% temporary filter
 %% ET>T = (eps\/notET*) * (eps\/ET:1)/\T
 
-next((ET>T), E, T1, S) :- !,match(E, ET, S1) -> next(T, E, T1, S2),merge(S1, S2, S);S=[],weak_filter(ET,T,T1).
+next((ET>T), E, T1, S) :- !,match(E, ET, S1) -> next(T, E, T1, S2),merge(S1, S2, S);S=[],temp_filter(ET,T,T1).
 
-%% weak conditional filter
+%% temporary conditional filter
 %% ET>T1;T2 = (eps\/notET*/\T2) * (eps\/ET:1)/\T1
 %% warning: to be tested yet
 
-next((ET>T1;T2), E, T, S) :- !,match(E,ET,S1) -> next(T1,E,T,S2),merge(S1, S2, S);next(T2,E,T3,S),weak_filter(ET,T1,T3,T).   
+next((ET>T1;T2), E, T, S) :- !,match(E,ET,S1) -> next(T1,E,T,S2),merge(S1, S2, S);next(T2,E,T3,S),temp_filter(ET,T1,T3,T).   
 
 %% proposal for generics
 
@@ -79,6 +80,10 @@ next(guarded(P,T1,T2),E,T,S) :- !,solve(P,S1) -> next(T1,E,T,S2), merge(S1, S2, 
 
 next((ET?T1;T2), E, T, S) :- !,
 	match(E, ET, S1) -> next(T1, E, T, S2), merge(S1, S2, S) ; next(T2, E, T, S).
+
+%% proposal for prefix closure
+
+next(clos(T1), E, T3, S) :- !,next(T1, E, T2, S),prefix_clos(T2,T3).
 
 %% match predicate
     
@@ -117,6 +122,10 @@ may_halt(guarded(P,T1,T2)) :- !,solve(P,_)->may_halt(T1);may_halt(T2).
 
 %% proposal for if-then-else
 % may_halt never holds?
+
+%% proposal for prefix closure
+
+may_halt(clos(T)) :- !,may_halt(T).
     
 %%% optimizations
 fork(0,0,0) :- !.
@@ -145,32 +154,36 @@ conj(T1, T2, T1/\T2).
 %% optimization for filters
 %% to be done: optimizations with special predefined event types any and none
 
-%% conditional (strong) filter
+%% conditional (permanent) filter
 %% (ET>>T1;T2) = T1/\ET* | T2/\notET*
 
 filter(_,1,1,1) :- !.
 filter(ET,T,1,ET>>T) :- !.
 filter(ET,T1,T2,(ET>>T1;T2)).
 	
-%% (strong) filter
+%% (permanent) filter
 %% (ET>>T1) = (ET>>T1;1) = T1/\ET* | 1/\notET* = T1/\ET* | notET* 
 
 filter(_,1,1) :- !.
 filter(ET,T,ET>>T).
 
-%% conditional weak filter
+%% conditional temporary filter
 %% ET>T1;T2 = (eps\/notET*/\T2) * (eps\/ET:1)/\T1
 
-weak_filter(_,1,1,1) :- !.
-weak_filter(ET,T,1,(ET>T)) :- !.
-weak_filter(ET,T1,T2,(ET>T1;T2)).
+temp_filter(_,1,1,1) :- !.
+temp_filter(ET,T,1,(ET>T)) :- !.
+temp_filter(ET,T1,T2,(ET>T1;T2)).
 
-%% weak filter
+%% temporary filter
 %% ET>T = (eps\/notET*) * (eps\/ET:1)/\T
 
-weak_filter(_,1,1) :- !.
-weak_filter(ET,T,(ET>T)).
+temp_filter(_,1,1) :- !.
+temp_filter(ET,T,(ET>T)).
 
+%% prefix closure
+
+prefix_clos(1,1) :- !.
+prefix_clos(T,clos(T)).
 
 %%% to be done: optimizations for filter/3 corresponding to _>>_;_
 
@@ -211,6 +224,9 @@ apply_sub_trace_exp(S, (ET? T1 ; T2), (ETs ? T1s ; T2s)) :-
 	apply_sub_event_type(S, ET, ETs),
 	apply_sub_trace_exp(S, T1, T1s),
 	apply_sub_trace_exp(S, T2, T2s).
+
+%% proposal for prefix closure
+apply_sub_trace_exp(S, clos(T1), clos(T2)) :- !,apply_sub_trace_exp(S,T1,T2).
 
 % substitution inside event types
 apply_sub_event_type([],ET,ET) :- !.
