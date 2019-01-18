@@ -1,0 +1,3 @@
+foo42 matches { foo: 42 };
+
+Main = foo42;
