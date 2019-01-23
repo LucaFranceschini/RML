@@ -37,12 +37,17 @@ next(T1*T2, E, T3, S) :- !,may_halt(T1),next(T2, E, T3, S).
 next(T1/\T2, E, T, S) :- !,next(T1, E, T3, S1),next(T2, E, T4, S2),merge(S1, S2, S),conj(T3, T4, T).
 
 %% version with split (really optimized?) %% important, the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coindcution
-next(var(X, T), E, T3, RetSubs) :- !,next(T, E, T1, Subs1),split(X,Subs1,XSubs,RetSubs),apply_sub_trace_exp(XSubs,T1,T2),!,(XSubs==[]->T3=var(X,T2);T3=T2).
+%% legacy clause for just one variable, no need to use a list in this case
+next(var(X, T), E, T3, RetSubs) :- atom(X),!,next(T, E, T1, Subs1),split([X],Subs1,XSubs,RetSubs),apply_sub_trace_exp(XSubs,T1,T2),!,(XSubs==[]->T3=var(X,T2);T3=T2).
+
+%% generalization for multiple variables to be implemented
 
 %% (permanent) conditional filter
 %% (ET>>T1;T2) = T1/\ET* | T2/\notET*
 %% beware of this: the new symbol for conditional filter is now (_>>_;_)  (old symbol was ?/3)
 %% the new symbol for if-then-else is (_?_;_) (old one was ifelse/3)  
+
+%% remark on the syntax: >> has higher priority, hence  ET>>T1;T2 is (ET>>T1);T2
 
 next((ET>>T1;T2), E, T, S) :- !,(match(E,ET,S1) -> next(T1,E,T3,S2),T4=T2,merge(S1, S2, S);next(T2,E,T4,S),T3=T1),filter(ET,T3,T4,T).   
 
@@ -54,21 +59,26 @@ next((ET>>T1;T2), E, T, S) :- !,(match(E,ET,S1) -> next(T1,E,T3,S2),T4=T2,merge(
 next(ET>>T, E, T2, S) :- !,(match(E, ET, S1) -> next(T, E, T1, S2),merge(S1, S2, S);T1=T,S=[]),filter(ET,T1,T2).
 
 
+%% temporary conditional filter
+%% ET>T1;T2 = (eps\/notET*/\T2) * (eps\/ET:1)/\T1
+%% warning: to be tested yet
+
+%% remark on the syntax: > has higher priority, hence  ET>T1;T2 is (ET>T1);T2
+
+next((ET>T1;T2), E, T, S) :- !,match(E,ET,S1) -> next(T1,E,T,S2),merge(S1, S2, S);next(T2,E,T3,S),temp_filter(ET,T1,T3,T).   
+
+
 %% temporary filter
 %% ET>T = (eps\/notET*) * (eps\/ET:1)/\T
 
 next((ET>T), E, T1, S) :- !,match(E, ET, S1) -> next(T, E, T1, S2),merge(S1, S2, S);S=[],temp_filter(ET,T,T1).
 
-%% temporary conditional filter
-%% ET>T1;T2 = (eps\/notET*/\T2) * (eps\/ET:1)/\T1
-%% warning: to be tested yet
-
-next((ET>T1;T2), E, T, S) :- !,match(E,ET,S1) -> next(T1,E,T,S2),merge(S1, S2, S);next(T2,E,T3,S),temp_filter(ET,T1,T3,T).   
 
 %% proposal for generics
 
-next(app(gen(X,T1),Arg), E, T3, S) :- !,Val is Arg, apply_sub_trace_exp([X=Val], T1, T2),!,next(T2, E, T3, S). %% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coindcution
-    
+%% legacy clause for just one variable, no need to use a list in this case
+next(app(gen(X,T1),Arg), E, T3, S) :- atom(X),!,Val is Arg, apply_sub_trace_exp([X=Val], T1, T2),!,next(T2, E, T3, S). %% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coindcution
+
 
 %% proposal for guarded trace expressions
 
@@ -105,11 +115,10 @@ may_halt(T1/\T2) :- !, may_halt(T1), may_halt(T2).
 may_halt(var(_, T)) :- !, may_halt(T).
 may_halt((_>>T1;T2)) :- !, may_halt(T1), may_halt(T2).
 may_halt(_>>T) :- !, may_halt(T).
-%% ET>T1;T2 = (eps\/notET*/\T2) * (eps\/ET:1)/\T1
-may_halt((_>T;_)) :- !, may_halt(T).
 %% ET>T = (eps\/notET*) * (eps\/ET:eps)/\T
 may_halt((_>T)) :- !, may_halt(T).
-
+%% ET>T1;T2 = (eps\/notET*/\T2) * (eps\/ET:1)/\T1
+may_halt((_>T;_)) :- !, may_halt(T).
 
 
 %% proposal for generics
@@ -125,7 +134,7 @@ may_halt(guarded(P,T1,T2)) :- !,solve(P,_)->may_halt(T1);may_halt(T2).
 
 %% proposal for prefix closure
 
-may_halt(clos(T)) :- !,may_halt(T).
+may_halt(clos(_)).
     
 %%% optimizations
 fork(0,0,0) :- !.
@@ -190,11 +199,24 @@ prefix_clos(T,clos(T)).
 %%% substitutions
 
 % split into a singleton/empty substitution and the rest
-split(_,[],[],[]).
-split(X,[Y=V|S],[Y=V],S) :- X==Y,!.
-split(X,[A|S],S1,[A|S2]) :- split(X,S,S1,S2).
+%% split(_,[],[],[]).
+%% split(X,[Y=V|S],[Y=V],S) :- X==Y,!.
+%% split(X,[A|S],S1,[A|S2]) :- split(X,S,S1,S2).
 
-% substitution application (only singleton or empty substitutions) 
+% generalized split 
+split(_,[],[],[]) :- !.
+
+split(Vs,S,S_in,S_out) :- acc_split(Vs,S,[],S_in,[],S_out). %% Vs: list of distinct variables, S: initial substitution, S_in: part of S including vars in Vs, S_out=S\S_in
+
+%% auxiliary predicate with accumulators
+acc_split(_,[],S_in,S_in,S_out,S_out).
+acc_split(Vs,[X=V|S],Acc_in,S_in,Acc_out,S_out) :- %% memberchk should work, substitutions should be always ground
+    memberchk(X,Vs) -> acc_split(Vs,S,[X=V|Acc_in],S_in,Acc_out,S_out);acc_split(Vs,S,Acc_in,S_in,[X=V|Acc_out],S_out). 
+
+% auxiliary predicate to check whether a variable is in the domain of a substitution
+in_dom(X,S) :- memberchk(X=_,S). %% memberchk should work, substitutions should be always ground
+    
+% substitution application generalized to all (finite) substitutions, not just singleton and empty substitutions 
 apply_sub_trace_exp([],T,T) :- !.  %% optimization
 apply_sub_trace_exp(_,1,1) :- !.
 apply_sub_trace_exp(_,0,0) :- !.
@@ -204,7 +226,8 @@ apply_sub_trace_exp(S,T1\/T2,T3\/T4) :- !,apply_sub_trace_exp(S,T1,T3),apply_sub
 apply_sub_trace_exp(S,T1|T2,T3|T4) :- !,apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
 apply_sub_trace_exp(S,T1*T2,T3*T4) :- !,apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
 apply_sub_trace_exp(S,T1/\T2,T3/\T4) :- !,apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
-apply_sub_trace_exp([Y=V],var(X, T1),var(X, T2)) :- Y==X -> T2=T1;apply_sub_trace_exp([Y=V],T1,T2).
+%apply_sub_trace_exp([Y=V],var(X, T1),var(X, T2)) :- Y==X -> T2=T1;apply_sub_trace_exp([Y=V],T1,T2).
+apply_sub_trace_exp(S,var(X, T1),var(X, T2)) :- in_dom(X,S) -> T2=T1;apply_sub_trace_exp(S,T1,T2).
 apply_sub_trace_exp(S,(ET1>>T1;T2),(ET2>>T3;T4)) :- !,apply_sub_event_type(S,ET1,ET2),apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
 apply_sub_trace_exp(S,ET1>>T1,ET2>>T2) :- !,apply_sub_event_type(S,ET1,ET2),apply_sub_trace_exp(S,T1,T2).
 apply_sub_trace_exp(S,(ET1>T1;T2),(ET2>T3;T4)) :- !,apply_sub_event_type(S,ET1,ET2),apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
@@ -212,7 +235,11 @@ apply_sub_trace_exp(S,(ET1>T1),(ET2>T2)) :- !,apply_sub_event_type(S,ET1,ET2),ap
 
 %% proposal for generics
 
-apply_sub_trace_exp([Y=V],app(gen(X,T1),Arg1),app(gen(X,T2),Arg2)) :- !,apply_sub_arg([Y=V],Arg1,Arg2),(Y==X -> T2=T1;apply_sub_trace_exp([Y=V],T1,T2)).
+% apply_sub_trace_exp([Y=V],app(gen(X,T1),Arg1),app(gen(X,T2),Arg2)) :- !,apply_sub_arg([Y=V],Arg1,Arg2),(Y==X -> T2=T1;apply_sub_trace_exp([Y=V],T1,T2)).
+
+%% legacy clause for just one variable, no need to use a list in this case
+apply_sub_trace_exp(S,app(gen(X,T1),Arg1),app(gen(X,T2),Arg2)) :-
+    atom(X),!,apply_sub_arg(S,Arg1,Arg2),split([X],S,_Sx,Srest),apply_sub_trace_exp(Srest,T1,T2).
 
 %% proposal for guarded trace expressions
 
@@ -230,7 +257,8 @@ apply_sub_trace_exp(S, clos(T1), clos(T2)) :- !,apply_sub_trace_exp(S,T1,T2).
 
 % substitution inside event types
 apply_sub_event_type([],ET,ET) :- !.
-apply_sub_event_type([X=V],var(Y),ET) :- !,(Y==X -> ET=V;ET=var(Y)).
+%%apply_sub_event_type([X=V],var(Y),ET) :- !,(Y==X -> ET=V;ET=var(Y)).
+apply_sub_event_type(S,var(X),ET) :- !,(Y==X -> ET=V;ET=var(Y)).
 apply_sub_event_type(S,ET1,ET2) :- !,ET1=..[F|Args1],apply_sub_event_type_list(S,Args1,Args2),ET2=..[F|Args2].
 
 apply_sub_event_type_list(_,[],[]) :- !.
