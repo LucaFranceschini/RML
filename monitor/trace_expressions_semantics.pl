@@ -77,7 +77,7 @@ next((ET>T), E, T1, S) :- !,match(E, ET, S1) -> next(T, E, T1, S2),merge(S1, S2,
 %% proposal for generics
 
 %% legacy clause for just one variable, no need to use a list in this case
-next(app(gen(X,T1),Arg), E, T3, S) :- atom(X),!,Val is Arg, apply_sub_trace_exp([X=Val], T1, T2),!,next(T2, E, T3, S). %% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coindcution
+next(app(gen(X,T1),Arg), E, T3, S) :- atom(X),!,eval(Arg,Val),apply_sub_trace_exp([X=Val], T1, T2),!,next(T2, E, T3, S). %% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coindcution
 
 
 %% proposal for guarded trace expressions
@@ -94,6 +94,15 @@ next((ET?T1;T2), E, T, S) :- !,
 %% proposal for prefix closure
 
 next(clos(T1), E, T3, S) :- !,next(T1, E, T2, S),prefix_clos(T2,T3).
+
+
+%% eval predicates for arguments of generics: for the moment only number/boolean expressions, strings and atoms are supported
+num_exp(Exp) :- Exp=..[Op|_],memberchk(Op,[+,-,/,*]).
+
+eval(Exp,Exp) :- (atom(Exp);number(Exp);string(Exp)),!.
+eval(Exp,Val) :- num_exp(Exp),!,Val is Exp.
+eval(Exp,Val) :- Exp -> Val=true;Val=false. %% assumes it is 		 
+
 
 %% match predicate
     
@@ -122,8 +131,10 @@ may_halt((_>T;_)) :- !, may_halt(T).
 
 
 %% proposal for generics
+%may_halt(app(gen(X,T1),Arg)) :- !, Val is Arg, apply_sub_trace_exp([X=Val],T1,T2),!,may_halt(T2). %% usual comment for the cut after apply_sub_trace_exp   
 
-may_halt(app(gen(X,T1),Arg)) :- !,apply_sub_trace_exp([X=Arg],T1,T2),!,may_halt(T2). %% usual comment for the cut after apply_sub_trace_exp   
+%% legacy clause for just one variable, no need to use a list in this case
+may_halt(app(gen(X,T1),Arg)) :- atom(X),!,eval(Arg,Val),apply_sub_trace_exp([X=Val],T1,T2),!,may_halt(T2). %% usual comment for the cut after apply_sub_trace_exp   
 
 %% proposal for guarded trace expressions
 
@@ -213,8 +224,11 @@ acc_split(_,[],S_in,S_in,S_out,S_out).
 acc_split(Vs,[X=V|S],Acc_in,S_in,Acc_out,S_out) :- %% memberchk should work, substitutions should be always ground
     memberchk(X,Vs) -> acc_split(Vs,S,[X=V|Acc_in],S_in,Acc_out,S_out);acc_split(Vs,S,Acc_in,S_in,[X=V|Acc_out],S_out). 
 
+% auxiliary predicate to check whether substitution S maps variable X into value V 
+apply(S,X,V) :- memberchk(X=V,S). %% memberchk should work, substitutions should be always ground
+
 % auxiliary predicate to check whether a variable is in the domain of a substitution
-in_dom(X,S) :- memberchk(X=_,S). %% memberchk should work, substitutions should be always ground
+in_dom(X,S) :- apply(S,X,_).
     
 % substitution application generalized to all (finite) substitutions, not just singleton and empty substitutions 
 apply_sub_trace_exp([],T,T) :- !.  %% optimization
@@ -258,7 +272,7 @@ apply_sub_trace_exp(S, clos(T1), clos(T2)) :- !,apply_sub_trace_exp(S,T1,T2).
 % substitution inside event types
 apply_sub_event_type([],ET,ET) :- !.
 %%apply_sub_event_type([X=V],var(Y),ET) :- !,(Y==X -> ET=V;ET=var(Y)).
-apply_sub_event_type(S,var(X),ET) :- !,(Y==X -> ET=V;ET=var(Y)).
+apply_sub_event_type(S,var(X),ET) :- !,(apply(S,X,V) -> ET=V;ET=var(X)).
 apply_sub_event_type(S,ET1,ET2) :- !,ET1=..[F|Args1],apply_sub_event_type_list(S,Args1,Args2),ET2=..[F|Args2].
 
 apply_sub_event_type_list(_,[],[]) :- !.
