@@ -1,0 +1,11 @@
+#! /bin/bash
+DIR=../..
+PAUSE=1
+gnome-terminal -- /bin/bash -c "swipl -p node=$DIR/prolog $DIR/prolog/server.pl  --  $DIR/examples/patterns/spec06.pl $2"
+sleep $PAUSE
+### instrumentation
+node $DIR/node_modules/jalangi2/src/js/commands/jalangi.js --initParam func_post:true --initParam names:[\"enq\",\"deq\"] --inlineIID --inlineSource --analysis $DIR/jalangi/functionInvocationAnalysis.js generator06E5.js $1 
+sleep $PAUSE
+pkill swipl
+
+
