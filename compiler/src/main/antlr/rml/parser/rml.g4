@@ -5,8 +5,8 @@ grammar rml;
 }
 
 spec: evtypeDecl* texpDecl+ ;
-evtypeDecl: evtype 'matches' evtype ('|' evtype)* ';' # derivedEvtypeDecl
-          | evtype 'matches' value ';' # directEvtypeDecl
+evtypeDecl: evtype NOT? 'matches' evtype ('|' evtype)* ';' # derivedEvtypeDecl
+          | evtype NOT? 'matches' value ';' # directEvtypeDecl
           ;
 object: '{' field (',' field)* '}' ;
 field: LOWERCASE_ID ':' value ;
@@ -38,6 +38,8 @@ vars: LOWERCASE_ID (',' LOWERCASE_ID)*;
 evtype: LOWERCASE_ID ('(' simpleValues? ')')? ;
 simpleValues: simpleValue (',' simpleValue)* ;
 
+// put keywords before identifiers
+NOT: 'not' ;
 UPPERCASE_ID: [A-Z] ID_CHAR* ;
 LOWERCASE_ID: [a-z] ID_CHAR* ;
 fragment ID_CHAR: [a-zA-Z0-9_-] ;

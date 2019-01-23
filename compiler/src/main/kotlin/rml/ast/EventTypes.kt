@@ -97,8 +97,10 @@ data class OrPatternValue(val left: DataValue, val right: DataValue): DataValue(
     override fun unfoldOrPatterns() = left.unfoldOrPatterns().union(right.unfoldOrPatterns())
 }
 
-sealed class EvtypeDecl(open val evtype: EventType)
-data class DirectEvtypeDecl(override val evtype: EventType, val patternValue: DataValue): EvtypeDecl(evtype) {
+sealed class EvtypeDecl(open val evtype: EventType, open val negated: Boolean = false)
+data class DirectEvtypeDecl(override val evtype: EventType,
+                            val patternValue: DataValue,
+                            override val negated: Boolean = false): EvtypeDecl(evtype, negated) {
     init {
         require(checkOnlyOrAndObjects(patternValue)) {
             "(or-pattern of) objects expected at top-level event type declaration"
@@ -111,7 +113,9 @@ data class DirectEvtypeDecl(override val evtype: EventType, val patternValue: Da
         else -> false
     }
 }
-data class DerivedEvtypeDecl(override val evtype: EventType, val parents: List<EventType>): EvtypeDecl(evtype) {
+data class DerivedEvtypeDecl(override val evtype: EventType,
+                             val parents: List<EventType>,
+                             override val negated: Boolean = false): EvtypeDecl(evtype, negated) {
     init {
         require(parents.isNotEmpty()) { "at least one parent expected" }
     }

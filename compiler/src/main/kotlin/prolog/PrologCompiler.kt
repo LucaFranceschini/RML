@@ -79,6 +79,9 @@ class PrologCompiler(private val writer: BufferedWriter) {
     }
 
     private fun compile(atom: Atom) {
+        if (atom.negated)
+            writer.write("not(")
+
         val symbol = atom.symbol.name
 
         // print unification as infix
@@ -100,6 +103,9 @@ class PrologCompiler(private val writer: BufferedWriter) {
                 writer.write(")")
             }
         }
+
+        if (atom.negated)
+                writer.write(")")
     }
 
     private fun compile(clause: Clause) {
