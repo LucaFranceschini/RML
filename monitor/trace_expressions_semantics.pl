@@ -125,7 +125,7 @@ may_halt(guarded(P,T1,T2)) :- !,solve(P,_)->may_halt(T1);may_halt(T2).
 
 %% proposal for prefix closure
 
-may_halt(clos(T)) :- !,may_halt(T).
+may_halt(clos(_)).
     
 %%% optimizations
 fork(0,0,0) :- !.
