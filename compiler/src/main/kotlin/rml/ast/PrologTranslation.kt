@@ -40,12 +40,12 @@ fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
             Clause(
                     Atom("match", eventDict, toProlog(evtypeDecl.evtype, isMatchClause = true)),
                     // the dictionary specified by the pattern must be a sub-dictionary of the observed event
-                    Atom("deep_subdict", toProlog(it, isMatchClause = true), eventDict))
+                    Atom("deep_subdict", evtypeDecl.negated, toProlog(it, isMatchClause = true), eventDict))
         }
         is DerivedEvtypeDecl -> evtypeDecl.parents.map {
             Clause(
                     Atom("match", eventDict, toProlog(evtypeDecl.evtype)),
-                    Atom("match", eventDict, toProlog(it)))
+                    Atom("match", evtypeDecl.negated, eventDict, toProlog(it)))
         }
     }
 }

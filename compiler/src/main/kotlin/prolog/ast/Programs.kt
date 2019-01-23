@@ -1,6 +1,8 @@
 package prolog.ast
 
-data class Atom(val symbol: PredicateSymbol, val args: List<PrologTerm>) {
+data class Atom(val symbol: PredicateSymbol,
+                val negated: Boolean = false,
+                val args: List<PrologTerm>) {
     val arity = args.size
 
     data class PredicateSymbol(val name: String) {
@@ -10,7 +12,11 @@ data class Atom(val symbol: PredicateSymbol, val args: List<PrologTerm>) {
         }
     }
 
-    constructor(symbol: String, vararg args: PrologTerm): this(PredicateSymbol(symbol), args.toList())
+    constructor(symbol: String, vararg args: PrologTerm):
+            this(PredicateSymbol(symbol), false, args.toList())
+
+    constructor(symbol: String, negated: Boolean, vararg args: PrologTerm):
+            this(PredicateSymbol(symbol), negated, args.toList())
 }
 
 data class Clause(val head: Atom, val body: List<Atom>) {
