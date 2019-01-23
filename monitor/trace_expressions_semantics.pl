@@ -258,7 +258,7 @@ apply_sub_trace_exp(S, clos(T1), clos(T2)) :- !,apply_sub_trace_exp(S,T1,T2).
 % substitution inside event types
 apply_sub_event_type([],ET,ET) :- !.
 %%apply_sub_event_type([X=V],var(Y),ET) :- !,(Y==X -> ET=V;ET=var(Y)).
-apply_sub_event_type(S,var(X),ET) :- !,(Y==X -> ET=V;ET=var(Y)).
+apply_sub_event_type(S,var(X),ET) :- !,(member(X=V, S)-> ET=V;ET=var(X)).
 apply_sub_event_type(S,ET1,ET2) :- !,ET1=..[F|Args1],apply_sub_event_type_list(S,Args1,Args2),ET2=..[F|Args2].
 
 apply_sub_event_type_list(_,[],[]) :- !.
