@@ -19,7 +19,7 @@ ellipsis: '...' ;
 simpleValue: STRING # stringValue
            | INT # intValue
            | LOWERCASE_ID # varValue
-           | '[' simpleValues? ellipsis? ']' # listValue
+           | '[' simpleValues? (',' ellipsis)? ']' # listValue
            | '_' # unusedVal
            ;
 texpDecl: UPPERCASE_ID ('<' vars '>')? '=' texp ';' ;
