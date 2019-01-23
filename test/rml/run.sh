@@ -36,8 +36,8 @@ do
     
     # bad.log should be rejected
     echo -n "$caseName-bad... "
-    "$monitor" spec.pl "$caseDir"/bad.log --silent
-    if [[ $? == 1 ]]; then
+    "$monitor" spec.pl "$caseDir"/bad.log --silent --reject
+    if [[ $? == 0 ]]; then
     	echo "done"
     else
     	echo "FAIL"

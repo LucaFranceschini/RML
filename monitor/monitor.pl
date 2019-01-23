@@ -7,25 +7,40 @@
 %% - a log file containing the trace
 %% optional
 %% - --silent
+%% - --reject
 
 main :-
-	current_prolog_flag(argv, [SpecFile, TraceFile|_]),
-	use_module(SpecFile),
-	trace_expression(_, TraceExp),
-	read_trace(TraceFile, Events),
-	(verify(Events, TraceExp, 1) ->
+	current_prolog_flag(argv, [SpecFile, TraceFile | _]), !,
+	catch(
+		(use_module(SpecFile), trace_expression(_, TraceExp)),
+		_,
+		(write('File not found\n'), halt(1))),
+	catch(
+		read_trace(TraceFile, Events),
+		_,
+		(write('Illegal JSON object\n'), halt(1))),
+	(verify(Events, TraceExp, 1) -> Accepted=true ; Accepted=false),
+	(reject -> negate(Accepted, Result) ; Result=Accepted),
+	(Result=true ->
 		(log('Execution terminated correctly\n'), halt(0)) ;
 		(log('Trace did not match specification\n'), halt(1))).
 
 main :-
-	(current_prolog_flag(argv, [_, _])
-	 -> write('internal error\n')
-	 ;  write('expected args: <spec file> <trace file>\n')
-	),
+	write('expected args: <spec file> <trace file>\n'),
 	halt(1).
 
+negate(false, true).
+negate(true, false).
+
 % true if --silent flag was given
-silent :- current_prolog_flag(argv, [_, _, '--silent']).
+silent :-
+	current_prolog_flag(argv, [_, _ | Arguments]),
+	member('--silent', Arguments).
+
+% true if --reject flag was given
+reject :-
+	current_prolog_flag(argv, [_, _ | Arguments]),
+	member('--reject', Arguments).
 
 % only print if not in silent mode
 log(X) :- silent -> true ; write(X).
