@@ -5,7 +5,7 @@ data class Specification(val evtypeDecls: List<EvtypeDecl>, val traceExpDecls: L
     init {
         require(traceExpDecls.isNotEmpty()) { "specification must contain at least one trace expression" }
         require(traceExpDecls.any { it.id == mainTraceExp }) { "main trace expression not declared" }
-        require(traceExpDecls.distinct() == traceExpDecls) { "trace expression declared multiple times" }
+        require(traceExpDecls.map { it.id }.distinct() == traceExpDecls) { "trace expression declared multiple times" }
     }
 }
 
