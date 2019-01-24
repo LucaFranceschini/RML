@@ -17,6 +17,8 @@ data class Atom(val symbol: PredicateSymbol,
 
     constructor(symbol: String, negated: Boolean, vararg args: PrologTerm):
             this(PredicateSymbol(symbol), negated, args.toList())
+
+    fun negate() = Atom(symbol, true, args)
 }
 
 data class Clause(val head: Atom, val body: List<Atom>) {

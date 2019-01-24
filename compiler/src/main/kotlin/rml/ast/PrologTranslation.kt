@@ -31,23 +31,31 @@ fun toProlog(spec: Specification): LogicProgram {
             matchClauses + traceExpClause)
 }
 
-// build a match clause for each pattern
+// build a match clause for each pattern if positive, or just one if negated
 fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
     val eventDict = VarTerm("Event")
 
-    return when (evtypeDecl) {
+    // unfold patterns and collect atoms
+    val patternAtoms: List<Atom> = when (evtypeDecl) {
         is DirectEvtypeDecl -> evtypeDecl.patternValue.unfoldOrPatterns().map {
-            Clause(
-                    Atom("match", eventDict, toProlog(evtypeDecl.evtype, isMatchClause = true)),
-                    // the dictionary specified by the pattern must be a sub-dictionary of the observed event
-                    Atom("deep_subdict", evtypeDecl.negated, toProlog(it, isMatchClause = true), eventDict))
+            Atom("deep_subdict", toProlog(it, isMatchClause = true), eventDict)
         }
         is DerivedEvtypeDecl -> evtypeDecl.parents.map {
-            Clause(
-                    Atom("match", eventDict, toProlog(evtypeDecl.evtype)),
-                    Atom("match", evtypeDecl.negated, eventDict, toProlog(it)))
+            Atom("match", eventDict, toProlog(it))
         }
     }
+
+    // match clause head is always the same
+    val head = Atom("match", eventDict, toProlog(evtypeDecl.evtype, isMatchClause = true))
+
+    // if it's negated just make one match clause, applying negation to all body atoms
+    if (evtypeDecl.negated) return listOf(Clause(
+            head,
+            patternAtoms.map(Atom::negate)
+    ))
+
+    // if it's positive produce a match clause for each pattern
+    return patternAtoms.map { Clause(head, listOf(it)) }
 }
 
 fun toProlog(dataValue: DataValue, isMatchClause: Boolean = false): PrologTerm = when (dataValue) {

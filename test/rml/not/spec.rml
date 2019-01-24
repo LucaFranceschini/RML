@@ -1,3 +1,3 @@
-notFoo not matches {foo: _};
+notFooBar not matches {foo: _} | {bar: _};
 
-Main = notFoo;
+Main = notFooBar;
