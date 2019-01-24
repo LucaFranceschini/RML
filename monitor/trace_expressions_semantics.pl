@@ -77,8 +77,10 @@ next((ET>T), E, T1, S) :- !,match(E, ET, S1) -> next(T, E, T1, S2),merge(S1, S2,
 %% proposal for generics
 
 %% legacy clause for just one variable, no need to use a list in this case
-next(app(gen(X,T1),Arg), E, T3, S) :- atom(X),!,eval(Arg,Val),apply_sub_trace_exp([X=Val], T1, T2),!,next(T2, E, T3, S). %% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coindcution
+next(app(gen(X,T1),Arg), E, T3, S) :- atom(X),!,eval(Arg,Val),apply_sub_trace_exp([X=Val], T1, T2),!,next(T2, E, T3, S). %% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coinduction
 
+%% general clause
+next(app(gen(Vars,T1),Args), E, T3, S) :- eval_exps(Vars,Args,Sub),apply_sub_trace_exp(Sub,T1,T2),!,next(T2, E, T3, S).%% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coinduction
 
 %% proposal for guarded trace expressions
 
@@ -103,6 +105,12 @@ eval(Exp,Exp) :- (atom(Exp);number(Exp);string(Exp)),!.
 eval(Exp,Val) :- num_exp(Exp),!,Val is Exp.
 eval(Exp,Val) :- Exp -> Val=true;Val=false. %% assumes it is 		 
 
+%% evaluates multiple expressions (to be read: arguments of generics) and assigns values to multiple variables (to be read: parameters of generics)
+%% and computes a corresponding substitution
+eval_exps(Vars,Exps,Sub) :- acc_eval_exps(Vars,Exps,[],Sub). 
+
+acc_eval_exps([],[],Sub,Sub).
+acc_eval_exps([X|Vars],[Exp|Exps],Acc,Sub) :- eval(Exp,Val),acc_eval_exps(Vars,Exps,[X=Val|Acc],Sub).
 
 %% match predicate
     
@@ -135,6 +143,9 @@ may_halt((_>T;_)) :- !, may_halt(T).
 
 %% legacy clause for just one variable, no need to use a list in this case
 may_halt(app(gen(X,T1),Arg)) :- atom(X),!,eval(Arg,Val),apply_sub_trace_exp([X=Val],T1,T2),!,may_halt(T2). %% usual comment for the cut after apply_sub_trace_exp   
+
+%% generic clause
+may_halt(app(gen(Vars,T1),Args)) :- eval_exps(Vars,Args,Subs),apply_sub_trace_exp(Subs,T1,T2),!,may_halt(T2). %% usual comment for the cut after apply_su
 
 %% proposal for guarded trace expressions
 
@@ -254,6 +265,10 @@ apply_sub_trace_exp(S,(ET1>T1),(ET2>T2)) :- !,apply_sub_event_type(S,ET1,ET2),ap
 %% legacy clause for just one variable, no need to use a list in this case
 apply_sub_trace_exp(S,app(gen(X,T1),Arg1),app(gen(X,T2),Arg2)) :-
     atom(X),!,apply_sub_arg(S,Arg1,Arg2),split([X],S,_Sx,Srest),apply_sub_trace_exp(Srest,T1,T2).
+
+%% generic clause
+apply_sub_trace_exp(S,app(gen(Vars,T1),Args1),app(gen(Vars,T2),Args2)) :-
+    apply_sub_arg(S,Args1,Args2),split(Vars,S,_Svars,Srest),apply_sub_trace_exp(Srest,T1,T2).
 
 %% proposal for guarded trace expressions
 
