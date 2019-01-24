@@ -40,6 +40,10 @@ next(T1/\T2, E, T, S) :- !,next(T1, E, T3, S1),next(T2, E, T4, S2),merge(S1, S2,
 %% legacy clause for just one variable, no need to use a list in this case
 next(var(X, T), E, T3, RetSubs) :- atom(X),!,next(T, E, T1, Subs1),split([X],Subs1,XSubs,RetSubs),apply_sub_trace_exp(XSubs,T1,T2),!,(XSubs==[]->T3=var(X,T2);T3=T2).
 
+%% general clause
+next(var(Vars, T), E, T3, RetSubs) :-
+    next(T, E, T1, Subs),split(Vars,Subs,SubsVars,RetSubs),apply_sub_trace_exp(SubsVars,T1,T2),unbound(Vars,Subs,UVars),!,(UVars==[]->T3=T2;T3=var(UVars,T2)).
+
 %% generalization for multiple variables to be implemented
 
 %% (permanent) conditional filter
@@ -239,8 +243,12 @@ acc_split(Vs,[X=V|S],Acc_in,S_in,Acc_out,S_out) :- %% memberchk should work, sub
 apply(S,X,V) :- memberchk(X=V,S). %% memberchk should work, substitutions should be always ground
 
 % auxiliary predicate to check whether a variable is in the domain of a substitution
-in_dom(X,S) :- apply(S,X,_).
-    
+% in_dom(X,S) :- apply(S,X,_). %% superseded by split
+
+% unbound vars
+unbound(Vars,[],Vars).
+unbound(Vars,[X=_|Subs],Vars3) :- delete(Vars,X,Vars2),!,unbound(Vars2,Subs,Vars3).
+
 % substitution application generalized to all (finite) substitutions, not just singleton and empty substitutions 
 apply_sub_trace_exp([],T,T) :- !.  %% optimization
 apply_sub_trace_exp(_,1,1) :- !.
@@ -251,8 +259,10 @@ apply_sub_trace_exp(S,T1\/T2,T3\/T4) :- !,apply_sub_trace_exp(S,T1,T3),apply_sub
 apply_sub_trace_exp(S,T1|T2,T3|T4) :- !,apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
 apply_sub_trace_exp(S,T1*T2,T3*T4) :- !,apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
 apply_sub_trace_exp(S,T1/\T2,T3/\T4) :- !,apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
-%apply_sub_trace_exp([Y=V],var(X, T1),var(X, T2)) :- Y==X -> T2=T1;apply_sub_trace_exp([Y=V],T1,T2).
-apply_sub_trace_exp(S,var(X, T1),var(X, T2)) :- in_dom(X,S) -> T2=T1;apply_sub_trace_exp(S,T1,T2).
+%% legacy clause for just one variable, no need to use a list in this case
+apply_sub_trace_exp(S,var(X, T1),var(X, T2)) :- atom(X),!,split([X],S,_Sx,Srest),apply_sub_trace_exp(Srest,T1,T2).
+%% general clause 
+apply_sub_trace_exp(S,var(Vars, T1),var(Vars, T2)) :- split(Vars,S,_Svars,Srest),apply_sub_trace_exp(Srest,T1,T2).
 apply_sub_trace_exp(S,(ET1>>T1;T2),(ET2>>T3;T4)) :- !,apply_sub_event_type(S,ET1,ET2),apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
 apply_sub_trace_exp(S,ET1>>T1,ET2>>T2) :- !,apply_sub_event_type(S,ET1,ET2),apply_sub_trace_exp(S,T1,T2).
 apply_sub_trace_exp(S,(ET1>T1;T2),(ET2>T3;T4)) :- !,apply_sub_event_type(S,ET1,ET2),apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
