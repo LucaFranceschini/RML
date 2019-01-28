@@ -6,4 +6,4 @@ match(Event, nonStruct) :- deep_subdict(_{'name':"contains",'event':"func_pre"},
 match(Event, nonStruct) :- deep_subdict(_{'name':"containsAll",'event':"func_pre"}, Event).
 match(Event, notIt) :- not(match(Event, hasNext(_))), not(match(Event, next)).
 match(Event, notCol) :- not(match(Event, nonStruct)), not(match(Event, hasNext(var(false)))).
-trace_expression('Collection', Collection) :- Collection=(nonStruct:(hasNext(var(false)):eps)), Iterator=(hasNext(var(false)):(rop:(hasNext(var(true)):(next:Iterator)))), Main=((Iterator*(huffleop:(notIt:eps)))*(ndop:(Collection*(huffleop:(notCol:eps))))).
+trace_expression('Collection', Collection) :- Collection=(nonStruct:(hasNext(var(false)):eps)), Iterator=((hasNext(var(false)):eps)\/(hasNext(var(true)):(next:Iterator))), Main=((Iterator|(notIt:eps))/\(Collection|(notCol:eps))).
