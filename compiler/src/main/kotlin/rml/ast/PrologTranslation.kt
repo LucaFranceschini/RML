@@ -80,7 +80,7 @@ fun toProlog(declaration: TraceExpDecl): Atom {
         throw Exception("multiple generics not yet supported")
 
     val varTerm = VarTerm(declaration.id.name)
-    var body = toProlog(declaration.traceExp, topLevel = true)
+    var body = toProlog(declaration.traceExp, outsideConcatenation = true)
 
     if (declaration.vars.isNotEmpty()) {
         val paramName = FunctionTerm(declaration.vars.first().name)
@@ -90,29 +90,29 @@ fun toProlog(declaration: TraceExpDecl): Atom {
     return Atom("=", varTerm, body)
 }
 
-fun toProlog(traceExp: TraceExp, topLevel: Boolean = false): PrologTerm = when(traceExp) {
+fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologTerm = when(traceExp) {
     EmptyTraceExp -> FunctionTerm("eps")
-    is BlockTraceExp -> toProlog(traceExp)
+    is BlockTraceExp -> toProlog(traceExp, outsideConcatenation)
     is TraceExpVar -> toProlog(traceExp)
     is EventTypeTraceExp ->
-        if (topLevel) FunctionTerm(":", toProlog(traceExp.eventType), toProlog(EmptyTraceExp))
+        if (outsideConcatenation) FunctionTerm(":", toProlog(traceExp.eventType), toProlog(EmptyTraceExp))
         else toProlog(traceExp.eventType)
     is ConcatTraceExp -> toProlog(traceExp)
-    is AndTraceExp -> toProlog(traceExp, "/\\")
-    is OrTraceExp -> toProlog(traceExp, "\\/")
-    is ShuffleTraceExp -> toProlog(traceExp, "|")
+    is AndTraceExp -> toProlog(traceExp, "/\\", outsideConcatenation)
+    is OrTraceExp -> toProlog(traceExp, "\\/", outsideConcatenation)
+    is ShuffleTraceExp -> toProlog(traceExp, "|", outsideConcatenation)
     is FilterTraceExp -> FunctionTerm(">>",
             toProlog(traceExp.evtype),
-            toProlog(traceExp.traceExp))
+            toProlog(traceExp.traceExp, outsideConcatenation))
 }
 
-fun toProlog(block: BlockTraceExp): PrologTerm {
+fun toProlog(block: BlockTraceExp, outsideConcatenation: Boolean): PrologTerm {
     // handle one variable at a time
     val firstVar = block.declaredVars.first()
     val otherVars = block.declaredVars.drop(1)
     val innerBlock: PrologTerm =
-            if (otherVars.isEmpty()) toProlog(block.traceExp)
-            else toProlog(BlockTraceExp(otherVars, block.traceExp))
+            if (otherVars.isEmpty()) toProlog(block.traceExp, outsideConcatenation)
+            else toProlog(BlockTraceExp(otherVars, block.traceExp), outsideConcatenation)
     return FunctionTerm("var", FunctionTerm(firstVar.name), innerBlock)
 }
 
@@ -150,8 +150,10 @@ fun toProlog(eventType: EventType, isMatchClause: Boolean = false) = FunctionTer
         eventType.id.name,
         eventType.dataValues.map { toProlog(it, isMatchClause) }.toList())
 
-fun toProlog(traceExp: BinaryTraceExp, opSymbol: String) =
-        FunctionTerm(opSymbol, toProlog(traceExp.left), toProlog(traceExp.right))
+fun toProlog(traceExp: BinaryTraceExp, opSymbol: String, outsideConcatenation: Boolean) = FunctionTerm(
+        opSymbol,
+        toProlog(traceExp.left, outsideConcatenation),
+        toProlog(traceExp.right, outsideConcatenation))
 
 fun toProlog(traceExp: TraceExpVar): PrologTerm {
     val variable = VarTerm(traceExp.id.name)
