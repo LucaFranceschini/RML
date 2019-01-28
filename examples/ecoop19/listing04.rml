@@ -9,5 +9,5 @@ notIt not matches hasNext(_) | next;
 notCol not matches nonStruct | hasNext(false);
 
 Collection = nonStruct* hasNext(false);
-Iterator = hasNext(false) $\orop$ hasNext(true) next Iterator;
-Main = (Iterator $\shuffleop$ notIt*) $\andop$ (Collection $\shuffleop$ notCol*); 
+Iterator = hasNext(false) \/ hasNext(true) next Iterator;
+Main = (Iterator | notIt*) /\ (Collection | notCol*); 
