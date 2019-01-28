@@ -18,6 +18,7 @@ value: value '|' value # orPatternVal
 ellipsis: '...' ;
 simpleValue: STRING # stringValue
            | INT # intValue
+           | BOOLEAN # booleanValue
            | LOWERCASE_ID # varValue
            | '[' simpleValues? (',' ellipsis)? ']' # listValue
            | '_' # unusedVal
@@ -40,6 +41,7 @@ simpleValues: simpleValue (',' simpleValue)* ;
 
 // put keywords before identifiers
 NOT: 'not' ;
+BOOLEAN: 'false' | 'true' ;
 UPPERCASE_ID: [A-Z] ID_CHAR* ;
 LOWERCASE_ID: [a-z] ID_CHAR* ;
 fragment ID_CHAR: [a-zA-Z0-9_-] ;

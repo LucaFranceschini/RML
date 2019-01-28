@@ -1,0 +1,4 @@
+{ "event": "func_post", "name": "hasNext", "result": true }
+{ "event": "func_pre", "name": "containsAll" }
+{ "event": "func_pre", "name": "next" }
+{ "event": "func_post", "name": "hasNext", "result": false }

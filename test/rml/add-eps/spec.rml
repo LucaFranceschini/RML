@@ -1,0 +1,4 @@
+foo matches {foo:_};
+bar matches {bar:_};
+
+Main = foo \/ bar;

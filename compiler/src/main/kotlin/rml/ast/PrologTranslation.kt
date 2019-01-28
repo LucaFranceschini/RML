@@ -176,6 +176,7 @@ fun toProlog(value: SimpleValue, isMatchClause: Boolean = false): PrologTerm = w
         if (isMatchClause) VarTerm(toValidPrologVarName(value.id.name))
         else FunctionTerm("var", FunctionTerm(value.id.name))
     is IntValue -> IntTerm(value.number)
+    is BooleanValue -> ConstantTerm(value.boolean.toString())
     is StringValue -> StringTerm(value.string)
     is ListSimpleValue -> ListTerm(
             value.values.map { toProlog(it) },
