@@ -2,4 +2,4 @@
 :- use_module(monitor('deep_subdict')).
 match(Event, hasNext(Res)) :- deep_subdict(_{'result':Res,'name':"hasNext",'event':"func_post"}, Event).
 match(Event, next) :- deep_subdict(_{'name':"next",'event':"func_pre"}, Event).
-trace_expression('Main', Main) :- Main=((hasNext(var(false)):eps)\/(hasNext(var(true)):(next:Main))).
+trace_expression('Main', Main) :- Main=((hasNext('false'):eps)\/(hasNext('true'):(next:Main))).
