@@ -84,6 +84,12 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
     override fun visitStarTExp(ctx: rmlParser.StarTExpContext?) =
             StarTraceExp(buildEventTypeAst(ctx!!.evtype()))
 
+    override fun visitPlusTExp(ctx: rmlParser.PlusTExpContext?) =
+            PlusTraceExp(buildEventTypeAst(ctx!!.evtype()))
+
+    override fun visitOptionalTExp(ctx: rmlParser.OptionalTExpContext?) =
+            OptionalTraceExp(buildEventTypeAst(ctx!!.evtype()))
+
     override fun visitEmptyTExp(ctx: rmlParser.EmptyTExpContext?): EmptyTraceExp = EmptyTraceExp
 
     override fun visitBlockTExp(ctx: rmlParser.BlockTExpContext?): BlockTraceExp =

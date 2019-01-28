@@ -16,6 +16,8 @@ data class ShuffleTraceExp(override val left: TraceExp, override val right: Trac
 
 data class FilterTraceExp(val evtype: EventType, val traceExp: TraceExp): TraceExp()
 data class StarTraceExp(val eventType: EventType): TraceExp()
+data class PlusTraceExp(val eventType: EventType): TraceExp()
+data class OptionalTraceExp(val eventType: EventType): TraceExp()
 
 object EmptyTraceExp: TraceExp()
 
