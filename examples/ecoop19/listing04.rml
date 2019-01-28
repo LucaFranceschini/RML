@@ -1,0 +1,13 @@
+hasNext(res) matches 
+    {event:'func_post',name:'hasNext',result:res};
+next matches {event:'func_pre',name:'next'};
+// nonStruct matches all collection methods which do not 
+// structurally modify the collection     
+nonStruct matches 
+    {event:'func_pre', name:'contains' | 'containsAll' }; 
+notIt not matches hasNext(_) | next;
+notCol not matches nonStruct | hasNext(false);
+
+Collection = nonStruct* hasNext(false);
+Iterator = hasNext(false) $\orop$ hasNext(true) next Iterator;
+Main = (Iterator $\shuffleop$ notIt*) $\andop$ (Collection $\shuffleop$ notCol*); 
