@@ -101,6 +101,10 @@ next((ET?T1;T2), E, T, S) :- !,
 
 next(clos(T1), E, T3, S) :- !,next(T1, E, T2, S),prefix_clos(T2,T3).
 
+% regex-like operators
+next(star(T1), E, T2*star(T1), S) :- !, next(T1, E, T2, S).
+next(plus(T1), E, T2*star(T1), S) :- !, next(T1, E, T2, S).
+next(optional(T1), E, T2), :- !, next(T1, E, T2, S).
 
 %% eval predicates for arguments of generics: for the moment only number/boolean expressions, strings and atoms are supported
 num_exp(Exp) :- Exp=..[Op|_],memberchk(Op,[+,-,/,*]).
@@ -161,6 +165,11 @@ may_halt(guarded(P,T1,T2)) :- !,solve(P,_)->may_halt(T1);may_halt(T2).
 %% proposal for prefix closure
 
 may_halt(clos(_)).
+
+% regex-like operators
+may_halt(star(_)).
+may_halt(plus(T)) :- !, may_halt(T).
+may_halt(optional(_)).
     
 %%% optimizations
 fork(0,0,0) :- !.
@@ -293,6 +302,11 @@ apply_sub_trace_exp(S, (ET? T1 ; T2), (ETs ? T1s ; T2s)) :-
 
 %% proposal for prefix closure
 apply_sub_trace_exp(S, clos(T1), clos(T2)) :- !,apply_sub_trace_exp(S,T1,T2).
+
+% regex-like operators
+apply_sub_trace_exp(S, star(T1), star(T2)) :- !, apply_sub_trace_exp(S, T1, T2).
+apply_sub_trace_exp(S, plus(T1), plus(T2)) :- !, apply_sub_trace_exp(S, T1, T2).
+apply_sub_trace_exp(S, optional(T1), optional(T2)) :- !, apply_sub_trace_exp(S, T1, T2).
 
 % substitution inside event types
 apply_sub_event_type([],ET,ET) :- !.
