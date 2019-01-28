@@ -24,7 +24,7 @@ fun toProlog(spec: Specification): LogicProgram {
 
     // generate a match clause for each event type pattern
     val matchClauses = spec.evtypeDecls.map(::toProlog).flatten()
-    val traceExpClause = toProlog(spec.traceExpDecls, spec.mainTraceExp)
+    val traceExpClause = toProlog(spec.traceExpDecls)
 
     // spread operator can only be applied to arrays
     return LogicProgram(listOf(moduleDeclaration, deepSubdictImport),
@@ -68,8 +68,8 @@ fun toProlog(dataValue: DataValue, isMatchClause: Boolean = false): PrologTerm =
     is OrPatternValue -> throw Exception("internal error: or-patterns should be unfolded by now")
 }
 
-fun toProlog(declarations: List<TraceExpDecl>, mainTraceExp: TraceExpId): Clause {
-    val head = Atom("trace_expression", ConstantTerm(mainTraceExp.name), VarTerm(mainTraceExp.name))
+fun toProlog(declarations: List<TraceExpDecl>): Clause {
+    val head = Atom("trace_expression", ConstantTerm("Main"), VarTerm("Main"))
     val body = declarations.map(::toProlog)
     return Clause(head, body)
 }

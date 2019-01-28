@@ -1,10 +1,9 @@
 package rml.ast
 
 // top-level trace expression specification
-data class Specification(val evtypeDecls: List<EvtypeDecl>, val traceExpDecls: List<TraceExpDecl>, val mainTraceExp: TraceExpId) {
+data class Specification(val evtypeDecls: List<EvtypeDecl>, val traceExpDecls: List<TraceExpDecl>) {
     init {
-        require(traceExpDecls.isNotEmpty()) { "specification must contain at least one trace expression" }
-        require(traceExpDecls.any { it.id == mainTraceExp }) { "main trace expression not declared" }
+        require(traceExpDecls.any { it.id.name == "Main" }) { "\"Main\" expression not declared" }
         require(traceExpDecls.map { it.id }.distinct() == traceExpDecls.map { it.id }) { "trace expression declared multiple times" }
         require(evtypeDecls.map { Pair(it.evtype.id, it.evtype.dataValues.size) }.distinct().size == evtypeDecls.size) {
             "event type declared multiple times"

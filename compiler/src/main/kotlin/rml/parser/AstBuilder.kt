@@ -5,8 +5,7 @@ import rml.ast.*
 fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification {
     val texpDecls = ctx.texpDecl().map(::buildDeclarationAst).toList()
     val evtypeDecls = ctx.evtypeDecl().map { it.accept(EvtypeDeclAstBuilder) }.toList()
-    // assume the first declaration to be the main one
-    return Specification(evtypeDecls, texpDecls, texpDecls[0].id)
+    return Specification(evtypeDecls, texpDecls)
 }
 
 fun buildEventTypeAst(ctx: rmlParser.EvtypeContext) = EventType(
