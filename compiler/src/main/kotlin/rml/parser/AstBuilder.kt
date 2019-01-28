@@ -54,6 +54,8 @@ object SimpleValueAstBuilder: rmlBaseVisitor<SimpleValue>() {
     override fun visitUnusedVal(ctx: rmlParser.UnusedValContext?) = UnusedValue
     override fun visitVarValue(ctx: rmlParser.VarValueContext?) = VarValue(ctx!!.LOWERCASE_ID().text)
     override fun visitIntValue(ctx: rmlParser.IntValueContext?) = IntValue(ctx!!.INT().text.toInt())
+    override fun visitBooleanValue(ctx: rmlParser.BooleanValueContext?) =
+            BooleanValue(ctx!!.BOOLEAN().text!!.toBoolean())
     override fun visitStringValue(ctx: rmlParser.StringValueContext?) =
             StringValue(ctx!!.text.removePrefix("'").removeSuffix("'"))
     override fun visitListValue(ctx: rmlParser.ListValueContext?) = ListSimpleValue(

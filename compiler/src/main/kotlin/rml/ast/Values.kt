@@ -9,6 +9,7 @@ sealed class SimpleValue: DataValue() {
 }
 data class StringValue(val string: String): SimpleValue()
 data class IntValue(val number: Int): SimpleValue()
+data class BooleanValue(val boolean: Boolean): SimpleValue()
 data class VarValue(val id: VarId): SimpleValue() {
     constructor(id: String): this(VarId(id))
 }
