@@ -34,6 +34,7 @@ texp: <assoc=right> texp texp # catTExp
     | evtype '?' # optionalTExp
     | 'empty' # emptyTExp
     | 'none' # noneTExp
+    | 'any' # anyTExp
     | '{' 'var' vars ';' texp '}' # blockTExp
     | UPPERCASE_ID ('<' vars '>')? # varTExp
     | evtype # evtypeTExp

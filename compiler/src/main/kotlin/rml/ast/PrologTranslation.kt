@@ -8,12 +8,7 @@ fun toProlog(spec: Specification): LogicProgram {
     // predicates to be exported
     val traceExpressionIndicator = PredicateIndicatorTerm("trace_expression", 2)
     val matchIndicator = PredicateIndicatorTerm("match", 2)
-
-    // only export match if there are actually match clauses
-    // SWI-Prolog will give an error otherwise)
-    val exportedPredicates = ListTerm(
-            if (spec.evtypeDecls.isEmpty()) listOf(traceExpressionIndicator)
-            else listOf(traceExpressionIndicator, matchIndicator))
+    val exportedPredicates = ListTerm(listOf(traceExpressionIndicator, matchIndicator))
 
     // export as a module
     val moduleDeclaration = Directive(Atom("module", ConstantTerm("spec"), exportedPredicates))
@@ -24,11 +19,12 @@ fun toProlog(spec: Specification): LogicProgram {
 
     // generate a match clause for each event type pattern
     val matchClauses = spec.evtypeDecls.map(::toProlog).flatten()
+    val anyMatchClause = Clause(Atom("match", VarTerm("_"), FunctionTerm("any")))
     val traceExpClause = toProlog(spec.traceExpDecls)
 
     // spread operator can only be applied to arrays
     return LogicProgram(listOf(moduleDeclaration, deepSubdictImport),
-            matchClauses + traceExpClause)
+            matchClauses + anyMatchClause + traceExpClause)
 }
 
 // build a match clause for each pattern if positive, or just one if negated
@@ -93,6 +89,7 @@ fun toProlog(declaration: TraceExpDecl): Atom {
 fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologTerm = when(traceExp) {
     EmptyTraceExp -> FunctionTerm("eps")
     NoneTraceExp -> IntTerm(0)
+    AnyTraceExp -> toProlog(EventTypeTraceExp(EventType("any", emptyList())), outsideConcatenation = true)
     is BlockTraceExp -> toProlog(traceExp, outsideConcatenation)
     is TraceExpVar -> toProlog(traceExp)
     is EventTypeTraceExp ->
