@@ -22,6 +22,7 @@ data class OptionalTraceExp(val eventType: EventType): TraceExp()
 object EmptyTraceExp: TraceExp()
 object NoneTraceExp: TraceExp()
 object AnyTraceExp: TraceExp()
+object AllTraceExp: TraceExp()
 
 // scoped declaration of one or more variables
 data class BlockTraceExp(val declaredVars: List<VarId>, val traceExp: TraceExp): TraceExp()
