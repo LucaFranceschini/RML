@@ -39,13 +39,25 @@ texp: <assoc=right> texp texp # catTExp
     | 'any' # anyTExp
     | 'all' # allTExp
     | '{' 'var' vars ';' texp '}' # blockTExp
-    | UPPERCASE_ID ('<' vars '>')? # varTExp
+    | 'if' '(' exp ')' texp 'else' texp # ifElseTExp
+    | UPPERCASE_ID ('<' exp (',' exp)* '>')? # varTExp
     | evtype # evtypeTExp
     | '(' texp ')' # parTExp
     ;
 vars: LOWERCASE_ID (',' LOWERCASE_ID)*;
 evtype: LOWERCASE_ID ('(' simpleValues? ')')? ;
 simpleValues: simpleValue (',' simpleValue)* ;
+
+exp: BOOLEAN # boolExp
+   | INT # intExp
+   | LOWERCASE_ID # varExp
+   | exp '+' exp # sumExp
+   | exp '-' exp # subExp
+   | exp '<' exp # lessThanExp
+   | exp '<=' exp # lessThanEqExp
+   | exp '>' exp # greaterThanExp
+   | exp '>=' exp # greaterThanEqExp
+   | exp '==' exp # equalToExp ;
 
 // put keywords before identifiers
 NOT: 'not' ;
