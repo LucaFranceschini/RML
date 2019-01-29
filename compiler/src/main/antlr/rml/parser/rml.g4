@@ -28,7 +28,7 @@ texp: <assoc=right> texp texp # catTExp
     | texp '/\\' texp # andTExp
     | texp '\\/' texp # orTExp
     | texp '|' texp # shufTExp
-    | evtype '>>' texp # filterExp
+    | evtype '>>' texp (':' texp)? # filterExp
     | evtype '*' # starTExp
     | evtype '+' # plusTExp
     | evtype '?' # optionalTExp

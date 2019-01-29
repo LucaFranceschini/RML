@@ -101,9 +101,10 @@ fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologT
     is AndTraceExp -> toProlog(traceExp, "/\\", outsideConcatenation)
     is OrTraceExp -> toProlog(traceExp, "\\/", outsideConcatenation)
     is ShuffleTraceExp -> toProlog(traceExp, "|", outsideConcatenation)
-    is FilterTraceExp -> FunctionTerm(">>",
-            toProlog(traceExp.evtype),
-            toProlog(traceExp.traceExp, outsideConcatenation))
+    is FilterTraceExp -> FunctionTerm(";",
+            FunctionTerm(">>",
+                toProlog(traceExp.evtype), toProlog(traceExp.leftExp, outsideConcatenation)),
+            toProlog(traceExp.rightExp, outsideConcatenation))
     is StarTraceExp -> FunctionTerm("star", toProlog(traceExp.eventType))
     is PlusTraceExp -> FunctionTerm("plus", toProlog(traceExp.eventType))
     is OptionalTraceExp -> FunctionTerm("optional", toProlog(traceExp.eventType))

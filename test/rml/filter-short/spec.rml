@@ -1,0 +1,4 @@
+relevant matches { foo: _ };
+fooBar matches { foo: 'Bar' };
+
+Main = relevant >> fooBar;

@@ -77,7 +77,8 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
 
     override fun visitFilterExp(ctx: rmlParser.FilterExpContext?) = FilterTraceExp(
             buildEventTypeAst(ctx!!.evtype()),
-            ctx.texp().accept(this)
+            ctx.texp(0).accept(this),
+            ctx.texp(1)?.accept(this) ?: AllTraceExp
     )
 
     override fun visitStarTExp(ctx: rmlParser.StarTExpContext?) =
