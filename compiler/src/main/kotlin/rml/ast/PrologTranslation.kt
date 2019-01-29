@@ -91,6 +91,7 @@ fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologT
     NoneTraceExp -> IntTerm(0)
     AnyTraceExp -> toProlog(EventTypeTraceExp(EventType("any", emptyList())), outsideConcatenation)
     AllTraceExp -> FunctionTerm("star", toProlog(AnyTraceExp, outsideConcatenation = true))
+    is ClosureTraceExp -> FunctionTerm("clos", toProlog(traceExp.exp, outsideConcatenation = true))
     is BlockTraceExp -> toProlog(traceExp, outsideConcatenation)
     is TraceExpVar -> toProlog(traceExp)
     is EventTypeTraceExp ->

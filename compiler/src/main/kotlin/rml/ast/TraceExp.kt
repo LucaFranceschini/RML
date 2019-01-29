@@ -14,6 +14,8 @@ data class AndTraceExp(override val left: TraceExp, override val right: TraceExp
 data class OrTraceExp(override val left: TraceExp, override val right: TraceExp): BinaryTraceExp()
 data class ShuffleTraceExp(override val left: TraceExp, override val right: TraceExp): BinaryTraceExp()
 
+data class ClosureTraceExp(val exp: TraceExp): TraceExp()
+
 data class FilterTraceExp(val evtype: EventType, val traceExp: TraceExp): TraceExp()
 data class StarTraceExp(val eventType: EventType): TraceExp()
 data class PlusTraceExp(val eventType: EventType): TraceExp()

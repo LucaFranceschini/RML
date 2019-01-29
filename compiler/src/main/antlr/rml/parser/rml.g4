@@ -32,6 +32,7 @@ texp: <assoc=right> texp texp # catTExp
     | evtype '*' # starTExp
     | evtype '+' # plusTExp
     | evtype '?' # optionalTExp
+    | texp '!' # closureTExp
     | 'empty' # emptyTExp
     | 'none' # noneTExp
     | 'any' # anyTExp
