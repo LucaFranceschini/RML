@@ -19,6 +19,9 @@ data class ClosureTraceExp(val exp: TraceExp): TraceExp()
 data class FilterTraceExp(val evtype: EventType,
                           val leftExp: TraceExp,
                           val rightExp: TraceExp = AllTraceExp): TraceExp()
+data class CondFilterTraceExp(val evtype: EventType,
+                              val leftExp: TraceExp,
+                              val rightExp: TraceExp = AllTraceExp): TraceExp()
 data class StarTraceExp(val eventType: EventType): TraceExp()
 data class PlusTraceExp(val eventType: EventType): TraceExp()
 data class OptionalTraceExp(val eventType: EventType): TraceExp()
