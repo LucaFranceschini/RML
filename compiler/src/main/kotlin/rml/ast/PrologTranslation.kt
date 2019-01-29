@@ -166,16 +166,16 @@ fun toProlog(traceExp: BinaryTraceExp, opSymbol: String, outsideConcatenation: B
 fun toProlog(traceExp: TraceExpVar): PrologTerm {
     val variable = VarTerm(traceExp.id.name)
 
-    if (traceExp.genericVars.isEmpty())
+    if (traceExp.genericArgs.isEmpty())
         return variable
 
-    if (traceExp.genericVars.size > 1)
+    if (traceExp.genericArgs.size > 1)
         throw Exception("multiple generics not supported yet")
 
     return FunctionTerm("app",
             variable,
             FunctionTerm("var",
-                    FunctionTerm(traceExp.genericVars.first().name)))
+                    FunctionTerm(traceExp.genericArgs.first().name)))
 }
 
 // isMatchClause true when generating match clauses
