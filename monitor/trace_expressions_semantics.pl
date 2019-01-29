@@ -104,7 +104,7 @@ next(clos(T1), E, T3, S) :- !,next(T1, E, T2, S),prefix_clos(T2,T3).
 % regex-like operators
 next(star(T1), E, T2*star(T1), S) :- !, next(T1, E, T2, S).
 next(plus(T1), E, T2*star(T1), S) :- !, next(T1, E, T2, S).
-next(optional(T1), E, T2), :- !, next(T1, E, T2, S).
+next(optional(T1), E, T2, S) :- !, next(T1, E, T2, S).
 
 %% eval predicates for arguments of generics: for the moment only number/boolean expressions, strings and atoms are supported
 num_exp(Exp) :- Exp=..[Op|_],memberchk(Op,[+,-,/,*]).
