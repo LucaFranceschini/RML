@@ -108,6 +108,10 @@ fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologT
     is StarTraceExp -> FunctionTerm("star", toProlog(traceExp.eventType))
     is PlusTraceExp -> FunctionTerm("plus", toProlog(traceExp.eventType))
     is OptionalTraceExp -> FunctionTerm("optional", toProlog(traceExp.eventType))
+    is IfElseTraceExp -> FunctionTerm("guarded",
+            toProlog(traceExp.condition),
+            toProlog(traceExp.thenTraceExp, true),
+            toProlog(traceExp.elseTraceExp, true))
 }
 
 fun toProlog(block: BlockTraceExp, outsideConcatenation: Boolean): PrologTerm {
