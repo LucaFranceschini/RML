@@ -186,6 +186,8 @@ fun toProlog(exp: Exp): PrologTerm = when (exp) {
     is GreaterThanExp -> FunctionTerm(">", toProlog(exp.left), toProlog(exp.right))
     is GreaterThanEqExp -> FunctionTerm(">=", toProlog(exp.left), toProlog(exp.right))
     is EqualToExp -> FunctionTerm("==", toProlog(exp.left), toProlog(exp.right))
+    is AndExp -> FunctionTerm(",", toProlog(exp.left), toProlog(exp.right))
+    is OrExp -> FunctionTerm(";", toProlog(exp.left), toProlog(exp.right))
 }
 
 // isMatchClause true when generating match clauses

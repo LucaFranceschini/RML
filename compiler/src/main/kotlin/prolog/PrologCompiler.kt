@@ -55,6 +55,9 @@ class PrologCompiler(private val writer: BufferedWriter) {
     private fun compile(term: FunctionTerm) {
         val functor = term.functionSymbol.name
 
+        if (functor == ";" || functor == ",")
+            writer.write("(")
+
         // constants
         if (term.arity == 0)
             writer.write(functor)
@@ -76,6 +79,9 @@ class PrologCompiler(private val writer: BufferedWriter) {
             }
             writer.write(")")
         }
+
+        if (functor == ";" || functor == ",")
+            writer.write("(")
     }
 
     private fun compile(atom: Atom) {

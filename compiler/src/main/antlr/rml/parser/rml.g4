@@ -57,7 +57,9 @@ exp: BOOLEAN # boolExp
    | exp '<=' exp # lessThanEqExp
    | exp '>' exp # greaterThanExp
    | exp '>=' exp # greaterThanEqExp
-   | exp '==' exp # equalToExp ;
+   | exp '==' exp # equalToExp
+   | exp '&&' exp # andExp
+   | exp '||' exp # orExp ;
 
 // put keywords before identifiers
 NOT: 'not' ;
