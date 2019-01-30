@@ -1,0 +1,2 @@
+Main = Repeat<3>;
+Repeat<n> = if (n>0) any Repeat<n-1> else empty;
