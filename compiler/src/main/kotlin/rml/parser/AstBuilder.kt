@@ -1,9 +1,6 @@
 package rml.parser
 
 import rml.ast.*
-import java.util.function.BiConsumer
-import java.util.function.BiFunction
-import java.util.function.BinaryOperator
 
 fun buildSpecificationAst(ctx: rmlParser.SpecContext): Specification {
     val texpDecls = ctx.texpDecl().map(::buildDeclarationAst).toList()
@@ -106,7 +103,8 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
 
     override fun visitNoneTExp(ctx: rmlParser.NoneTExpContext?) = NoneTraceExp
 
-    override fun visitAnyTExp(ctx: rmlParser.AnyTExpContext?) = AnyTraceExp
+    override fun visitAnyTExp(ctx: rmlParser.AnyTExpContext?) =
+            EventTypeTraceExp(EventType("any", emptyList()))
 
     override fun visitAllTExp(ctx: rmlParser.AllTExpContext?) = AllTraceExp
 
@@ -148,7 +146,7 @@ object ExpBuilder: rmlBaseVisitor<Exp>() {
     override fun visitIntExp(ctx: rmlParser.IntExpContext?) =
             IntExp(ctx!!.INT().text.toInt())
 
-    override fun visitVarTExp(ctx: rmlParser.VarTExpContext?) =
+    override fun visitVarExp(ctx: rmlParser.VarExpContext?) =
             VarExp(VarId(ctx!!.text))
 
     override fun visitSumExp(ctx: rmlParser.SumExpContext?) =

@@ -29,7 +29,6 @@ data class IfElseTraceExp(val condition: Exp, val thenTraceExp: TraceExp, val el
 
 object EmptyTraceExp: TraceExp()
 object NoneTraceExp: TraceExp()
-object AnyTraceExp: TraceExp()
 object AllTraceExp: TraceExp()
 
 // scoped declaration of one or more variables
