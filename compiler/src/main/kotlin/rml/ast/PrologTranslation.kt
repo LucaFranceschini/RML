@@ -72,16 +72,12 @@ fun toProlog(declarations: List<TraceExpDecl>): Clause {
 
 // output T = trace-expression
 fun toProlog(declaration: TraceExpDecl): Atom {
-    if (declaration.vars.size > 1)
-        throw Exception("multiple generics not yet supported")
-
     val varTerm = VarTerm(declaration.id.name)
+    val paramTerms = declaration.vars.map { ConstantTerm(it.name) }
     var body = toProlog(declaration.traceExp, outsideConcatenation = true)
 
-    if (declaration.vars.isNotEmpty()) {
-        val paramName = FunctionTerm(declaration.vars.first().name)
-        body = FunctionTerm("gen", paramName, body)
-    }
+    if (declaration.vars.isNotEmpty())
+        body = FunctionTerm("gen", ListTerm(paramTerms), body)
 
     return Atom("=", varTerm, body)
 }
@@ -169,13 +165,23 @@ fun toProlog(traceExp: TraceExpVar): PrologTerm {
     if (traceExp.genericArgs.isEmpty())
         return variable
 
-    if (traceExp.genericArgs.size > 1)
-        throw Exception("multiple generics not supported yet")
+    // convert all expressions
+    val exps: List<PrologTerm> = traceExp.genericArgs.map(::toProlog)
 
-    return FunctionTerm("app",
-            variable,
-            FunctionTerm("var",
-                    FunctionTerm(traceExp.genericArgs.first().name)))
+    return FunctionTerm("app", variable, ListTerm(exps))
+}
+
+fun toProlog(exp: Exp): PrologTerm = when (exp) {
+    is BoolExp -> ConstantTerm(exp.boolean.toString())
+    is IntExp -> IntTerm(exp.int)
+    is VarExp -> FunctionTerm("var", ConstantTerm(exp.varId.name))
+    is SumExp -> FunctionTerm("+", toProlog(exp.left), toProlog(exp.right))
+    is SubExp -> FunctionTerm("-", toProlog(exp.left), toProlog(exp.right))
+    is LessThanExp -> FunctionTerm("<", toProlog(exp.left), toProlog(exp.right))
+    is LessThanEqExp -> FunctionTerm("=<", toProlog(exp.left), toProlog(exp.right))
+    is GreaterThanExp -> FunctionTerm(">", toProlog(exp.left), toProlog(exp.right))
+    is GreaterThanEqExp -> FunctionTerm(">=", toProlog(exp.left), toProlog(exp.right))
+    is EqualToExp -> FunctionTerm("==", toProlog(exp.left), toProlog(exp.right))
 }
 
 // isMatchClause true when generating match clauses
