@@ -64,7 +64,7 @@ NOT: 'not' ;
 BOOLEAN: 'false' | 'true' ;
 UPPERCASE_ID: [A-Z] ID_CHAR* ;
 LOWERCASE_ID: [a-z] ID_CHAR* ;
-fragment ID_CHAR: [a-zA-Z0-9_-] ;
+fragment ID_CHAR: [a-zA-Z0-9_] ;
 INT: [0-9]+ ;
 STRING: '\'' [ a-zA-Z0-0_.]* '\'' ;
 
