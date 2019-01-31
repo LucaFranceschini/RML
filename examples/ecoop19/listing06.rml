@@ -1,0 +1,10 @@
+hasNext(res) matches 
+    {event:'func_post',name:'hasNext',result:res};
+next matches {event:'func_pre',name:'next'};
+
+// non conclusive verdicts
+Iterator = hasNext(false) \/ hasNext(true) next Iterator; 
+// partially conclusive verdicts
+IteratorClosed = Iterator !; 
+
+Main = eps;
