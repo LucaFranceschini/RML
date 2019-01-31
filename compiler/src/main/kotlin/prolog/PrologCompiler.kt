@@ -81,7 +81,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
         }
 
         if (functor == ";" || functor == ",")
-            writer.write("(")
+            writer.write(")")
     }
 
     private fun compile(atom: Atom) {
