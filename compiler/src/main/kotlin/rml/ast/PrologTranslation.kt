@@ -72,16 +72,12 @@ fun toProlog(declarations: List<TraceExpDecl>): Clause {
 
 // output T = trace-expression
 fun toProlog(declaration: TraceExpDecl): Atom {
-    if (declaration.vars.size > 1)
-        throw Exception("multiple generics not yet supported")
-
     val varTerm = VarTerm(declaration.id.name)
+    val paramTerms = declaration.vars.map { ConstantTerm(it.name) }
     var body = toProlog(declaration.traceExp, outsideConcatenation = true)
 
-    if (declaration.vars.isNotEmpty()) {
-        val paramName = FunctionTerm(declaration.vars.first().name)
-        body = FunctionTerm("gen", paramName, body)
-    }
+    if (declaration.vars.isNotEmpty())
+        body = FunctionTerm("gen", ListTerm(paramTerms), body)
 
     return Atom("=", varTerm, body)
 }
@@ -89,8 +85,8 @@ fun toProlog(declaration: TraceExpDecl): Atom {
 fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologTerm = when(traceExp) {
     EmptyTraceExp -> FunctionTerm("eps")
     NoneTraceExp -> IntTerm(0)
-    AnyTraceExp -> toProlog(EventTypeTraceExp(EventType("any", emptyList())), outsideConcatenation)
-    AllTraceExp -> FunctionTerm("star", toProlog(AnyTraceExp, outsideConcatenation = true))
+    AllTraceExp -> FunctionTerm("star",
+            toProlog(EventTypeTraceExp(EventType("any", emptyList())), outsideConcatenation = true))
     is ClosureTraceExp -> FunctionTerm("clos", toProlog(traceExp.exp, outsideConcatenation = true))
     is BlockTraceExp -> toProlog(traceExp, outsideConcatenation)
     is TraceExpVar -> toProlog(traceExp)
@@ -103,15 +99,19 @@ fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologT
     is ShuffleTraceExp -> toProlog(traceExp, "|", outsideConcatenation)
     is FilterTraceExp -> FunctionTerm(";",
             FunctionTerm(">>",
-                    toProlog(traceExp.evtype), toProlog(traceExp.leftExp, outsideConcatenation)),
-            toProlog(traceExp.rightExp, outsideConcatenation))
+                    toProlog(traceExp.evtype), toProlog(traceExp.leftExp, true)),
+            toProlog(traceExp.rightExp, true))
     is CondFilterTraceExp -> FunctionTerm(";",
             FunctionTerm(">",
-                    toProlog(traceExp.evtype), toProlog(traceExp.leftExp, outsideConcatenation)),
-            toProlog(traceExp.rightExp, outsideConcatenation))
+                    toProlog(traceExp.evtype), toProlog(traceExp.leftExp, true)),
+            toProlog(traceExp.rightExp, true))
     is StarTraceExp -> FunctionTerm("star", toProlog(traceExp.eventType))
     is PlusTraceExp -> FunctionTerm("plus", toProlog(traceExp.eventType))
     is OptionalTraceExp -> FunctionTerm("optional", toProlog(traceExp.eventType))
+    is IfElseTraceExp -> FunctionTerm("guarded",
+            toProlog(traceExp.condition),
+            toProlog(traceExp.thenTraceExp, true),
+            toProlog(traceExp.elseTraceExp, true))
 }
 
 fun toProlog(block: BlockTraceExp, outsideConcatenation: Boolean): PrologTerm {
@@ -166,16 +166,28 @@ fun toProlog(traceExp: BinaryTraceExp, opSymbol: String, outsideConcatenation: B
 fun toProlog(traceExp: TraceExpVar): PrologTerm {
     val variable = VarTerm(traceExp.id.name)
 
-    if (traceExp.genericVars.isEmpty())
+    if (traceExp.genericArgs.isEmpty())
         return variable
 
-    if (traceExp.genericVars.size > 1)
-        throw Exception("multiple generics not supported yet")
+    // convert all expressions
+    val exps: List<PrologTerm> = traceExp.genericArgs.map(::toProlog)
 
-    return FunctionTerm("app",
-            variable,
-            FunctionTerm("var",
-                    FunctionTerm(traceExp.genericVars.first().name)))
+    return FunctionTerm("app", variable, ListTerm(exps))
+}
+
+fun toProlog(exp: Exp): PrologTerm = when (exp) {
+    is BoolExp -> ConstantTerm(exp.boolean.toString())
+    is IntExp -> IntTerm(exp.int)
+    is VarExp -> FunctionTerm("var", ConstantTerm(exp.varId.name))
+    is SumExp -> FunctionTerm("+", toProlog(exp.left), toProlog(exp.right))
+    is SubExp -> FunctionTerm("-", toProlog(exp.left), toProlog(exp.right))
+    is LessThanExp -> FunctionTerm("<", toProlog(exp.left), toProlog(exp.right))
+    is LessThanEqExp -> FunctionTerm("=<", toProlog(exp.left), toProlog(exp.right))
+    is GreaterThanExp -> FunctionTerm(">", toProlog(exp.left), toProlog(exp.right))
+    is GreaterThanEqExp -> FunctionTerm(">=", toProlog(exp.left), toProlog(exp.right))
+    is EqualToExp -> FunctionTerm("==", toProlog(exp.left), toProlog(exp.right))
+    is AndExp -> FunctionTerm(",", toProlog(exp.left), toProlog(exp.right))
+    is OrExp -> FunctionTerm(";", toProlog(exp.left), toProlog(exp.right))
 }
 
 // isMatchClause true when generating match clauses

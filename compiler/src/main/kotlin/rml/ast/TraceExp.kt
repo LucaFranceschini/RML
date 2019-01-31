@@ -25,16 +25,16 @@ data class CondFilterTraceExp(val evtype: EventType,
 data class StarTraceExp(val eventType: EventType): TraceExp()
 data class PlusTraceExp(val eventType: EventType): TraceExp()
 data class OptionalTraceExp(val eventType: EventType): TraceExp()
+data class IfElseTraceExp(val condition: Exp, val thenTraceExp: TraceExp, val elseTraceExp: TraceExp): TraceExp()
 
 object EmptyTraceExp: TraceExp()
 object NoneTraceExp: TraceExp()
-object AnyTraceExp: TraceExp()
 object AllTraceExp: TraceExp()
 
 // scoped declaration of one or more variables
 data class BlockTraceExp(val declaredVars: List<VarId>, val traceExp: TraceExp): TraceExp()
 
 // occurrence of trace expression identifier with possibly generic arguments
-data class TraceExpVar(val id: TraceExpId, val genericVars: List<VarId>): TraceExp()
+data class TraceExpVar(val id: TraceExpId, val genericArgs: List<Exp>): TraceExp()
 
 data class EventTypeTraceExp(val eventType: EventType): TraceExp()

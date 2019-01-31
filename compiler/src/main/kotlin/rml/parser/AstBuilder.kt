@@ -103,7 +103,8 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
 
     override fun visitNoneTExp(ctx: rmlParser.NoneTExpContext?) = NoneTraceExp
 
-    override fun visitAnyTExp(ctx: rmlParser.AnyTExpContext?) = AnyTraceExp
+    override fun visitAnyTExp(ctx: rmlParser.AnyTExpContext?) =
+            EventTypeTraceExp(EventType("any", emptyList()))
 
     override fun visitAllTExp(ctx: rmlParser.AllTExpContext?) = AllTraceExp
 
@@ -116,7 +117,7 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
     override fun visitVarTExp(ctx: rmlParser.VarTExpContext?): TraceExpVar =
             TraceExpVar(
                     TraceExpId(ctx!!.UPPERCASE_ID().text),
-                    visitVarsAux(ctx.vars())
+                    ctx.exp().map { it.accept(ExpBuilder) }
             )
 
     override fun visitEvtypeTExp(ctx: rmlParser.EvtypeTExpContext?) =
@@ -125,11 +126,60 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
     override fun visitParTExp(ctx: rmlParser.ParTExpContext?): TraceExp =
             ctx!!.texp().accept(this)
 
+    override fun visitIfElseTExp(ctx: rmlParser.IfElseTExpContext?) = IfElseTraceExp(
+            ctx!!.exp().accept(ExpBuilder),
+            ctx.texp(0).accept(this),
+            ctx.texp(1).accept(this)
+    )
+
     private fun <T: BinaryTraceExp> visitBinTExp(
             left: rmlParser.TexpContext,
             right: rmlParser.TexpContext,
             constructor: (TraceExp, TraceExp) -> T): T =
             constructor(left.accept(this), right.accept(this))
+}
+
+object ExpBuilder: rmlBaseVisitor<Exp>() {
+    override fun visitBoolExp(ctx: rmlParser.BoolExpContext?) =
+            BoolExp(ctx!!.BOOLEAN().text!!.toBoolean())
+
+    override fun visitIntExp(ctx: rmlParser.IntExpContext?) =
+            IntExp(ctx!!.INT().text.toInt())
+
+    override fun visitVarExp(ctx: rmlParser.VarExpContext?) =
+            VarExp(VarId(ctx!!.text))
+
+    override fun visitSumExp(ctx: rmlParser.SumExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::SumExp)
+
+    override fun visitSubExp(ctx: rmlParser.SubExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::SubExp)
+
+    override fun visitLessThanExp(ctx: rmlParser.LessThanExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::LessThanExp)
+
+    override fun visitLessThanEqExp(ctx: rmlParser.LessThanEqExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::LessThanEqExp)
+
+    override fun visitGreaterThanExp(ctx: rmlParser.GreaterThanExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::GreaterThanExp)
+
+    override fun visitGreaterThanEqExp(ctx: rmlParser.GreaterThanEqExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::GreaterThanEqExp)
+
+    override fun visitEqualToExp(ctx: rmlParser.EqualToExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::EqualToExp)
+
+    override fun visitAndExp(ctx: rmlParser.AndExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::AndExp)
+
+    override fun visitOrExp(ctx: rmlParser.OrExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::OrExp)
+
+    private fun visitBinExp(leftCtx: rmlParser.ExpContext,
+                            rightCtx: rmlParser.ExpContext,
+                            constructor: (Exp, Exp) -> Exp): Exp =
+            constructor(leftCtx.accept(this), rightCtx.accept(this))
 }
 
 // visitVars already exists in BaseVisitor with the same signature, avoid confusion
