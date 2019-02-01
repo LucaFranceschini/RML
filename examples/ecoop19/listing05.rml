@@ -4,4 +4,4 @@ Spec1 = eventType Spec1;
 Spec2 = evenType*;
 Spec3 = eventType; // recall: eventType = eventType empty
 Spec4 = evenType all;
-Main = eps;
+Main = Spec4;

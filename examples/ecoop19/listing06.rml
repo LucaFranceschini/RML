@@ -7,4 +7,4 @@ Iterator = hasNext(false) \/ hasNext(true) next Iterator;
 // partially conclusive verdicts
 IteratorClosed = Iterator !; 
 
-Main = eps;
+Main = IteratorClosed;
