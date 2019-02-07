@@ -38,7 +38,7 @@ texp: <assoc=right> texp texp # catTExp
     | 'none' # noneTExp
     | 'any' # anyTExp
     | 'all' # allTExp
-    | '{' 'var' vars ';' texp '}' # blockTExp
+    | '{' ('var'|'let') vars ';' texp '}' # blockTExp
     | 'if' '(' exp ')' texp 'else' texp # ifElseTExp
     | UPPERCASE_ID ('<' exp (',' exp)* '>')? # varTExp
     | evtype # evtypeTExp
