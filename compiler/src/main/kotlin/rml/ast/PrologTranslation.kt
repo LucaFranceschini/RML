@@ -85,8 +85,7 @@ fun toProlog(declaration: TraceExpDecl): Atom {
 fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologTerm = when(traceExp) {
     EmptyTraceExp -> FunctionTerm("eps")
     NoneTraceExp -> IntTerm(0)
-    AllTraceExp -> FunctionTerm("star",
-            toProlog(EventTypeTraceExp(EventType("any", emptyList())), outsideConcatenation = true))
+    AllTraceExp -> IntTerm(1)
     is ClosureTraceExp -> FunctionTerm("clos", toProlog(traceExp.exp, outsideConcatenation = true))
     is BlockTraceExp -> toProlog(traceExp, outsideConcatenation)
     is TraceExpVar -> toProlog(traceExp)
