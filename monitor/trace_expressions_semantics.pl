@@ -1,4 +1,4 @@
-:- module(trace_expressions,[next/3, may_halt/1]).
+:- module(trace_expressions,[next/3, may_halt/1, is1/1]).
 
 :- use_module(library(coinduction)).
 :- coinductive apply_sub_trace_exp/3.
@@ -170,6 +170,27 @@ may_halt(clos(_)).
 may_halt(star(_)).
 may_halt(plus(T)) :- !, may_halt(T).
 may_halt(optional(_)).
+
+
+% see if trace expression is equivalent to 1 (only sound, not complete)
+is1(1) :- !.
+% eps is not 1
+is1(T1 \/ T2) :- is1(T1) ; is1(T2).
+is1(T1 | T2) :- is1(T1) ; is1(T2).
+is1(T1 * T2) :- is1(T1) ; (may_halt(T1), is1(T2)).
+is1(T1 /\ T2) :- is1(T1), is1(T2).
+is1(var(_, T)) :- is1(T).
+is1((_ >> T1 ; T2)) :- is1(T1), is1(T2).
+is1(_ >> T) :- is1(T).
+is1(_ > T1 ; T2) :- is1(T1), is1(T2).
+is1(_ > T) :- is1(T).
+is1(app(gen(_, T), _)) :- is1(T).
+is1(guarded(_, T1, T2)) :- is1(T1, T2).
+is1(clos(T)) :- is1(T).
+is1(star(T)) :- is1(T).
+is1(plus(T)) :- is1(T).
+is1(optional(T)) :- is1(T).
+
     
 %%% optimizations
 fork(0,0,0) :- !.
