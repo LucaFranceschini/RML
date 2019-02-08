@@ -27,7 +27,7 @@
 
 :- current_prolog_flag(argv, [Spec|_]), use_module(Spec).
 
-server(Port) :- http_server(http_dispatch,[port(localhost:Port),workers(1)]). %% one worker to guarantee event sequentiality
+server(Port) :- http_server(http_dispatch,[port('10.251.61.71':Port),workers(1)]). %% one worker to guarantee event sequentiality
 
 log(Log) :-
     nb_getval(log,Stream), Stream\==null->  %% optional logging of server activity
@@ -45,10 +45,12 @@ manage_event(WebSocket) :-
 	 E=Msg.data,
 	       nb_getval(state,TE1),
 	       log((TE1,E)),
-	       (next(TE1,E,TE2) -> nb_setval(state,TE2),Reply='{"error":false}'; Reply='{"error":true}',log(error)),
+	       (next(TE1,E,TE2) -> nb_setval(state,TE2),Reply=E; Reply=_{error:true}),
+	       %% (next(TE1,E,TE2) -> nb_setval(state,TE2),Reply='{"error":false}'; Reply='{"error":true}',log(error)),
 	       %% next line: more detailed information computed in case an error occurs
 	       %% (next(TE1,Msg.data,TE2) -> nb_setval(state,TE2),Reply='{"error":false}'; term_string(TE1,State),atomics_to_string(['{"error":true, "state":',State,', "event":', Msg.data, '}'], Reply)),
-	       ws_send(WebSocket,text(Reply)),
+	       atom_json_dict(Json,Reply,[as(string)]),
+	       ws_send(WebSocket,string(Json)),
 	       manage_event(WebSocket)).
 
 %% old patched version to avoid problems with json dicts, resolved by using value_string_as(atom) option
@@ -67,4 +69,4 @@ manage_event(WebSocket) :-
 exception(undefined_global_variable, state, retry) :- trace_expression(_, TE), nb_setval(state,TE).
 exception(undefined_global_variable, log, retry) :- (current_prolog_flag(argv, [_,LogFile|_])->open(LogFile,append,Stream);Stream=null),nb_setval(log, Stream).
 
-:- server(8081).
+:- server(80).
