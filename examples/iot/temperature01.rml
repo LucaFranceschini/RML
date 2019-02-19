@@ -1,4 +1,4 @@
 temp_sensor(temp) matches {temperature:temp};
 
 Main = CheckTemp<20>;
-CheckTemp<temp> = if (temp>=10 && temp <= 50) {let temp; temp_sensor(temp) (empty \/ CheckTemp<temp>)} else none;  
+CheckTemp<temp> = if (temp>=20 && temp <= 50) {let temp; temp_sensor(temp) (empty \/ CheckTemp<temp>)} else none;  
