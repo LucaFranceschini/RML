@@ -1,0 +1,82 @@
+{"event":"func_pre","name":"random","id":1,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.7382388836888247,"args":[]}
+{"event":"func_pre","name":"enq","id":3,"args":[0.7382388836888247],"targetId":4,"argIds":[null]}
+{"event":"func_pre","name":"push","id":5,"args":[0.7382388836888247],"targetId":6,"argIds":[null]}
+{"event":"func_post","name":"push","res":1,"args":[0.7382388836888247]}
+{"event":"func_post","name":"enq","res":0.7382388836888247,"args":[0.7382388836888247]}
+{"event":"func_pre","name":"console.log","id":7,"args":["enq 0.7382388836888247"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["enq 0.7382388836888247"]}
+{"event":"func_pre","name":"random","id":9,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.12603521951537466,"args":[]}
+{"event":"func_pre","name":"deq","id":10,"args":[],"targetId":4,"argIds":[]}
+{"event":"func_pre","name":"shift","id":11,"args":[],"targetId":6,"argIds":[]}
+{"event":"func_post","name":"shift","res":0.7382388836888247,"args":[]}
+{"event":"func_post","name":"deq","res":0.7382388836888247,"args":[]}
+{"event":"func_pre","name":"console.log","id":12,"args":["deq 0.7382388836888247"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["deq 0.7382388836888247"]}
+{"event":"func_pre","name":"random","id":13,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.3149477369227631,"args":[]}
+{"event":"func_pre","name":"enq","id":14,"args":[0.3149477369227631],"targetId":4,"argIds":[null]}
+{"event":"func_pre","name":"push","id":15,"args":[0.3149477369227631],"targetId":6,"argIds":[null]}
+{"event":"func_post","name":"push","res":1,"args":[0.3149477369227631]}
+{"event":"func_post","name":"enq","res":0.3149477369227631,"args":[0.3149477369227631]}
+{"event":"func_pre","name":"console.log","id":16,"args":["enq 0.3149477369227631"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["enq 0.3149477369227631"]}
+{"event":"func_pre","name":"random","id":17,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.8376970446558745,"args":[]}
+{"event":"func_pre","name":"random","id":18,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.15051199600127507,"args":[]}
+{"event":"func_pre","name":"enq","id":19,"args":[0.15051199600127507],"targetId":4,"argIds":[null]}
+{"event":"func_pre","name":"push","id":20,"args":[0.15051199600127507],"targetId":6,"argIds":[null]}
+{"event":"func_post","name":"push","res":2,"args":[0.15051199600127507]}
+{"event":"func_post","name":"enq","res":0.15051199600127507,"args":[0.15051199600127507]}
+{"event":"func_pre","name":"console.log","id":21,"args":["enq 0.15051199600127507"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["enq 0.15051199600127507"]}
+{"event":"func_pre","name":"random","id":22,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.02613351577311218,"args":[]}
+{"event":"func_pre","name":"deq","id":23,"args":[],"targetId":4,"argIds":[]}
+{"event":"func_pre","name":"shift","id":24,"args":[],"targetId":6,"argIds":[]}
+{"event":"func_post","name":"shift","res":0.3149477369227631,"args":[]}
+{"event":"func_post","name":"deq","res":0.3149477369227631,"args":[]}
+{"event":"func_pre","name":"console.log","id":25,"args":["deq 0.3149477369227631"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["deq 0.3149477369227631"]}
+{"event":"func_pre","name":"random","id":26,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.4713598972388142,"args":[]}
+{"event":"func_pre","name":"deq","id":27,"args":[],"targetId":4,"argIds":[]}
+{"event":"func_pre","name":"shift","id":28,"args":[],"targetId":6,"argIds":[]}
+{"event":"func_post","name":"shift","res":0.15051199600127507,"args":[]}
+{"event":"func_post","name":"deq","res":0.15051199600127507,"args":[]}
+{"event":"func_pre","name":"console.log","id":29,"args":["deq 0.15051199600127507"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["deq 0.15051199600127507"]}
+{"event":"func_pre","name":"random","id":30,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.5220741103373234,"args":[]}
+{"event":"func_pre","name":"enq","id":31,"args":[0.5220741103373234],"targetId":4,"argIds":[null]}
+{"event":"func_pre","name":"push","id":32,"args":[0.5220741103373234],"targetId":6,"argIds":[null]}
+{"event":"func_post","name":"push","res":1,"args":[0.5220741103373234]}
+{"event":"func_post","name":"enq","res":0.5220741103373234,"args":[0.5220741103373234]}
+{"event":"func_pre","name":"console.log","id":33,"args":["enq 0.5220741103373234"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["enq 0.5220741103373234"]}
+{"event":"func_pre","name":"random","id":34,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.5864633964261841,"args":[]}
+{"event":"func_pre","name":"random","id":35,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.3500822518680675,"args":[]}
+{"event":"func_pre","name":"enq","id":36,"args":[0.3500822518680675],"targetId":4,"argIds":[null]}
+{"event":"func_pre","name":"push","id":37,"args":[0.3500822518680675],"targetId":6,"argIds":[null]}
+{"event":"func_post","name":"push","res":2,"args":[0.3500822518680675]}
+{"event":"func_post","name":"enq","res":0.3500822518680675,"args":[0.3500822518680675]}
+{"event":"func_pre","name":"console.log","id":38,"args":["enq 0.3500822518680675"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["enq 0.3500822518680675"]}
+{"event":"func_pre","name":"random","id":39,"args":[],"targetId":2,"argIds":[]}
+{"event":"func_post","name":"random","res":0.15368141270649893,"args":[]}
+{"event":"func_pre","name":"deq","id":40,"args":[],"targetId":4,"argIds":[]}
+{"event":"func_pre","name":"shift","id":41,"args":[],"targetId":6,"argIds":[]}
+{"event":"func_post","name":"shift","res":0.5220741103373234,"args":[]}
+{"event":"func_post","name":"deq","res":0.5220741103373234,"args":[]}
+{"event":"func_pre","name":"console.log","id":42,"args":["deq 0.5220741103373234"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["deq 0.5220741103373234"]}
+{"event":"func_pre","name":"deq","id":43,"args":[],"targetId":4,"argIds":[]}
+{"event":"func_pre","name":"shift","id":44,"args":[],"targetId":6,"argIds":[]}
+{"event":"func_post","name":"shift","res":0.3500822518680675,"args":[]}
+{"event":"func_post","name":"deq","res":0.3500822518680675,"args":[]}
+{"event":"func_pre","name":"console.log","id":45,"args":["deq 0.3500822518680675"],"targetId":8,"argIds":[null]}
+{"event":"func_post","name":"console.log","args":["deq 0.3500822518680675"]}
