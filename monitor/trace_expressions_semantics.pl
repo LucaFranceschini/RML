@@ -109,7 +109,7 @@ next(star(T1), E, T2*star(T1), S) :- !, next(T1, E, T2, S).
 next(plus(T1), E, T2*star(T1), S) :- !, next(T1, E, T2, S).
 next(optional(T1), E, T2, S) :- !, next(T1, E, T2, S).
 
-%% proposal for with operator, to be tested
+%% proposal for the with operator, to be tested
 %% see the comment on solve/2 for guarded expressions
 
 next(with(ET,T,G), E, T, S) :- !,match(E, ET, S),apply_sub_trace_exp(S,G,G2),G2.
@@ -179,9 +179,9 @@ may_halt(star(_)).
 may_halt(plus(T)) :- !, may_halt(T).
 may_halt(optional(_)).
 
-%% proposal for with operator, to be tested
+%% proposal for the with operator, to be tested
 
-%% with operator can never halt
+%% the with operator can never halt
 
 % see if trace expression is equivalent to 1 (only sound, not complete)
 is1(1) :- !.
@@ -340,7 +340,7 @@ apply_sub_trace_exp(S, star(T1), star(T2)) :- !, apply_sub_trace_exp(S, T1, T2).
 apply_sub_trace_exp(S, plus(T1), plus(T2)) :- !, apply_sub_trace_exp(S, T1, T2).
 apply_sub_trace_exp(S, optional(T1), optional(T2)) :- !, apply_sub_trace_exp(S, T1, T2).
 
-%% proposal for with operator, to be tested
+%% proposal for the with operator, to be tested
 
 apply_sub_trace_exp(S,with(ET,T,G),with(ET2,T2,G2)) :- !, apply_sub_event_type(S, ET, ET2), apply_sub_trace_exp(S, T, T2), apply_sub_pred(S,G,G2). 
 			      
