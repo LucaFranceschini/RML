@@ -86,7 +86,10 @@ next(app(gen(X,T1),Arg), E, T3, S) :- atom(X),!,eval(Arg,Val),apply_sub_trace_ex
 %% general clause
 next(app(gen(Vars,T1),Args), E, T3, S) :- eval_exps(Vars,Args,Sub),apply_sub_trace_exp(Sub,T1,T2),!,next(T2, E, T3, S).%% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coinduction
 
-%% proposal for guarded trace expressions
+%% proposal for guarded trace expressions 
+%% comment: do we really need to return a substitution with solve? According to the ecoop19 calculus guards should be only ground
+%% this should be more in line with the ecoop19 calculus
+%% next(guarded(P,T1,T2),E,T,S) :- !,P -> next(T1,E,T,S);next(T2,E,T,S).
 
 next(guarded(P,T1,T2),E,T,S) :- !,solve(P,S1) -> next(T1,E,T,S2), merge(S1, S2, S);next(T2,E,T,S).
 
@@ -105,6 +108,11 @@ next(clos(T1), E, T3, S) :- !,next(T1, E, T2, S),prefix_clos(T2,T3).
 next(star(T1), E, T2*star(T1), S) :- !, next(T1, E, T2, S).
 next(plus(T1), E, T2*star(T1), S) :- !, next(T1, E, T2, S).
 next(optional(T1), E, T2, S) :- !, next(T1, E, T2, S).
+
+%% proposal for with operator, to be tested
+%% see the comment on solve/2 for guarded expressions
+
+next(with(ET,T,G), E, T, S) :- !,match(E, ET, S),apply_sub_trace_exp(S,G,G2),G2.
 
 %% eval predicates for arguments of generics: for the moment only number/boolean expressions, strings and atoms are supported
 num_exp(Exp) :- Exp=..[Op|_],memberchk(Op,[+,-,/,*]).
@@ -171,6 +179,9 @@ may_halt(star(_)).
 may_halt(plus(T)) :- !, may_halt(T).
 may_halt(optional(_)).
 
+%% proposal for with operator, to be tested
+
+%% with operator can never halt
 
 % see if trace expression is equivalent to 1 (only sound, not complete)
 is1(1) :- !.
@@ -329,6 +340,10 @@ apply_sub_trace_exp(S, star(T1), star(T2)) :- !, apply_sub_trace_exp(S, T1, T2).
 apply_sub_trace_exp(S, plus(T1), plus(T2)) :- !, apply_sub_trace_exp(S, T1, T2).
 apply_sub_trace_exp(S, optional(T1), optional(T2)) :- !, apply_sub_trace_exp(S, T1, T2).
 
+%% proposal for with operator, to be tested
+
+apply_sub_trace_exp(S,with(ET,T,G),with(ET2,T2,G2)) :- !, apply_sub_event_type(S, ET, ET2), apply_sub_trace_exp(S, T, T2), apply_sub_pred(S,G,G2). 
+			      
 % substitution inside event types
 apply_sub_event_type([],ET,ET) :- !.
 %%apply_sub_event_type([X=V],var(Y),ET) :- !,(Y==X -> ET=V;ET=var(Y)).
