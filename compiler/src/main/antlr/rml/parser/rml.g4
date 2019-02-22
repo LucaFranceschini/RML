@@ -41,6 +41,7 @@ texp: <assoc=right> texp texp # catTExp
     | '{' ('var'|'let') vars ';' texp '}' # blockTExp
     | 'if' '(' exp ')' texp 'else' texp # ifElseTExp
     | UPPERCASE_ID ('<' exp (',' exp)* '>')? # varTExp
+    | evtype 'with' '(' exp ')' # evtypeWithTExp
     | evtype # evtypeTExp
     | '(' texp ')' # parTExp
     ;

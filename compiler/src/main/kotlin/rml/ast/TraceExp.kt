@@ -38,3 +38,4 @@ data class BlockTraceExp(val declaredVars: List<VarId>, val traceExp: TraceExp):
 data class TraceExpVar(val id: TraceExpId, val genericArgs: List<Exp>): TraceExp()
 
 data class EventTypeTraceExp(val eventType: EventType): TraceExp()
+data class EventTypeWithTraceExp(val eventType: EventType, val exp: Exp): TraceExp()

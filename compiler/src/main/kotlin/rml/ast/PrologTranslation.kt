@@ -111,6 +111,10 @@ fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologT
             toProlog(traceExp.condition),
             toProlog(traceExp.thenTraceExp, true),
             toProlog(traceExp.elseTraceExp, true))
+    is EventTypeWithTraceExp -> FunctionTerm("with",
+            toProlog(traceExp.eventType),
+            toProlog(EmptyTraceExp),
+            toProlog(traceExp.exp))
 }
 
 fun toProlog(block: BlockTraceExp, outsideConcatenation: Boolean): PrologTerm {

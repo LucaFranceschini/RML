@@ -123,6 +123,9 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
     override fun visitEvtypeTExp(ctx: rmlParser.EvtypeTExpContext?) =
             EventTypeTraceExp(buildEventTypeAst(ctx!!.evtype()))
 
+    override fun visitEvtypeWithTExp(ctx: rmlParser.EvtypeWithTExpContext?) =
+            EventTypeWithTraceExp(buildEventTypeAst(ctx!!.evtype()), ctx.exp().accept(ExpBuilder))
+
     override fun visitParTExp(ctx: rmlParser.ParTExpContext?): TraceExp =
             ctx!!.texp().accept(this)
 
