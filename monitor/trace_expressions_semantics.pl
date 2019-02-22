@@ -97,8 +97,9 @@ next(guarded(P,T1,T2),E,T,S) :- !,solve(P,S1) -> next(T1,E,T,S2), merge(S1, S2, 
 %% proposal for (_?_;_), similar to previous ifelse/3 (ifelse(ET,T1,T2)=(ET?ET:T1;T2))
 %% ET?T1;T2 = (eps\/ET:1)/\T1 \/ (eps\/notET:1) /\ T2
 
-next((ET?T1;T2), E, T, S) :- !,
-	match(E, ET, S1) -> next(T1, E, T, S2), merge(S1, S2, S) ; next(T2, E, T, S).
+% obsolete, and doesn't work on version 8
+%next((ET?T1;T2), E, T, S) :- !,
+%	match(E, ET, S1) -> next(T1, E, T, S2), merge(S1, S2, S) ; next(T2, E, T, S).
 
 %% proposal for prefix closure
 
@@ -325,12 +326,13 @@ apply_sub_trace_exp(S,app(gen(Vars,T1),Args1),app(gen(Vars,T2),Args2)) :-
 
 apply_sub_trace_exp(S,guarded(P1,T1,T2),guarded(P2,T3,T4)) :- !,apply_sub_pred(S,P1,P2),apply_sub_trace_exp(S,T1,T3),apply_sub_trace_exp(S,T2,T4).
 
+% obsolete, and doesn't work on version 8
 %% proposal for if-then-else
-apply_sub_trace_exp(S, (ET? T1 ; T2), (ETs ? T1s ; T2s)) :-
-	!,
-	apply_sub_event_type(S, ET, ETs),
-	apply_sub_trace_exp(S, T1, T1s),
-	apply_sub_trace_exp(S, T2, T2s).
+%apply_sub_trace_exp(S, (ET? T1 ; T2), (ETs ? T1s ; T2s)) :-
+%	!,
+%	apply_sub_event_type(S, ET, ETs),
+%	apply_sub_trace_exp(S, T1, T1s),
+%	apply_sub_trace_exp(S, T2, T2s).
 
 %% proposal for prefix closure
 apply_sub_trace_exp(S, clos(T1), clos(T2)) :- !,apply_sub_trace_exp(S,T1,T2).
