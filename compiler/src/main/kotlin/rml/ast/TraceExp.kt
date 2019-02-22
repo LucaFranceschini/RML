@@ -22,9 +22,9 @@ data class FilterTraceExp(val evtype: EventType,
 data class CondFilterTraceExp(val evtype: EventType,
                               val leftExp: TraceExp,
                               val rightExp: TraceExp = AllTraceExp): TraceExp()
-data class StarTraceExp(val eventType: EventType): TraceExp()
-data class PlusTraceExp(val eventType: EventType): TraceExp()
-data class OptionalTraceExp(val eventType: EventType): TraceExp()
+data class StarTraceExp(val exp: TraceExp): TraceExp()
+data class PlusTraceExp(val exp: TraceExp): TraceExp()
+data class OptionalTraceExp(val exp: TraceExp): TraceExp()
 data class IfElseTraceExp(val condition: Exp, val thenTraceExp: TraceExp, val elseTraceExp: TraceExp): TraceExp()
 
 object EmptyTraceExp: TraceExp()

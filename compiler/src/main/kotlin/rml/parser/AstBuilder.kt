@@ -88,13 +88,13 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
     )
 
     override fun visitStarTExp(ctx: rmlParser.StarTExpContext?) =
-            StarTraceExp(buildEventTypeAst(ctx!!.evtype()))
+            StarTraceExp(ctx!!.texp().accept(this))
 
     override fun visitPlusTExp(ctx: rmlParser.PlusTExpContext?) =
-            PlusTraceExp(buildEventTypeAst(ctx!!.evtype()))
+            PlusTraceExp(ctx!!.texp().accept(this))
 
     override fun visitOptionalTExp(ctx: rmlParser.OptionalTExpContext?) =
-            OptionalTraceExp(buildEventTypeAst(ctx!!.evtype()))
+            OptionalTraceExp(ctx!!.texp().accept(this))
 
     override fun visitClosureTExp(ctx: rmlParser.ClosureTExpContext?) =
             ClosureTraceExp(ctx!!.texp().accept(this))

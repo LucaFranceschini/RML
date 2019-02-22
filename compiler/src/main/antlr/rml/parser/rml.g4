@@ -30,9 +30,9 @@ texp: <assoc=right> texp texp # catTExp
     | texp '|' texp # shufTExp
     | evtype '>>' texp (':' texp)? # filterExp
     | evtype '>' texp (':' texp)? # condFilterExp
-    | evtype '*' # starTExp
-    | evtype '+' # plusTExp
-    | evtype '?' # optionalTExp
+    | texp '*' # starTExp
+    | texp '+' # plusTExp
+    | texp '?' # optionalTExp
     | texp '!' # closureTExp
     | 'empty' # emptyTExp
     | 'none' # noneTExp

@@ -104,9 +104,9 @@ fun toProlog(traceExp: TraceExp, outsideConcatenation: Boolean = false): PrologT
             FunctionTerm(">",
                     toProlog(traceExp.evtype), toProlog(traceExp.leftExp, true)),
             toProlog(traceExp.rightExp, true))
-    is StarTraceExp -> FunctionTerm("star", toProlog(traceExp.eventType))
-    is PlusTraceExp -> FunctionTerm("plus", toProlog(traceExp.eventType))
-    is OptionalTraceExp -> FunctionTerm("optional", toProlog(traceExp.eventType))
+    is StarTraceExp -> FunctionTerm("star", toProlog(traceExp.exp))
+    is PlusTraceExp -> FunctionTerm("plus", toProlog(traceExp.exp))
+    is OptionalTraceExp -> FunctionTerm("optional", toProlog(traceExp.exp))
     is IfElseTraceExp -> FunctionTerm("guarded",
             toProlog(traceExp.condition),
             toProlog(traceExp.thenTraceExp, true),
