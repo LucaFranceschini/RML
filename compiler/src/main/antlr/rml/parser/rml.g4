@@ -51,6 +51,7 @@ simpleValues: simpleValue (',' simpleValue)* ;
 
 exp: BOOLEAN # boolExp
    | INT # intExp
+   | FLOAT # floatExp
    | LOWERCASE_ID # varExp
    | exp '+' exp # sumExp
    | exp '-' exp # subExp
@@ -69,6 +70,7 @@ UPPERCASE_ID: [A-Z] ID_CHAR* ;
 LOWERCASE_ID: [a-z] ID_CHAR* ;
 fragment ID_CHAR: [a-zA-Z0-9_] ;
 INT: [0-9]+ ;
+FLOAT: INT '.' INT ;
 STRING: '\'' [ a-zA-Z0-0_.]* '\'' ;
 
 WHITESPACE: [ \t\r\n]+ -> skip ;

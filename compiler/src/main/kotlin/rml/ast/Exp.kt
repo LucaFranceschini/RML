@@ -6,6 +6,7 @@ sealed class Exp
 // base cases
 data class BoolExp(val boolean: Boolean): Exp()
 data class IntExp(val int: Int): Exp()
+data class FloatExp(val double: Double): Exp()
 data class VarExp(val varId: VarId): Exp()
 
 // arithmetic binary expressions

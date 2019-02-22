@@ -6,6 +6,7 @@ import java.io.BufferedWriter
 class PrologCompiler(private val writer: BufferedWriter) {
     private fun compile(term: PrologTerm): Unit = when (term) {
         is IntTerm -> writer.write(term.number.toString())
+        is FloatTerm -> writer.write(term.number.toString())
         is VarTerm -> writer.write(term.name)
         is FunctionTerm -> compile(term)
         is ConstantTerm -> writer.write("'${term.string}'")

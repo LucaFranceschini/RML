@@ -181,6 +181,7 @@ fun toProlog(traceExp: TraceExpVar): PrologTerm {
 fun toProlog(exp: Exp): PrologTerm = when (exp) {
     is BoolExp -> ConstantTerm(exp.boolean.toString())
     is IntExp -> IntTerm(exp.int)
+    is FloatExp -> FloatTerm(exp.double)
     is VarExp -> FunctionTerm("var", ConstantTerm(exp.varId.name))
     is SumExp -> FunctionTerm("+", toProlog(exp.left), toProlog(exp.right))
     is SubExp -> FunctionTerm("-", toProlog(exp.left), toProlog(exp.right))

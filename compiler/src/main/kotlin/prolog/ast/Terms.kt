@@ -3,6 +3,7 @@ package prolog.ast
 sealed class PrologTerm
 
 data class IntTerm(val number: Int): PrologTerm()
+data class FloatTerm(val number: Double): PrologTerm()
 
 data class VarTerm(val name: String): PrologTerm() {
     init {

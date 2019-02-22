@@ -149,6 +149,9 @@ object ExpBuilder: rmlBaseVisitor<Exp>() {
     override fun visitIntExp(ctx: rmlParser.IntExpContext?) =
             IntExp(ctx!!.INT().text.toInt())
 
+    override fun visitFloatExp(ctx: rmlParser.FloatExpContext?) =
+            FloatExp(ctx!!.FLOAT().text.toDouble())
+
     override fun visitVarExp(ctx: rmlParser.VarExpContext?) =
             VarExp(VarId(ctx!!.text))
 
