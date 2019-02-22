@@ -112,7 +112,7 @@ next(optional(T1), E, T2, S) :- !, next(T1, E, T2, S).
 %% proposal for the with operator, to be tested
 %% see the comment on solve/2 for guarded expressions
 
-next(with(ET,T,G), E, T, S) :- !,match(E, ET, S),apply_sub_trace_exp(S,G,G2),G2.
+next(with(ET,T,G), E, T, S) :- !,match(E, ET, S),apply_sub_pred(S,G,G2),G2.
 
 %% eval predicates for arguments of generics: for the moment only number/boolean expressions, strings and atoms are supported
 num_exp(Exp) :- Exp=..[Op|_],memberchk(Op,[+,-,/,*]).
