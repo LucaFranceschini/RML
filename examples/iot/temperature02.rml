@@ -1,0 +1,4 @@
+temp_sensor(temp) matches {temperature:temp};
+
+Main = Check<16.85,40>;
+Check<min,max> = {let temp; temp_sensor(temp) with (temp>=min && temp <= max)}*;
