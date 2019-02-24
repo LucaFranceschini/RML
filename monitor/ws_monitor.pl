@@ -28,7 +28,7 @@
 :- current_prolog_flag(argv, [Spec|_]), use_module(Spec).
 
 %server(Port) :- http_server(http_dispatch,[port('10.251.61.71':Port),workers(1)]). %% one worker to guarantee event sequentiality
-server(Port) :- http_server(http_dispatch,[port('192.168.1.251':Port),workers(1)]). %% one worker to guarantee event sequentiality
+server(Port) :- http_server(http_dispatch,[port('192.168.1.250':Port),workers(1)]). %% one worker to guarantee event sequentiality
 
 log(Log) :-
     nb_getval(log,Stream), Stream\==null->  %% optional logging of server activity
