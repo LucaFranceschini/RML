@@ -1,0 +1,18 @@
+acquire(id) matches {event:'func_post',name:'fs.open',result:id};
+release(id) matches 
+    {event:'func_pre',name:'fs.close',args:[id]};
+use(id) matches
+    {event:'func_pre',name:'fs.read' | 'fs.write' | 'fs.fchmod', args:[id,...] };
+acquire matches acquire(_);
+resource(id) matches acquire(id) | release(id);
+acquireOrRelease matches resource(_);
+
+Resources = empty \/
+   { let id; acquire(id) (Resources |  use(id)* release(id)) };
+
+Exclusive = empty \/
+{
+   let id; acquire(id) ((resource(id) > (release(id) all)) /\
+                        (acquire > Exclusive))
+};
+Main = Resources /\ acquireOrRelease >> Exclusive;
