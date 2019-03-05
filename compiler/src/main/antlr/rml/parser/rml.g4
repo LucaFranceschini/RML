@@ -36,7 +36,6 @@ texp: <assoc=right> texp texp # catTExp
     | texp '!' # closureTExp
     | 'empty' # emptyTExp
     | 'none' # noneTExp
-    | 'any' # anyTExp
     | 'all' # allTExp
     | '{' ('var'|'let') vars ';' texp '}' # blockTExp
     | 'if' '(' exp ')' texp 'else' texp # ifElseTExp

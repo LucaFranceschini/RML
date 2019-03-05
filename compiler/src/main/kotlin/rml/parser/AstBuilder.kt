@@ -103,9 +103,6 @@ object TraceExpAstBuilder: rmlBaseVisitor<TraceExp>() {
 
     override fun visitNoneTExp(ctx: rmlParser.NoneTExpContext?) = NoneTraceExp
 
-    override fun visitAnyTExp(ctx: rmlParser.AnyTExpContext?) =
-            EventTypeTraceExp(EventType("any", emptyList()))
-
     override fun visitAllTExp(ctx: rmlParser.AllTExpContext?) = AllTraceExp
 
     override fun visitBlockTExp(ctx: rmlParser.BlockTExpContext?): BlockTraceExp =
