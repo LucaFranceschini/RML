@@ -8,7 +8,7 @@ spec: evtypeDecl* texpDecl+ ;
 evtypeDecl: evtype NOT? 'matches' evtype ('|' evtype)* ';' # derivedEvtypeDecl
           | evtype NOT? 'matches' value ';' # directEvtypeDecl
           ;
-object: '{' field (',' field)* '}' ;
+object: '{' (field (',' field)*)? '}' ;
 field: LOWERCASE_ID ':' value ;
 value: value '|' value # orPatternVal
      | object # objectVal

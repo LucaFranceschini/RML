@@ -26,11 +26,10 @@ data class ObjectValue(val fields: List<Field>): DataValue() {
                 value.unfoldOrPatterns().map { Field(key, it) }.toSet()
     }
 
-    init {
-        require(fields.isNotEmpty()) { "Non-empty object expected" }
-    }
-
     override fun unfoldOrPatterns(): Set<DataValue> {
+        if (fields.isEmpty())
+            return setOf(this)
+
         // unfold every field
         val fieldUnfolding: List<Set<Field>> = fields.map { it.unfoldOrPatterns() }
 

@@ -15,10 +15,12 @@ class PrologCompiler(private val writer: BufferedWriter) {
         is DictionaryTerm -> {
             writer.write("_{")
 
-            val first = term.map.entries.first()
-            compile(first.key)
-            writer.write(":")
-            compile(first.value)
+            if (term.map.entries.isNotEmpty()) {
+                val first = term.map.entries.first()
+                compile(first.key)
+                writer.write(":")
+                compile(first.value)
+            }
 
             term.map.entries.drop(1).map {
                 writer.write(",")
