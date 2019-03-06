@@ -5,14 +5,14 @@ data class DirectEvtypeDecl(override val evtype: EventType,
                             val patternValue: DataValue,
                             override val negated: Boolean = false): EvtypeDecl(evtype, negated) {
     init {
-        require(checkOnlyOrAndObjects(patternValue)) {
+        require(checkValidTopObjects(patternValue)) {
             "(or-pattern of) objects expected at top-level event type declaration"
         }
     }
 
-    private fun checkOnlyOrAndObjects(value: DataValue): Boolean = when (value) {
-        is ObjectValue -> true
-        is OrPatternValue -> checkOnlyOrAndObjects(value.left) && checkOnlyOrAndObjects(value.right)
+    private fun checkValidTopObjects(value: DataValue): Boolean = when (value) {
+        is ObjectValue, UnusedValue -> true
+        is OrPatternValue -> checkValidTopObjects(value.left) && checkValidTopObjects(value.right)
         else -> false
     }
 }
