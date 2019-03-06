@@ -15,9 +15,6 @@ data class Atom(val symbol: PredicateSymbol,
     constructor(symbol: String, vararg args: PrologTerm):
             this(PredicateSymbol(symbol), false, args.toList())
 
-    constructor(symbol: String, negated: Boolean, vararg args: PrologTerm):
-            this(PredicateSymbol(symbol), negated, args.toList())
-
     fun negate() = Atom(symbol, true, args)
 }
 

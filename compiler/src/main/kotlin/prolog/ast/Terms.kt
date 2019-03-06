@@ -39,7 +39,6 @@ data class ListTerm(val headTerms: List<PrologTerm>, val tail: PrologTerm? = nul
         require(headTerms.isNotEmpty() || tail == null) { "can't have tail term without other terms first" }
     }
 
-    constructor(vararg headTerms: PrologTerm): this(headTerms.toList())
 }
 
 // name/arity
