@@ -52,3 +52,5 @@ To verify a trace `trace.txt` against a compiled specification `spec.pl`:
 
 # Examples
 See folder `examples` for RML specifications of Node.js properties, together with programs to monitor.
+
+Examples from the submitted ECOOP'19 paper can be found in `examples/ecoop19`.
