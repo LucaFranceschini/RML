@@ -1,7 +1,0 @@
-eventType matches {event:'func_post',name:'foo'};
-
-Spec1 = eventType Spec1;
-Spec2 = evenType*;
-Spec3 = eventType; // recall: eventType = eventType empty
-Spec4 = evenType all;
-Main = Spec4;

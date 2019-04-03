@@ -1,4 +1,0 @@
-eventType matches {event:'func_pre',name:'pop'};
-
-Main = Repeat<3>;
-Repeat<n> = if(n>0) eventType Repeat<n-1> else empty;

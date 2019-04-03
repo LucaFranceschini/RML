@@ -1,4 +1,0 @@
-hasNext(res) matches {event:'func_post',name:'hasNext',result:res};
-next matches {event:'func_pre',name:'next'};
-
-Main = hasNext(false) \/ hasNext(true) next Main;

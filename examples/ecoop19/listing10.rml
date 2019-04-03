@@ -1,5 +1,0 @@
-eventType matches {event:'func_pre',name:'pop'};
-size(res) matches {event:'func_post',name:'size',result:res};
-
-Main = {let s; size(s) Repeat<s>};
-Repeat<n> = if(n>0) eventType Repeat<n-1> else empty;

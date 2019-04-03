@@ -1,7 +1,0 @@
-push(val) matches {event:'func_pre',name:'push',args:[val]};
-pop(val) matches  {event:'func_post',name:'pop',result:val};
-size(s) matches {event:'func_post',name:'size',result:s};
-
-Stack<s> = size(s)* ((if(s==0) empty else none) 
-    \/ { let val; push(val) Stack<s+1> pop(val) Stack<s> });
-Main=Stack<0>; 

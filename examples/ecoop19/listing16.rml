@@ -1,6 +1,0 @@
-// event types available(total), use(total,used) to be defined
-available(total) matches {total:total}; // _ {} any
-use(total,used) matches {total:total,used:used};
-
-Use<total> = if(total>0) use(total,used) Use<total-used> else empty;
-Main = {let total; (available(total) Use<total>) !};
