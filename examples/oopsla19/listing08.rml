@@ -1,0 +1,10 @@
+hasNext(id,res) matches 
+    {event:'func_post',name:'hasNext',targetId:id,result:res};
+next(id) matches {event:'func_pre',name:'next',targetId:id};
+iterator(id) matches {event:'func_post',name:'iterator',resultId:id};
+
+Main = empty \/
+{
+  let id;
+  iterator(id) (Main | (hasNext(id,true) next(id))* hasNext(id,false))
+};

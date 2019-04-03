@@ -1,0 +1,4 @@
+push(val) matches {event:'func_pre',name:'push',args:[val]};
+pop(val) matches  {event:'func_post',name:'pop',result:val};
+
+Main = empty \/ { let val; push(val) Main pop(val) Main };

@@ -1,0 +1,10 @@
+hasNext(res) matches 
+    {event:'func_post',name:'hasNext',result:res};
+next matches {event:'func_pre',name:'next'};
+
+it matches hasNext(_) | next; // replaces notIt
+col matches nonStruct | hasNext(false); // replaces notCol
+
+Collection = nonStruct* hasNext(false);
+Iterator = hasNext(false) \/ hasNext(true) next Iterator;
+Main = (it >> Iterator) /\ (col >> Collection); 

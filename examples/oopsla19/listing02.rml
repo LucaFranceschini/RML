@@ -1,0 +1,7 @@
+hasNext(target,res) matches 
+    {event:'func_post',name:'hasNext',targetId:target,result:res};
+next(target) matches {event:'func_pre',name:'next',targetId:target};
+
+Iterator1 = hasNext(1,false) \/ hasNext(1,true) next(1) Iterator1;
+Iterator2 = hasNext(2,false) \/ hasNext(2,true) next(2) Iterator2;
+Main = Iterator1 | Iterator2;

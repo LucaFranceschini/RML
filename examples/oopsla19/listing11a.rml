@@ -1,0 +1,8 @@
+acquire(id) matches {event:'func_post',name:'iterator',resultId:id};
+release(id) matches 
+    {event:'func_post',name:'hasNext',targetId:id,result:false};
+use(id) matches
+    {event:'func_post',name:'hasNext',targetId:id,result:true} |
+    {event:'func_pre',name:'next',targetId:id};
+
+Main = empty \/ { let id; acquire(id) (Main |  use(id)* release(id)) };
