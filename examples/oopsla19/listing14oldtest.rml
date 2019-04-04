@@ -1,0 +1,17 @@
+acquire(id) matches {event:'func_pre',name:'acquire',targetId:id};
+release(id) matches {event:'func_pre',name:'release',targetId:id};
+use(id) matches {event:'func_pre',name:'use',targetId:id};
+acquire matches acquire(_);
+acquireOrRelease(id) matches acquire(id) | release(id);
+acquireOrRelease matches acquireOrRelease(_);
+filter matches acquire(_) | release(_) | use(_);
+
+Resources = empty \/
+   { let id; acquire(id) (Resources |  use(id)* release(id)) };
+
+Exclusive = empty \/
+{
+   let id; acquire(id) ((acquireOrRelease(id) > (release(id) all)) /\ (acquire > Exclusive))
+};
+
+Main =  filter >> Resources /\ (acquireOrRelease >> Exclusive);
