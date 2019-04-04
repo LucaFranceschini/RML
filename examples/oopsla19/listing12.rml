@@ -3,11 +3,8 @@ release(id) matches
     {event:'func_pre',name:'fs.close',args:[id]};
 use(id) matches
     {event:'func_pre',name:'fs.read' | 'fs.write' | 'fs.fchmod', args:[id,...] };
+event(id) matches acquire(id) | use(id) | release(id);
 
-notAcquire(id) not matches acquire(id);  
+Main = { let id; acquire(id) (Resource<id> /\ Main)} ?;
 
-Main = empty \/
-{
-  let id;
-  acquire(id) (((notAcquire(id) all) /\ Main) |  use(id)* release(id))
-};
+Resource<id> = event(id) >> (use(id)* release(id) all);

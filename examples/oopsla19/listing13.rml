@@ -1,12 +1,6 @@
-acquire(id) matches {event:'func_post',name:'fs.open',result:id};
-release(id) matches 
-    {event:'func_pre',name:'fs.close',args:[id]};
-use(id) matches
-    {event:'func_pre',name:'fs.read' | 'fs.write' | 'fs.fchmod', args:[id,...] };
-neq(id) not matches acquire(id) | use(id) | release(id);  
+// event types available(total), use(total,used) to be defined
+available(total) matches {total:total}; // _ {} any
+use(total,used) matches {total:total,used:used};
 
-Main = empty \/
-{
-  let id;
-  acquire(id) ((neq(id)* /\ Main) |  use(id)* release(id))
-};
+Use<total> = if(total>0) use(total,used) Use<total-used> else empty;
+Main = {let total; (available(total) Use<total>) !};

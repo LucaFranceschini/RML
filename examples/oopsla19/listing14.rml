@@ -1,10 +1,4 @@
-acquire(id) matches {event:'func_post',name:'fs.open',result:id};
-release(id) matches 
-    {event:'func_pre',name:'fs.close',args:[id]};
-use(id) matches
-    {event:'func_pre',name:'fs.read' | 'fs.write' | 'fs.fchmod', args:[id,...] };
-event(id) matches acquire(id) | use(id) | release(id);
+push(val) matches {event:'func_pre',name:'push',args:[val]};
+pop(val) matches  {event:'func_post',name:'pop',result:val};
 
-Main = { let id; acquire(id) (Resource<id> /\ Main)} ?;
-
-Resource<id> = event(id) >> (use(id)* release(id) all);
+Main = empty \/ { let val; push(val) Main pop(val) Main };

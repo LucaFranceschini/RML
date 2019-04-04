@@ -4,5 +4,10 @@ release(id) matches
 use(id) matches
     {event:'func_pre',name:'fs.read' | 'fs.write' | 'fs.fchmod', args:[id,...] };
 
-Main = {let id; acquire(id) (Main |  use(id)* release(id))}?;
+notAcquire(id) not matches acquire(id);  
 
+Main = empty \/
+{
+  let id;
+  acquire(id) (((notAcquire(id) all) /\ Main) |  use(id)* release(id))
+};

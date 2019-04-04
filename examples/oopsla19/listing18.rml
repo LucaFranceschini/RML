@@ -1,9 +1,10 @@
-new(id) matches {event:'alloc',class:'stack',resultId:id};
-free(id) matches {event:'dealloc',argsId:[id]};
-push(id,val) matches {event:'func_pre',name:'push',targetId:id,args:[val]};
-pop(id,val) matches  {event:'func_post',name:'pop',targetId:id,result:val};
-size(id,s) matches {event:'func_post',name:'size',targetId:id,result:s};
+enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
+deq(val) matches  {event:'func_post',name:'dequeue',result:val};
+size(s) matches  {event:'func_post',name:'size',result:s};
+deq matches deq(_);
 
-Stack<id,s> = size(id,s)* ((if(s==0) empty else none) 
-    \/ { let val; push(id,val) Stack<id,s+1> pop(id,val) Stack<id,s> });
-Main = empty \/ { let id; new(id) (Main | (Stack<id,0> free(id))) }; 
+DeqAfter<n,val> = if(n>0) deq DeqAfter<n-1,val> else (deq(val) all);  
+Queue<s> =
+   {let val; enq(val) ((deq >> DeqAfter<s,val>) /\ Queue<s+1>)}
+   \/ (if(s>0) deq Queue<s-1> else empty) \/ (size(s) Queue<s>);  
+Main=Queue<0>;

@@ -6,4 +6,4 @@ match(Event, use(Id)) :- deep_subdict(_{'args':[var(id)|_],'name':"fs.read",'eve
 match(Event, use(Id)) :- deep_subdict(_{'args':[var(id)|_],'name':"fs.write",'event':"func_pre"}, Event).
 match(Event, use(Id)) :- deep_subdict(_{'args':[var(id)|_],'name':"fs.fchmod",'event':"func_pre"}, Event).
 match(_, any).
-trace_expression('Main', Main) :- Main=(eps\/var(id, (acquire(var(id)):(star((Main|use(var(id))))*(release(var(id)):eps))))).
+trace_expression('Main', Main) :- Main=optional(var(id, (acquire(var(id)):(star((Main|use(var(id))))*(release(var(id)):eps))))).

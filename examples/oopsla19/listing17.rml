@@ -1,7 +1,9 @@
-push(val) matches {event:'func_pre',name:'push',args:[val]};
-pop(val) matches  {event:'func_post',name:'pop',result:val};
-size(s) matches {event:'func_post',name:'size',result:s};
+enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
+deq(val) matches  {event:'func_post',name:'dequeue',result:val};
+deq matches deq(_);
 
-Stack<s> = size(s)* ((if(s==0) empty else none) 
-    \/ { let val; push(val) Stack<s+1> pop(val) Stack<s> });
-Main=Stack<0>; 
+DeqAfter<n,val> = if(n>0) deq DeqAfter<n-1,val> else (deq(val) all);  
+Queue<s> =
+   {let val; enq(val) ((deq >> DeqAfter<s,val>) /\ Queue<s+1>)}
+   \/ (if(s>0) deq Queue<s-1> else empty);  
+Main=Queue<0>;

@@ -5,4 +5,4 @@ use(id) matches
     {event:'func_post',name:'hasNext',targetId:id,result:true} |
     {event:'func_pre',name:'next',targetId:id};
 
-Main = empty \/ { let id; acquire(id) (Main |  use(id)* release(id)) };
+Main = {let id; acquire(id) (Main |  use(id)* release(id))}?;

@@ -1,6 +1,7 @@
-// event types available(total), use(total,used) to be defined
-available(total) matches {total:total}; // _ {} any
-use(total,used) matches {total:total,used:used};
+push(val) matches {event:'func_pre',name:'push',args:[val]};
+pop(val) matches  {event:'func_post',name:'pop',result:val};
+size(s) matches {event:'func_post',name:'size',result:s};
 
-Use<total> = if(total>0) use(total,used) Use<total-used> else empty;
-Main = {let total; (available(total) Use<total>) !};
+Stack<s> = size(s)* ((if(s==0) empty else none) 
+    \/ { let val; push(val) Stack<s+1> pop(val) Stack<s> });
+Main=Stack<0>; 

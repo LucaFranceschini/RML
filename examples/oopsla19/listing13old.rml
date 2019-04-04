@@ -3,6 +3,10 @@ release(id) matches
     {event:'func_pre',name:'fs.close',args:[id]};
 use(id) matches
     {event:'func_pre',name:'fs.read' | 'fs.write' | 'fs.fchmod', args:[id,...] };
+neq(id) not matches acquire(id) | use(id) | release(id);  
 
-Main = {let id; acquire(id) (Main |  use(id)* release(id))}?;
-
+Main = empty \/
+{
+  let id;
+  acquire(id) ((neq(id)* /\ Main) |  use(id)* release(id))
+};
