@@ -6,4 +6,4 @@ match(Event, push(Id, Val)) :- deep_subdict(_{'args':[Val],'targetId':Id,'name':
 match(Event, pop(Id, Val)) :- deep_subdict(_{'result':Val,'targetId':Id,'name':"pop",'event':"func_post"}, Event).
 match(Event, size(Id, S)) :- deep_subdict(_{'result':S,'targetId':Id,'name':"size",'event':"func_post"}, Event).
 match(_, any).
-trace_expression('Main', Main) :- Stack=gen(['id', 's'], (star(size(var(id), var(s)))*(guarded((var('s')==0), eps, 0)\/var(val, (push(var(id), var(val)):(app(Stack, [var('id'), (var('s')+1)])*(pop(var(id), var(val)):app(Stack, [var('id'), var('s')])))))))), Main=optional(var(id, (new(var(id)):(Main|(app(Stack, [var('id'), 0])*(free(var(id)):eps)))))).
+trace_expression('Main', Main) :- Stack=gen(['id', 's'], optional((star(size(var(id), var(s)))*var(val, (push(var(id), var(val)):(app(Stack, [var('id'), (var('s')+1)])*(pop(var(id), var(val)):app(Stack, [var('id'), var('s')])))))))), Main=optional(var(id, (new(var(id)):(Main|(app(Stack, [var('id'), 0])*(free(var(id)):eps)))))).
