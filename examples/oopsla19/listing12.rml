@@ -5,4 +5,4 @@ use(id) matches
     {event:'func_pre',name:'fs.read' | 'fs.write' | 'fs.fchmod', args:[id,...] };
 acqRel(id) matches acquire(id) | release(id);
 
-Main = {let id; acquire(id) ((Main | use(id)* release(id)) /\ (acqRel(id) >> release(id) all))}?;
+Main = {let id; acquire(id) ((Main | use(id)* release(id)) /\ acqRel(id) >> (release(id) all))}?;
