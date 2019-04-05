@@ -6,4 +6,4 @@ size(id,s) matches {event:'func_post',name:'size',targetId:id,result:s};
 
 Stack<id,s> = size(id,s)* ((if(s==0) empty else none) 
     \/ { let val; push(id,val) Stack<id,s+1> pop(id,val) Stack<id,s> });
-Main = empty \/ { let id; new(id) (Main | (Stack<id,0> free(id))) }; 
+Main = {let id; new(id) (Main | (Stack<id,0> free(id)))}?; 
