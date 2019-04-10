@@ -2,8 +2,7 @@ acquire(id) matches {event:'func_pre',name:'acquire',targetId:id};
 release(id) matches {event:'func_pre',name:'release',targetId:id};
 use(id) matches {event:'func_pre',name:'use',targetId:id};
 event(id) matches acquire(id) | use(id) | release(id);
+acqRel(id) matches acquire(id) | release(id);
 filter matches acquire(_) | release(_) | use(_);
 
-Main = filter >> ({ let id; acquire(id) (Resource<id> /\ Main)} ?);
-
-Resource<id> = event(id) >> (use(id)* release(id) all);
+Main = {let id; acquire(id) ((Main | use(id)* release(id)) /\ acqRel(id) >> (release(id) all))}?;

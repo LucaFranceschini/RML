@@ -1,0 +1,5 @@
+enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
+deq(val) matches  {event:'func_post',name:'dequeue',result:val};
+deq matches deq(_);
+
+Main={let val; enq(val) ((deq>>deq(val) all)/\(deq(val)|Main))} // works only for deterministic shuffle with left-to-right strategy
