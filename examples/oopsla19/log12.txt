@@ -1,0 +1,3 @@
+- star: precedenza su operatori binari
+- inserimento di var nei body di match e nome variabile con prima lettera capital
+- inserimento di eps in fondo a trace expression formate da singolo event type

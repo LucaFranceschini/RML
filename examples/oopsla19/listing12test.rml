@@ -5,4 +5,4 @@ event(id) matches acquire(id) | use(id) | release(id);
 acqRel(id) matches acquire(id) | release(id);
 filter matches acquire(_) | release(_) | use(_);
 
-Main = {let id; acquire(id) ((Main | use(id)* release(id)) /\ acqRel(id) >> (release(id) all))}?;
+Main = filter >> ({let id; acquire(id) ((Main | (use(id)*) release(id)) /\ acqRel(id) >> (release(id) all))}?);
