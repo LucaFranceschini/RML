@@ -24,16 +24,16 @@ simpleValue: STRING # stringValue
            | '_' # unusedVal
            ;
 texpDecl: UPPERCASE_ID ('<' vars '>')? '=' texp ';' ;
-texp: <assoc=right> texp texp # catTExp
+texp: texp '*' # starTExp
+    | texp '+' # plusTExp
+    | texp '?' # optionalTExp
+    | texp '!' # closureTExp
+    | <assoc=right> texp texp # catTExp
     | texp '/\\' texp # andTExp
     | texp '\\/' texp # orTExp
     | texp '|' texp # shufTExp
     | evtype '>>' texp (':' texp)? # filterExp
     | evtype '>' texp (':' texp)? # condFilterExp
-    | texp '*' # starTExp
-    | texp '+' # plusTExp
-    | texp '?' # optionalTExp
-    | texp '!' # closureTExp
     | 'empty' # emptyTExp
     | 'none' # noneTExp
     | 'all' # allTExp
