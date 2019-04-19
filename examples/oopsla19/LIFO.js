@@ -17,21 +17,19 @@ function pop() {
     return el;
 }
 
-function push(el) {
+function push() {
+    var el=getRandom(max_elem);
     console.log('push(' + el + ')');
     stack.push(el);
 }
 
 for (var event_counter = 1; event_counter <= trace_size; event_counter++) {
-    resId = getRandom(max_size);
     if (stack.length==0)
-	push(getRandom(max_elem));
+	push();
     else if (stack.length==max_size)
 	pop();
     else
-        getRandom(2)?use(resId):release(resId);
-    else
-	acquire(resId);
+        getRandom(stack.length)==1?push():pop();
 }
 while(stack.length)
-    release(stack[stack.length-1]);   
+    pop();
