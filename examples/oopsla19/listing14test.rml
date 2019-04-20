@@ -1,0 +1,5 @@
+push(val) matches {event:'func_pre',name:'mypush',args:[val]};
+pop(val) matches  {event:'func_post',name:'mypop',res:val};
+filter matches push(_)|pop(_);
+
+Main = filter >> ({ let val; push(val) Main pop(val) Main }?);

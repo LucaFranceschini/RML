@@ -11,25 +11,24 @@ function getRandom(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-function pop() {
+function mypop() {
     var el=stack.pop();
     console.log('pop(' + el + ')');
     return el;
 }
 
-function push() {
-    var el=getRandom(max_elem);
+function mypush(el) {
     console.log('push(' + el + ')');
     stack.push(el);
 }
 
 for (var event_counter = 1; event_counter <= trace_size; event_counter++) {
     if (stack.length==0)
-	push();
+	mypush(getRandom(max_elem));
     else if (stack.length==max_size)
-	pop();
+	mypop();
     else
-        getRandom(stack.length)==1?push():pop();
+        getRandom(max_size)>=stack.length?mypush(getRandom(max_elem)):mypop();
 }
 while(stack.length)
-    pop();
+    mypop();
