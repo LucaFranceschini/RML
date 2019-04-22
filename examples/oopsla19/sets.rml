@@ -1,0 +1,9 @@
+acquire(el) matches {event:'func_post',name:'add',args:[el],result:true};
+release(el) matches 
+    {event:'func_post',name:'remove',args:[el],result:true};
+use(el) matches
+    {event:'func_post',name:'add', args:[el], result:false};
+acqRel(el) matches acquire(el) | release(el);
+no_rm matches {event:'func_post',name:'remove',args:[el],result:false};
+
+Main = ({let el; acquire(el) ((Main | use(el)* release(el)) /\ acqRel(el) >> (release(el) all))} \/ (no_rm Main))?;
