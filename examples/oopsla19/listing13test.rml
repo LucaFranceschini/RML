@@ -1,4 +1,6 @@
-// event types available(total), use(total,used) to be defined
+// quantitative monitoring with state variables
+// works with traces generated from listing13.js
+
 available(total) matches {event:'func_post',name:'available',res:total};
 use(total,used) matches {event:'func_pre',name:'use',args:[total,used]};
 filter matches available(_)|use(_,_);

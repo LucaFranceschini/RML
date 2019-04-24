@@ -1,3 +1,6 @@
+// non exclusive use of resources
+// instantiation with iterators
+
 acquire(id) matches {event:'func_post',name:'iterator',resultId:id};
 release(id) matches 
     {event:'func_post',name:'hasNext',targetId:id,result:false};

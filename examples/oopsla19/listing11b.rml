@@ -1,3 +1,6 @@
+// non exclusive use of resources
+// instantiation with Node.js files
+
 acquire(id) matches {event:'func_post',name:'fs.open',result:id};
 release(id) matches 
     {event:'func_pre',name:'fs.close',args:[id]};

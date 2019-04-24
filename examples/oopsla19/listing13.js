@@ -1,4 +1,4 @@
-// generator of correct traces for listing12.rml: exclusive access to multiple resources
+// generator of correct traces for listing13.rml: quantitative monitoring with state variables
 
 'use strict';
 

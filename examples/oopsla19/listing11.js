@@ -1,4 +1,4 @@
-// generator of correct traces for listing11{a,b}.rml: non-exclusive access to multiple resources
+// generator of correct traces for listing11test.rml: non-exclusive access to multiple resources
 
 'use strict';
 
