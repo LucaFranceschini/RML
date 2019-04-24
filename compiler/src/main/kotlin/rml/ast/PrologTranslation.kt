@@ -203,7 +203,7 @@ fun toProlog(value: SimpleValue, isMatchClause: Boolean = false): PrologTerm = w
     is BooleanValue -> ConstantTerm(value.boolean.toString())
     is StringValue -> StringTerm(value.string)
     is ListSimpleValue -> ListTerm(
-            value.values.map { toProlog(it) },
+            value.values.map { toProlog(it, isMatchClause) },
             if (value.hasEllipsis) VarTerm("_") else null)
     is UnusedValue -> VarTerm("_")
 }
