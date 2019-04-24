@@ -1,3 +1,5 @@
+// LIFO properties, single stack with push and pop
+
 push(val) matches {event:'func_pre',name:'push',args:[val]};
 pop(val) matches  {event:'func_post',name:'pop',result:val};
 

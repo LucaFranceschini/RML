@@ -1,3 +1,6 @@
+// FIFO properties, single queue with enqueue and dequeue
+// works with traces generated from listing17.js
+
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
 deq(val) matches  {event:'func_post',name:'dequeue',res:val};
 deq matches deq(_);

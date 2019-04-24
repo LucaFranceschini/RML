@@ -1,4 +1,4 @@
-// generator of correct traces for listing12.rml: exclusive access to multiple resources
+// generator of correct traces for listing17.rml: FIFO properties, single queue with enqueue and dequeue
 
 'use strict';
 

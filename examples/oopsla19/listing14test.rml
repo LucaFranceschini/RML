@@ -1,3 +1,6 @@
+// LIFO properties, single stack with push and pop
+// works with traces generated from listing14.js
+
 push(val) matches {event:'func_pre',name:'mypush',args:[val]};
 pop(val) matches  {event:'func_post',name:'mypop',res:val};
 filter matches push(_)|pop(_);

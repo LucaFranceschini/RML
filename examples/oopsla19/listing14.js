@@ -1,4 +1,4 @@
-// generator of correct traces for listing12.rml: exclusive access to multiple resources
+// generator of correct traces for listing14.rml: LIFO properties, single stack with push and pop
 
 'use strict';
 
