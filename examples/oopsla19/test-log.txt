@@ -1,0 +1,13 @@
+listing 11 fallisce
+
+- inserimento di var nei body di match e nome variabile con prima lettera capital, molto probabilment con argomenti in forma [Hd|Tl] 
+- inserimento di eps in fondo a trace expression formate da singolo event type
+- anche correggendo problema con eps non va
+
+listing 12 fallisce, correggere prima i bug di 11 e poi ricontrollare
+
+listing 13 ok, ma c'era errore nella specifica RML, variabile 'used' non dichiarata
+
+listing 14 ok
+
+listing 17 ok

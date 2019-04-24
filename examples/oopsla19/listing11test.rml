@@ -1,3 +1,5 @@
+// non exclusive use of resources
+
 acquire(id) matches {event:'func_pre',name:'acquire',args:[id,...]};
 release(id) matches {event:'func_pre',name:'release',args:[id,...]};
 use(id) matches {event:'func_pre',name:'use',args:[id,...]};

@@ -2,5 +2,5 @@
 available(total) matches {total:total}; // _ {} any
 use(total,used) matches {total:total,used:used};
 
-Use<total> = if(total>0) use(total,used) Use<total-used> else empty;
+Use<total> = if(total>0) {let used; use(total,used) Use<total-used>} else empty;
 Main = {let total; (available(total) Use<total>) !};
