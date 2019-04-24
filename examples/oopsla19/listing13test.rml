@@ -1,6 +1,7 @@
 // event types available(total), use(total,used) to be defined
-available(total) matches {total:total}; // _ {} any
-use(total,used) matches {total:total,used:used};
+available(total) matches {event:'func_post',name:'available',res:total};
+use(total,used) matches {event:'func_pre',name:'use',args:[total,used]};
+filter matches available(_)|use(_,_);
 
-Use<total> = if(total>0) use(total,used) Use<total-used> else empty;
-Main = {let total; (available(total) Use<total>) !};
+Use<total> = if(total>0) {let used; use(total,used) Use<total-used>} else empty;
+Main = filter >> {let total; (available(total) Use<total>) !};
