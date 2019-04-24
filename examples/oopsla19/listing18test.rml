@@ -1,12 +1,14 @@
 // FIFO properties, single queue with enqueue, dequeue and size
+// works with traces generated from listing18.js
 
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
-deq(val) matches  {event:'func_post',name:'dequeue',result:val};
-size(s) matches  {event:'func_post',name:'size',result:s};
+deq(val) matches  {event:'func_post',name:'dequeue',res:val};
 deq matches deq(_);
+size(s) matches {event:'func_post',name:'size',res:s};
+filter matches enq(_) | deq(_) | size(_);
 
 DeqAfter<n,val> = if(n>0) deq DeqAfter<n-1,val> else (deq(val) all);  
 Queue<s> =
    {let val; enq(val) ((deq >> DeqAfter<s,val>) /\ Queue<s+1>)}
    \/ (if(s>0) deq Queue<s-1> else empty) \/ (size(s) Queue<s>);  
-Main=Queue<0>;
+Main=filter >> (Queue<0>);

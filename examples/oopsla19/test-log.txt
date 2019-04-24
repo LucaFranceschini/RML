@@ -1,13 +1,22 @@
-listing 11 fallisce
+listing 11 fallisce, passa con listing11test-fixed.pl con i fix 1,2 e 3
 
-- inserimento di var nei body di match e nome variabile con prima lettera capital, molto probabilment con argomenti in forma [Hd|Tl] 
-- inserimento di eps in fondo a trace expression formate da singolo event type
-- anche correggendo problema con eps non va
+1- inserimento di var nei body di match e nome variabile con prima lettera capital, molto probabilmente con argomenti in forma [Hd|Tl] 
+2- inserimento di eps in fondo a trace expression formate da singolo event type: use(var(id)) -> use(var(id):eps 
+3- problema precedenza di star, viene applicato a tutto il termine Main|use(id) 
+attenzione: controllare che le parentesi in .pl assicurino la precedenza di concatenazione su shuffle
 
-listing 12 fallisce, correggere prima i bug di 11 e poi ricontrollare
+listing 12 fallisce, passa con listing12test-fixed.pl, con i fix 1 e 2 di listing 11
 
-listing 13 ok, ma c'era errore nella specifica RML, variabile 'used' non dichiarata
+listing 13 ok senza correggere il .pl, ma c'era errore nella specifica RML, variabile 'used' non dichiarata
 
-listing 14 ok
+listing 14 ok senza correggere il .pl
 
-listing 17 ok
+listing 15 fallisce, passa con listing15test-fixed.pl con il fix 2 e 4
+
+4- problema precedenza di optional, viene applicato a tutto il termine size(s)* { let val; push(val) Stack<s+1> pop(val) Stack<s> }
+
+listing 16 ancora da fare
+
+listing 17 ok senza correggere il .pl
+
+listing 18 ok senza correggere il .pl
