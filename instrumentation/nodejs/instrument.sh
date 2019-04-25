@@ -7,7 +7,7 @@
 # - other args are forwarded to the program
 
 # check args
-if [ $# -ne 2 ]
+if [ $# -lt 2 ]
 	then
 		echo "expected args: log-file program [programArgs ...]"
 		exit 1
