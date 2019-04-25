@@ -1,3 +1,5 @@
+// LIFO properties, multiple stacks with push, pop and size
+
 new(id) matches {event:'alloc',class:'stack',resultId:id};
 free(id) matches {event:'dealloc',argsId:[id]};
 push(id,val) matches {event:'func_pre',name:'push',targetId:id,args:[val]};

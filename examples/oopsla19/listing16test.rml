@@ -1,0 +1,12 @@
+// LIFO properties, multiple stacks with push, pop and size
+// works with traces generated from listing16.js
+
+new(id) matches {event:'func_post',name:'mynew',res:id};
+free(id) matches {event:'func_pre',name:'myfree',args:[id]};
+push(id,val) matches {event:'func_pre',name:'mypush',args:[id,val]};
+pop(id,val) matches  {event:'func_post',name:'mypop',args:[id],res:val};
+size(id,s) matches {event:'func_post',name:'mysize',args:[id],res:s};
+filter matches new(_) | free(_) | push(_,_) | pop(_,_) | size(_,_);
+
+Stack<id,s> = size(id,s)* { let val; push(id,val) Stack<id,s+1> pop(id,val) Stack<id,s> }?;
+Main = filter >> {let id; new(id) (Main | (Stack<id,0> free(id)))}?; 

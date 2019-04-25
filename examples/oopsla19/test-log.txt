@@ -10,7 +10,7 @@ listing 14 ok senza correggere il .pl
 
 listing 15 fallisce, passa con listing15test-fixed.pl con il fix 1 
 
-listing 16 ancora da fare
+listing 16 fallisce, passa con listing16test-fixed.pl con il fix 1 
 
 listing 17 ok senza correggere il .pl
 
