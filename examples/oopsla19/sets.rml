@@ -1,3 +1,5 @@
+// sets as extension of exclusive access to multiple resources
+
 acquire(el) matches {event:'func_post',name:'add',args:[el],result:true};
 release(el) matches 
     {event:'func_post',name:'remove',args:[el],result:true};

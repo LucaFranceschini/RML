@@ -1,11 +1,14 @@
-acquire(el) matches {event:'func_post',name:'add',args:[el],res:true};
+// sets as extension of exclusive access to multiple resources
+// works with traces generated from sets.js
+
+acquire(el) matches {event:'func_post',name:'insert',args:[el],res:true};
 release(el) matches 
     {event:'func_post',name:'remove',args:[el],res:true};
 use(el) matches
-    {event:'func_post',name:'add', args:[el], res:false};
+    {event:'func_post',name:'insert', args:[el], res:false};
 toCheck(el) matches acquire(el) | release(el) | no_rm(el);
 no_rm(el) matches {event:'func_post',name:'remove',args:[el],res:false};
-no_rm matches no_rml(_);
+no_rm matches no_rm(_);
 filter matches toCheck(_) | use(_); 
 
 Main = filter >> (no_rm* {let el; acquire(el) ((Main | use(el)* release(el)) /\ toCheck(el) >> (release(el) all))})?;
