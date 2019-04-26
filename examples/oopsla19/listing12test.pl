@@ -3,11 +3,11 @@
 match(Event, acquire(Id)) :- deep_subdict(_{'args':[Id|_],'name':"acquire",'event':"func_pre"}, Event).
 match(Event, release(Id)) :- deep_subdict(_{'args':[Id|_],'name':"release",'event':"func_pre"}, Event).
 match(Event, use(Id)) :- deep_subdict(_{'args':[Id|_],'name':"use",'event':"func_pre"}, Event).
-match(Event, event(Id)) :- match(Event, acquire(var(id))).
-match(Event, event(Id)) :- match(Event, use(var(id))).
-match(Event, event(Id)) :- match(Event, release(var(id))).
-match(Event, acqRel(Id)) :- match(Event, acquire(var(id))).
-match(Event, acqRel(Id)) :- match(Event, release(var(id))).
+match(Event, event(Id)) :- match(Event, acquire(Id)).
+match(Event, event(Id)) :- match(Event, use(Id)).
+match(Event, event(Id)) :- match(Event, release(Id)).
+match(Event, acqRel(Id)) :- match(Event, acquire(Id)).
+match(Event, acqRel(Id)) :- match(Event, release(Id)).
 match(Event, filter) :- match(Event, acquire(_)).
 match(Event, filter) :- match(Event, release(_)).
 match(Event, filter) :- match(Event, use(_)).
