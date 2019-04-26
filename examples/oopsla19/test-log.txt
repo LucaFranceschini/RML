@@ -18,3 +18,4 @@ listing 17 quasi ok, listing17test-fixed.pl con fix 2
 
 listing 18 quasi ok, listing18test-fixed.pl con fix 2
 
+sets (esempio con insiemi non presente nell'articolo) fallisce, passa con sets-fixed.pl con il fix 1 e fix su variabili nelle clausole match
