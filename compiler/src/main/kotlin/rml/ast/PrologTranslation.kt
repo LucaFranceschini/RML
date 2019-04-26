@@ -37,7 +37,7 @@ fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
             Atom("deep_subdict", toProlog(it, isMatchClause = true), eventDict)
         }
         is DerivedEvtypeDecl -> evtypeDecl.parents.map {
-            Atom("match", eventDict, toProlog(it))
+            Atom("match", eventDict, toProlog(it, isMatchClause = true))
         }
     }
 
