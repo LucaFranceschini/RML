@@ -4,7 +4,7 @@
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
 deq(val) matches  {event:'func_post',name:'dequeue',res:val};
 deq matches deq(_);
-filter matches enq(_) | deq(_);
+filter matches enq(_) | deq;
 
 DeqAfter<n,val> = if(n>0) deq DeqAfter<n-1,val> else (deq(val) all);  
 Queue<s> =

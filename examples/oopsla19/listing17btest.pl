@@ -6,4 +6,4 @@ match(Event, deq) :- match(Event, deq(_)).
 match(Event, filter) :- match(Event, enq(_)).
 match(Event, filter) :- match(Event, deq).
 match(_, any).
-trace_expression('Main', Main) :- DeqAfter=gen(['n', 'val'], guarded((var('n')>0), (deq:app(DeqAfter, [(var('n')-1), var('val')])), (deq(var(val)):1))), Queue=gen(['s'], (var(val, (enq(var(val)):((((deq>>app(DeqAfter, [var('s'), var('val')]));1))/\app(Queue, [(var('s')+1)]))))\/guarded((var('s')>0), (deq:app(Queue, [(var('s')-1)])), eps))), Main=(((filter>>app(Queue, [0]));1)).
+trace_expression('Main', Main) :- Main=(((filter>>optional(var(val, (enq(var(val)):((((deq>>(deq(var(val)):1));1))/\(deq(var(val))|Main))))));1)).
