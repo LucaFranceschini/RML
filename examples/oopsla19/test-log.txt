@@ -12,6 +12,9 @@ listing 15 fallisce, passa con listing15test-fixed.pl con il fix 1
 
 listing 16 fallisce, passa con listing16test-fixed.pl con il fix 1 
 
-listing 17 ok senza correggere il .pl
+listing 17 quasi ok, listing17test-fixed.pl con fix 2
 
-listing 18 ok senza correggere il .pl
+2- empty va tradotto in 0
+
+listing 18 quasi ok, listing18test-fixed.pl con fix 2
+
