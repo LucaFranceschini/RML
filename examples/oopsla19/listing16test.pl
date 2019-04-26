@@ -11,4 +11,4 @@ match(Event, filter) :- match(Event, push(_, _)).
 match(Event, filter) :- match(Event, pop(_, _)).
 match(Event, filter) :- match(Event, size(_, _)).
 match(_, any).
-trace_expression('Main', Main) :- Stack=gen(['id', 's'], (star(size(var(id), var(s)))*optional(var(val, (push(var(id), var(val)):(app(Stack, [var('id'), (var('s')+1)])*(pop(var(id), var(val)):app(Stack, [var('id'), var('s')])))))))), Main=(((filter>>optional(var(id, (new(var(id)):(Main|(app(Stack, [var('id'), 0])*(free(var(id)):eps)))))));1)).
+trace_expression('Main', Main) :- Stack=gen(['id', 's'], (star((size(var(id), var(s)):eps))*optional(var(val, ((push(var(id), var(val)):eps)*(app(Stack, [var('id'), (var('s')+1)])*((pop(var(id), var(val)):eps)*app(Stack, [var('id'), var('s')])))))))), Main=(((filter>>optional(var(id, ((new(var(id)):eps)*(Main|(app(Stack, [var('id'), 0])*(free(var(id)):eps)))))));1)).

@@ -5,4 +5,4 @@ match(Event, use(Total, Used)) :- deep_subdict(_{'args':[Total, Used],'name':"us
 match(Event, filter) :- match(Event, available(_)).
 match(Event, filter) :- match(Event, use(_, _)).
 match(_, any).
-trace_expression('Main', Main) :- Use=gen(['total'], guarded((var('total')>0), var(used, (use(var(total), var(used)):app(Use, [(var('total')-var('used'))]))), eps)), Main=(((filter>>var(total, clos((available(var(total)):app(Use, [var('total')])))));1)).
+trace_expression('Main', Main) :- Use=gen(['total'], guarded((var('total')>0), var(used, ((use(var(total), var(used)):eps)*app(Use, [(var('total')-var('used'))]))), eps)), Main=(((filter>>var(total, clos(((available(var(total)):eps)*app(Use, [var('total')])))));1)).

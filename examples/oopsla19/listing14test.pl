@@ -5,4 +5,4 @@ match(Event, pop(Val)) :- deep_subdict(_{'res':Val,'name':"mypop",'event':"func_
 match(Event, filter) :- match(Event, push(_)).
 match(Event, filter) :- match(Event, pop(_)).
 match(_, any).
-trace_expression('Main', Main) :- Main=(((filter>>optional(var(val, (push(var(val)):(Main*(pop(var(val)):Main))))));1)).
+trace_expression('Main', Main) :- Main=(((filter>>optional(var(val, ((push(var(val)):eps)*(Main*((pop(var(val)):eps)*Main))))));1)).

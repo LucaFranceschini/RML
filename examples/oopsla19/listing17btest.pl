@@ -6,4 +6,4 @@ match(Event, deq) :- match(Event, deq(_)).
 match(Event, filter) :- match(Event, enq(_)).
 match(Event, filter) :- match(Event, deq).
 match(_, any).
-trace_expression('Main', Main) :- Main=(((filter>>optional(var(val, (enq(var(val)):((((deq>>(deq(var(val)):1));1))/\(deq(var(val))|Main))))));1)).
+trace_expression('Main', Main) :- Main=(((filter>>optional(var(val, ((enq(var(val)):eps)*((((deq>>((deq(var(val)):eps)*1));1))/\((deq:eps)|Main))))));1)).
