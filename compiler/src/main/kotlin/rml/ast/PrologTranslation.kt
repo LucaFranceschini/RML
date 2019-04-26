@@ -54,7 +54,7 @@ fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
     return patternAtoms.map { Clause(head, listOf(it)) }
 }
 
-fun toProlog(dataValue: DataValue, isMatchClause: Boolean = false): PrologTerm = when (dataValue) {
+fun toProlog(dataValue: DataValue, isMatchClause: Boolean): PrologTerm = when (dataValue) {
     is ObjectValue -> DictionaryTerm.from(
             dataValue.fields.map { Pair(it.key.name, toProlog(it.value, isMatchClause)) }.toMap())
     is ListValue -> ListTerm(
@@ -82,37 +82,42 @@ fun toProlog(declaration: TraceExpDecl): Atom {
     return Atom("=", varTerm, body)
 }
 
-fun toProlog(traceExp: TraceExp): PrologTerm = when(traceExp) {
-    EmptyTraceExp -> FunctionTerm("eps")
-    NoneTraceExp -> IntTerm(0)
-    AllTraceExp -> IntTerm(1)
-    is ClosureTraceExp -> FunctionTerm("clos", toProlog(traceExp.exp))
-    is BlockTraceExp -> toProlog(traceExp)
-    is TraceExpVar -> toProlog(traceExp)
-    is EventTypeTraceExp -> FunctionTerm(":", toProlog(traceExp.eventType), toProlog(EmptyTraceExp))
-    is ConcatTraceExp -> toProlog(traceExp, "*")
-    is AndTraceExp -> toProlog(traceExp, "/\\")
-    is OrTraceExp -> toProlog(traceExp, "\\/")
-    is ShuffleTraceExp -> toProlog(traceExp, "|")
-    is FilterTraceExp -> FunctionTerm(";",
-            FunctionTerm(">>",
-                    toProlog(traceExp.evtype), toProlog(traceExp.leftExp)),
-            toProlog(traceExp.rightExp))
-    is CondFilterTraceExp -> FunctionTerm(";",
-            FunctionTerm(">",
-                    toProlog(traceExp.evtype), toProlog(traceExp.leftExp)),
-            toProlog(traceExp.rightExp))
-    is StarTraceExp -> FunctionTerm("star", toProlog(traceExp.exp))
-    is PlusTraceExp -> FunctionTerm("plus", toProlog(traceExp.exp))
-    is OptionalTraceExp -> FunctionTerm("optional", toProlog(traceExp.exp))
-    is IfElseTraceExp -> FunctionTerm("guarded",
-            toProlog(traceExp.condition),
-            toProlog(traceExp.thenTraceExp),
-            toProlog(traceExp.elseTraceExp))
-    is EventTypeWithTraceExp -> FunctionTerm("with",
-            toProlog(traceExp.eventType),
-            toProlog(EmptyTraceExp),
-            toProlog(traceExp.exp))
+fun toProlog(traceExp: TraceExp): PrologTerm {
+    val isMatchClause = false
+    return when(traceExp) {
+        EmptyTraceExp -> FunctionTerm("eps")
+        NoneTraceExp -> IntTerm(0)
+        AllTraceExp -> IntTerm(1)
+        is ClosureTraceExp -> FunctionTerm("clos", toProlog(traceExp.exp))
+        is BlockTraceExp -> toProlog(traceExp)
+        is TraceExpVar -> toProlog(traceExp)
+        is EventTypeTraceExp -> FunctionTerm(":",
+                toProlog(traceExp.eventType, isMatchClause),
+                toProlog(EmptyTraceExp))
+        is ConcatTraceExp -> toProlog(traceExp, "*")
+        is AndTraceExp -> toProlog(traceExp, "/\\")
+        is OrTraceExp -> toProlog(traceExp, "\\/")
+        is ShuffleTraceExp -> toProlog(traceExp, "|")
+        is FilterTraceExp -> FunctionTerm(";",
+                FunctionTerm(">>",
+                        toProlog(traceExp.evtype, isMatchClause), toProlog(traceExp.leftExp)),
+                toProlog(traceExp.rightExp))
+        is CondFilterTraceExp -> FunctionTerm(";",
+                FunctionTerm(">",
+                        toProlog(traceExp.evtype, isMatchClause), toProlog(traceExp.leftExp)),
+                toProlog(traceExp.rightExp))
+        is StarTraceExp -> FunctionTerm("star", toProlog(traceExp.exp))
+        is PlusTraceExp -> FunctionTerm("plus", toProlog(traceExp.exp))
+        is OptionalTraceExp -> FunctionTerm("optional", toProlog(traceExp.exp))
+        is IfElseTraceExp -> FunctionTerm("guarded",
+                toProlog(traceExp.condition),
+                toProlog(traceExp.thenTraceExp),
+                toProlog(traceExp.elseTraceExp))
+        is EventTypeWithTraceExp -> FunctionTerm("with",
+                toProlog(traceExp.eventType, isMatchClause),
+                toProlog(EmptyTraceExp),
+                toProlog(traceExp.exp))
+    }
 }
 
 fun toProlog(block: BlockTraceExp): PrologTerm {
@@ -125,7 +130,7 @@ fun toProlog(block: BlockTraceExp): PrologTerm {
     return FunctionTerm("var", FunctionTerm(firstVar.name), innerBlock)
 }
 
-fun toProlog(eventType: EventType, isMatchClause: Boolean = false) = FunctionTerm(
+fun toProlog(eventType: EventType, isMatchClause: Boolean) = FunctionTerm(
         eventType.id.name,
         eventType.dataValues.map { toProlog(it, isMatchClause) }.toList())
 
@@ -163,7 +168,7 @@ fun toProlog(exp: Exp): PrologTerm = when (exp) {
 }
 
 // isMatchClause true when generating match clauses
-fun toProlog(value: SimpleValue, isMatchClause: Boolean = false): PrologTerm = when(value) {
+fun toProlog(value: SimpleValue, isMatchClause: Boolean): PrologTerm = when(value) {
     is VarValue ->
         if (isMatchClause) VarTerm(toValidPrologVarName(value.id.name))
         else FunctionTerm("var", FunctionTerm(value.id.name))
