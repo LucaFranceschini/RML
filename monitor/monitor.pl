@@ -16,10 +16,11 @@ main :-
 		_,
 		(write('File not found\n'), halt(1))),
 	catch(
-		read_trace(TraceFile, Events),
+		read_trace(TraceFile, TraceStream),
 		_,
 		(write('Illegal JSON object\n'), halt(1))),
-	(verify(Events, TraceExp, 1) -> Accepted=true ; Accepted=false),
+	(verify(TraceStream, TraceExp, 1) -> Accepted=true ; Accepted=false),
+	close(TraceStream),
 	(reject -> negate(Accepted, Result) ; Result=Accepted),
 	(Result=true ->
 		(log('Execution terminated correctly\n'), halt(0)) ;
@@ -46,29 +47,26 @@ reject :-
 log(X) :- silent -> true ; write(X).
 lognl  :- silent -> true ; nl.
 
-read_trace(TraceFile, Events) :-
+read_trace(TraceFile, TraceStream) :-
     catch(
     	open(TraceFile, read, TraceStream),
     	_,
-    	(write('trace file not found'), nl, halt(1))),
-    read_events(TraceStream, Events),
-    close(TraceStream).
+    	(write('trace file not found'), nl, halt(1))).
 
-read_events(TraceStream, []) :-
-    at_end_of_stream(TraceStream).
+verify(TraceStream, TraceExp, EventId) :-
+	at_end_of_stream(TraceStream) ->
+		verify_end(TraceExp) ;
+		verify_events(TraceStream, TraceExp, EventId).
 
-read_events(TraceStream, [Event|Events]) :-
-    \+ at_end_of_stream(TraceStream),
-    json_read_dict(TraceStream, Event),
-    read_events(TraceStream, Events).
-
-verify([], TE, _) :- may_halt(TE) ->
+% check wether end of trace is allowed
+verify_end(TraceExp) :- may_halt(TraceExp) ->
 	true ;
 	(log('Unexpected end of trace\n'), false).
 
-verify([E|Es], TE, N) :-
-	dict_pairs(E, _, Fields),
-	(next(TE, E, TE2)
-	 -> (log('matched event #'), log(N), lognl, N2 is N+1, verify(Es, TE2, N2))
-	 ;  (log('ERROR on event '), log(Fields), lognl, false)
+% verify one event and then proceed recursively
+verify_events(TraceStream, TraceExp, EventId) :-
+	json_read_dict(TraceStream, Event),
+	(next(TraceExp, Event, NewTraceExp)
+	 -> (log('matched event #'), log(EventId), lognl, NewEventId is EventId+1, verify(TraceStream, NewTraceExp, NewEventId))
+	 ;  (log('ERROR on event '), dict_pairs(Event, _, Fields), log(Fields), lognl, false)
 	).
