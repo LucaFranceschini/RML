@@ -88,10 +88,10 @@ next(app(gen(Vars,T1),Args), E, T3, S) :- eval_exps(Vars,Args,Sub),apply_sub_tra
 
 %% proposal for guarded trace expressions 
 %% comment: do we really need to return a substitution with solve? According to the ecoop19 calculus guards should be only ground
-%% this should be more in line with the ecoop19 calculus
-%% next(guarded(P,T1,T2),E,T,S) :- !,P -> next(T1,E,T,S);next(T2,E,T,S).
+%% this should be more in line with the ecoop19/oopsla19 calculus
+next(guarded(P,T1,T2),E,T,S) :- !,P -> next(T1,E,T,S);next(T2,E,T,S).
 
-next(guarded(P,T1,T2),E,T,S) :- !,solve(P,S1) -> next(T1,E,T,S2), merge(S1, S2, S);next(T2,E,T,S).
+%%next(guarded(P,T1,T2),E,T,S) :- !,solve(P,S1) -> next(T1,E,T,S2), merge(S1, S2, S);next(T2,E,T,S).
 
 %% to be tested
 %% proposal for (_?_;_), similar to previous ifelse/3 (ifelse(ET,T1,T2)=(ET?ET:T1;T2))
@@ -165,8 +165,10 @@ may_halt(app(gen(X,T1),Arg)) :- atom(X),!,eval(Arg,Val),apply_sub_trace_exp([X=V
 may_halt(app(gen(Vars,T1),Args)) :- eval_exps(Vars,Args,Subs),apply_sub_trace_exp(Subs,T1,T2),!,may_halt(T2). %% usual comment for the cut after apply_su
 
 %% proposal for guarded trace expressions
+%% this should be more in line with the ecoop19/oopsla19 calculus
+may_halt(guarded(P,T1,T2)) :- !,P->may_halt(T1);may_halt(T2).
 
-may_halt(guarded(P,T1,T2)) :- !,solve(P,_)->may_halt(T1);may_halt(T2).
+%% may_halt(guarded(P,T1,T2)) :- !,solve(P,_)->may_halt(T1);may_halt(T2).
 
 %% proposal for if-then-else
 % may_halt never holds?
