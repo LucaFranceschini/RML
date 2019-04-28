@@ -3,7 +3,7 @@
 'use strict';
 
 var trace_size = process.argv[2] || 100;
-var max_size = 100;
+var max_size = Math.floor(trace_size/10);
 var max_elem = 1000;
 var queue = [];
 
