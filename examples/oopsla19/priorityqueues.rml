@@ -2,9 +2,10 @@
 
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
 deq(val) matches  {event:'func_post',name:'dequeue',result:val};
+deq(val,max) matches deq(val) with val <= max;
 deq matches deq(_);
 
 Queue<s> =
-   {let val; enq(val) ((deq >> ({let val2; deq(val2) with val2<=val}* deq(val) all)) /\ Queue<s+1>)}
+   {let val; enq(val) ((deq >> {let val2; deq(val2,val)}* deq(val) all) /\ Queue<s+1>)}
    \/ (if(s>0) deq Queue<s-1> else empty);  
 Main=Queue<0>;
