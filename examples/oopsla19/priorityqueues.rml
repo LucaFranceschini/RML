@@ -1,19 +1,23 @@
-// single priority queue with enqueue and dequeue, no repetitions
+// single priority queue with enqueue and dequeue, and repetitions
 
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
+enq matches enq(_);
 deq(val) matches  {event:'func_post',name:'dequeue',result:val};
-// deq(val,min) matches deq(val) with val >= min;
 deq matches deq(_);
-ev(val) matches enq(val) | deq(val);
+deq_geq(val,min) matches deq(val) with val >= min;
 
-// a first test
+// wrong attempts
 
 //Queue<s> =
 //  {let val; enq(val) (({let val2; deq(val2,val) >> deq(val) all}) /\ Queue<s+1>)}
 //  \/ (if(s>0) deq Queue<s-1> else empty);  
 // Main=Queue<0>;
+//Queue2={let val; enq(val) (({let val2; deq(val2,val) >> deq(val) all}) /\ Queue2)} \/ (deq Queue2); // does not work with repetitions
 
-Queue1={let val; enq(val) ( deq(val) | Queue1)}; // deq(val) is possible if the element has been enqueued and not already dequeued
-                                                                           // works with repetitions 
-Queue2={let val; enq(val) (({let val2; deq(val2,val) >> deq(val) all}) /\ Queue2)} \/ (deq Queue2); // does not work with repetitions 
-Main=Queue1/\Queue2;
+Queue={let val; enq(val) ( deq(val) | Queue)}; // deq(val) is possible if the val has been enqueued and not already dequeued; works with repetitions 
+// Queue0, Queue1, Queue2: check that elements are dequeued in the right order
+Queue0=enq Queue1<1>;
+Queue1<size>=enq Queue1<size+1> \/ {let val; deq(val) Queue2<size-1,val>};
+Queue2<size,last>= if(size>0) enq Queue2<size+1,last> \/ {let val; deq_geq(val,last) Queue2<size-1,val>} else Queue0;  
+
+Main=Queue/\Queue0;
