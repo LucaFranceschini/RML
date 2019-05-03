@@ -1,0 +1,6 @@
+// random queues with repetitions
+
+enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
+deq(val) matches  {event:'func_post',name:'dequeue',res:val};
+
+Main = {let val; enq(val) ( deq(val) | Main)}!; 

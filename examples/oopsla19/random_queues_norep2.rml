@@ -1,0 +1,8 @@
+// random queues with no repetitions: less efficient version based on the standard calculus
+
+enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
+deq(val) matches  {event:'func_post',name:'dequeue',res:val};
+is_val(val) matches enq(val) | deq(val);
+is_not_val(val) not matches is_val(val);
+
+Main = {let val; enq(val) ((is_val(val) >> (enq(val)* deq(val) (enq(val)+ deq(val))*)) /\ is_not_val(val) >> Main)}!;

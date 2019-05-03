@@ -1,0 +1,11 @@
+// random queues with no repetitions: more efficient version based on left-preferential shuffle
+
+enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
+deq(val) matches  {event:'func_post',name:'dequeue',res:val};
+filter matches enq(_) | deq(_);
+
+Main = (filter>>{let val; enq(val) (enq(val)* deq(val) | Main)})!; 
+
+
+
+
