@@ -11,4 +11,4 @@ match(Event, no_rm) :- match(Event, no_rm(_)).
 match(Event, filter) :- match(Event, toCheck(_)).
 match(Event, filter) :- match(Event, use(_)).
 match(_, any).
-trace_expression('Main', Main) :- Main=(((filter>>optional((star(no_rm)*var(el, (acquire(var(el)):((Main|(star(use(var(el)))*(release(var(el)):eps)))/\(((toCheck(var(el))>>(release(var(el)):1));1))))))));1)).
+trace_expression('Main', Main) :- Main=(((filter>>optional((star((no_rm:eps))*var(el, ((acquire(var(el)):eps)*((Main|(star((use(var(el)):eps))*(release(var(el)):eps)))/\(((toCheck(var(el))>>((release(var(el)):eps)*1));1))))))));1)).

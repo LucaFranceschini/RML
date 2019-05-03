@@ -7,4 +7,4 @@ match(Event, filter) :- match(Event, acquire(_)).
 match(Event, filter) :- match(Event, release(_)).
 match(Event, filter) :- match(Event, use(_)).
 match(_, any).
-trace_expression('Main', Main) :- Main=(((filter>>optional(var(id, (acquire(var(id)):(Main|(star(use(var(id)))*(release(var(id)):eps)))))));1)).
+trace_expression('Main', Main) :- Main=(((filter>>optional(var(id, ((acquire(var(id)):eps)*(Main|(star((use(var(id)):eps))*(release(var(id)):eps)))))));1)).

@@ -7,4 +7,4 @@ match(Event, filter) :- match(Event, push(_)).
 match(Event, filter) :- match(Event, pop(_)).
 match(Event, filter) :- match(Event, size(_)).
 match(_, any).
-trace_expression('Main', Main) :- Stack=gen(['s'], (star(size(var(s)))*optional(var(val, (push(var(val)):(app(Stack, [(var('s')+1)])*(pop(var(val)):app(Stack, [var('s')])))))))), Main=(((filter>>app(Stack, [0]));1)).
+trace_expression('Main', Main) :- Stack=gen(['s'], (star((size(var(s)):eps))*optional(var(val, ((push(var(val)):eps)*(app(Stack, [(var('s')+1)])*((pop(var(val)):eps)*app(Stack, [var('s')])))))))), Main=(((filter>>app(Stack, [0]));1)).

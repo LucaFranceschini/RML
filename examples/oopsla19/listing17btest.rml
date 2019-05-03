@@ -4,4 +4,4 @@ deq matches deq(_);
 filter matches enq(_) | deq;
 
 // works only for deterministic shuffle with left-to-right strategy
-Main=filter>>{let val; enq(val) ((deq>>deq(val) all)/\(deq(val)|Main))}?; 
+Main=filter>>{let val; enq(val) ((deq>>deq(val) all)/\(deq|Main))}?; 
