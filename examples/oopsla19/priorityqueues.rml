@@ -6,7 +6,7 @@ deq(val) matches  {event:'func_post',name:'dequeue',result:val};
 deq matches deq(_);
 deq_geq(val,min) matches deq(val) with val >= min;
 
-Queue={let val; enq(val) ( deq(val) | Queue)}; // deq(val) is possible if the val has been enqueued and not already dequeued; works with repetitions 
+Queue={let val; enq(val) ( deq(val) | Queue)}; // deq(val) is allowed only if val has been enqueued and not already dequeued; works with repetitions 
 
 // Queue0, Queue1, Queue2: check that elements are dequeued in the right order, not sound if at then end of the execution queues can be non empty
 Queue0=enq Queue1<1>;
