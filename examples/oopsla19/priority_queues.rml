@@ -1,9 +1,8 @@
-// single priority queue with enqueue and dequeue, and repetitions
+// priority queues with repetitions, partial solution
 
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
 enq matches enq(_);
 deq(val) matches  {event:'func_post',name:'dequeue',result:val};
-deq matches deq(_);
 deq_geq(val,min) matches deq(val) with val >= min;
 
 Queue={let val; enq(val) ( deq(val) | Queue)}; // deq(val) is allowed only if val has been enqueued and not already dequeued; works with repetitions 
@@ -13,4 +12,4 @@ Queue0=enq Queue1<1>;
 Queue1<size>=enq Queue1<size+1> \/ {let val; deq(val) Queue2<size-1,val>};
 Queue2<size,last>= if(size>0) enq Queue2<size+1,last> \/ {let val; deq_geq(val,last) Queue2<size-1,val>} else Queue0;  
 
-Main=Queue/\Queue0;
+Main=(Queue/\Queue0)!;
