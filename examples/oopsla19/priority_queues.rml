@@ -13,3 +13,6 @@ Queue1<size>=enq Queue1<size+1> \/ {let val; deq(val) Queue2<size-1,val>};
 Queue2<size,last>= if(size>0) enq Queue2<size+1,last> \/ {let val; deq_geq(val,last) Queue2<size-1,val>} else Queue0;  
 
 Main=(Queue/\Queue0)!;
+
+// Check<val>=enq(val) (deq(val)|Check<val>) \/ empty
+// Check<val> deq(val) all
