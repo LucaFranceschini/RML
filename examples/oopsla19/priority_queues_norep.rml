@@ -11,6 +11,6 @@ deq matches deq(_);
 Queue1 = {let val; enq(val) ((is_val(val) >> (enq(val)* deq(val) (enq(val)+ deq(val))*)) /\ is_not_val(val) >> Queue1)}; //less efficient version based on the standard calculus
 
 // values are dequeued in the right order: if val is enqueued, it is not possible that a larger value is dequeued before val 
-Queue2={let val; enq(val) (({let val2; deq(val2,val) >> deq(val) all}) /\ Queue2)} \/ (deq Queue2);
+Queue2={let val; enq(val) (({let val2; deq_geq(val2,val) >> deq(val) all}) /\ Queue2)} \/ (deq Queue2);
 
 Main=(Queue1/\Queue2)!;

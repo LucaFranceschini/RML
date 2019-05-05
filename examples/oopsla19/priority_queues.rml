@@ -3,16 +3,19 @@
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
 enq matches enq(_);
 deq(val) matches  {event:'func_post',name:'dequeue',result:val};
-deq_geq(val,min) matches deq(val) with val >= min;
+enq_or_deq(val,min) matches enq(val) | deq(val) with val >= min;
 
-Queue={let val; enq(val) ( deq(val) | Queue)}; // deq(val) is allowed only if val has been enqueued and not already dequeued; works with repetitions 
+Queue1={let val; enq(val) ( deq(val) | Queue1)}; // deq(val) is allowed only if val has been enqueued and not already dequeued; works with repetitions 
 
-// Queue0, Queue1, Queue2: check that elements are dequeued in the right order, not sound if at then end of the execution queues can be non empty
-Queue0=enq Queue1<1>;
-Queue1<size>=enq Queue1<size+1> \/ {let val; deq(val) Queue2<size-1,val>};
-Queue2<size,last>= if(size>0) enq Queue2<size+1,last> \/ {let val; deq_geq(val,last) Queue2<size-1,val>} else Queue0;  
+Queue2={let val; enq(val) (({let val2; enq_or_deq(val2,val) >> EnqDeq<val> deq(val) all}) /\ Queue2)} \/ (deq Queue2);
+EnqDeq<val>=(enq(val) (deq(val)|EnqDeq<val>))? 
 
-Main=(Queue/\Queue0)!;
+// Queue0, Queue1, Queue2: check that elements are dequeued in the right order, not sound if queues can be non empty at the end of the execution 
+// Queue0=enq Queue1<1>;
+// Queue1<size>=enq Queue1<size+1> \/ {let val; deq(val) Queue2<size-1,val>};
+// Queue2<size,last>= if(size>0) enq Queue2<size+1,last> \/ {let val; deq_geq(val,last) Queue2<size-1,val>} else Queue0;  
+
+Main=(Queue1/\Queue0)!;
 
 // Check<val>=enq(val) (deq(val)|Check<val>) \/ empty
 // Check<val> deq(val) all
