@@ -7,7 +7,7 @@ enq_or_deq(val,min) matches enq(min) | deq(val) with val >= min;
 
 Queue1={let val; enq(val) ( deq(val) | Queue1)}; // deq(val) is allowed only if val has been enqueued and not already dequeued; works with repetitions 
 
-Queue2={let val; enq(val) (({let val2; enq_or_deq(val2,val) >> EnqDeq<val> deq(val) all}) /\ Queue2)} \/ (deq Queue2);
+Queue2={let val; enq(val) ({let val2; enq_or_deq(val2,val) >> EnqDeq<val> deq(val) all} /\ Queue2)} \/ (deq Queue2);
 EnqDeq<val>=(enq(val) (deq(val)|EnqDeq<val>))? 
 
 // Queue0, Queue1, Queue2: check that elements are dequeued in the right order, not sound if queues can be non empty at the end of the execution 
