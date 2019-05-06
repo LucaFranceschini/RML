@@ -3,7 +3,7 @@
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
 enq matches enq(_);
 deq(val) matches  {event:'func_post',name:'dequeue',result:val};
-enq_or_deq(val,min) matches enq(val) | deq(val) with val >= min;
+enq_or_deq(val,min) matches enq(min) | deq(val) with val >= min;
 
 Queue1={let val; enq(val) ( deq(val) | Queue1)}; // deq(val) is allowed only if val has been enqueued and not already dequeued; works with repetitions 
 
