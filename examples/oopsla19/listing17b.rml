@@ -7,4 +7,4 @@ Main={let val; enq(val) ((deq>>deq(val) all)/\(deq|Main))}?;
 
 // Main={let val; enq(val) ((deq>>deq(val) all)/\(deq(val)|Main))} // redundant version
 // remark: also this redundant version does not work for non-deterministic shuffle 
-// counter-example: enq(1) enq(1) deq(1) deq(n) is accepted for any n if right-to-left strategy is adopted 
+// counter-example: enq(1) enq(1) enq(2) deq(1) deq(2) is accepted 
