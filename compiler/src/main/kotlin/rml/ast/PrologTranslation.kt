@@ -44,15 +44,24 @@ fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
     // match clause head is always the same
     val head = Atom("match", eventDict, toProlog(evtypeDecl.evtype, isMatchClause = true))
 
+    // compile guards to atoms
+    val guardAtom: Atom? = evtypeDecl.guard?.let { asAtom(toProlog(it, false) as FunctionTerm) }
+    // as a list
+    val guardAtoms: List<Atom> = if (guardAtom != null) listOf(guardAtom) else emptyList()
+
+    val body: List<Atom> = patternAtoms + guardAtoms
+
     // if it's negated just make one match clause, applying negation to all body atoms
     if (evtypeDecl.negated) return listOf(Clause(
             head,
-            patternAtoms.map(Atom::negate)
+            body.map(Atom::negate)
     ))
 
-    // if it's positive produce a match clause for each pattern
-    return patternAtoms.map { Clause(head, listOf(it)) }
+    // if it's positive produce a match clause for each pattern, but replicate guard atoms
+    return patternAtoms.map { Clause(head, listOf(it) + guardAtoms) }
 }
+
+fun asAtom(term: FunctionTerm) = Atom(Atom.PredicateSymbol(term.functionSymbol.name), false, term.args)
 
 fun toProlog(dataValue: DataValue, isMatchClause: Boolean): PrologTerm = when (dataValue) {
     is ObjectValue -> DictionaryTerm.from(
@@ -146,25 +155,27 @@ fun toProlog(traceExp: TraceExpVar): PrologTerm {
         return variable
 
     // convert all expressions
-    val exps: List<PrologTerm> = traceExp.genericArgs.map(::toProlog)
+    val exps: List<PrologTerm> = traceExp.genericArgs.map { toProlog(it)}
 
     return FunctionTerm("app", variable, ListTerm(exps))
 }
 
-fun toProlog(exp: Exp): PrologTerm = when (exp) {
+fun toProlog(exp: Exp, convertVars: Boolean = true): PrologTerm = when (exp) {
     is BoolExp -> ConstantTerm(exp.boolean.toString())
     is IntExp -> IntTerm(exp.int)
     is FloatExp -> FloatTerm(exp.double)
-    is VarExp -> FunctionTerm("var", ConstantTerm(exp.varId.name))
-    is SumExp -> FunctionTerm("+", toProlog(exp.left), toProlog(exp.right))
-    is SubExp -> FunctionTerm("-", toProlog(exp.left), toProlog(exp.right))
-    is LessThanExp -> FunctionTerm("<", toProlog(exp.left), toProlog(exp.right))
-    is LessThanEqExp -> FunctionTerm("=<", toProlog(exp.left), toProlog(exp.right))
-    is GreaterThanExp -> FunctionTerm(">", toProlog(exp.left), toProlog(exp.right))
-    is GreaterThanEqExp -> FunctionTerm(">=", toProlog(exp.left), toProlog(exp.right))
-    is EqualToExp -> FunctionTerm("==", toProlog(exp.left), toProlog(exp.right))
-    is AndExp -> FunctionTerm(",", toProlog(exp.left), toProlog(exp.right))
-    is OrExp -> FunctionTerm(";", toProlog(exp.left), toProlog(exp.right))
+    is VarExp ->
+        if (convertVars) FunctionTerm("var", ConstantTerm(exp.varId.name))
+        else VarTerm(exp.varId.name.capitalize())
+    is SumExp -> FunctionTerm("+", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is SubExp -> FunctionTerm("-", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is LessThanExp -> FunctionTerm("<", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is LessThanEqExp -> FunctionTerm("=<", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is GreaterThanExp -> FunctionTerm(">", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is GreaterThanEqExp -> FunctionTerm(">=", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is EqualToExp -> FunctionTerm("==", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is AndExp -> FunctionTerm(",", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is OrExp -> FunctionTerm(";", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
 }
 
 // isMatchClause true when generating match clauses

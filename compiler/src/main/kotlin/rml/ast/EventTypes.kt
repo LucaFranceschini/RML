@@ -1,9 +1,10 @@
 package rml.ast
 
-sealed class EvtypeDecl(open val evtype: EventType, open val negated: Boolean = false)
+sealed class EvtypeDecl(open val evtype: EventType, open val negated: Boolean = false, open val guard: Exp? = null)
 data class DirectEvtypeDecl(override val evtype: EventType,
                             val patternValue: DataValue,
-                            override val negated: Boolean = false): EvtypeDecl(evtype, negated) {
+                            override val negated: Boolean = false,
+                            override val guard: Exp? = null): EvtypeDecl(evtype, negated) {
     init {
         require(checkValidTopObjects(patternValue)) {
             "(or-pattern of) objects expected at top-level event type declaration"
@@ -18,7 +19,8 @@ data class DirectEvtypeDecl(override val evtype: EventType,
 }
 data class DerivedEvtypeDecl(override val evtype: EventType,
                              val parents: List<EventType>,
-                             override val negated: Boolean = false): EvtypeDecl(evtype, negated) {
+                             override val negated: Boolean = false,
+                             override val guard: Exp? = null): EvtypeDecl(evtype, negated) {
     init {
         require(parents.isNotEmpty()) { "at least one parent expected" }
     }

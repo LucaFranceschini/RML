@@ -5,8 +5,8 @@ grammar rml;
 }
 
 spec: evtypeDecl* texpDecl+ ;
-evtypeDecl: evtype NOT? 'matches' evtype ('|' evtype)* ';' # derivedEvtypeDecl
-          | evtype NOT? 'matches' value ';' # directEvtypeDecl
+evtypeDecl: evtype NOT? 'matches' evtype ('|' evtype)* ('with' exp)? ';' # derivedEvtypeDecl
+          | evtype NOT? 'matches' value ('with' exp)? ';' # directEvtypeDecl
           ;
 object: '{' (field (',' field)*)? '}' ;
 field: LOWERCASE_ID ':' value ;
