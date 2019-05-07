@@ -29,12 +29,14 @@ object EvtypeDeclAstBuilder: rmlBaseVisitor<EvtypeDecl>() {
     override fun visitDirectEvtypeDecl(ctx: rmlParser.DirectEvtypeDeclContext?) = DirectEvtypeDecl(
             buildEventTypeAst(ctx!!.evtype()),
             ctx.value().accept(DataValueAstBuilder),
-            ctx.NOT() != null)
+            ctx.NOT() != null,
+            ctx.exp()?.accept(ExpBuilder))
 
     override fun visitDerivedEvtypeDecl(ctx: rmlParser.DerivedEvtypeDeclContext?) = DerivedEvtypeDecl(
             buildEventTypeAst(ctx!!.evtype().first()),
             ctx.evtype().drop(1).map(::buildEventTypeAst).toList(),
-            ctx.NOT() != null)
+            ctx.NOT() != null,
+            ctx.exp()?.accept(ExpBuilder))
 }
 
 object DataValueAstBuilder: rmlBaseVisitor<DataValue>() {
