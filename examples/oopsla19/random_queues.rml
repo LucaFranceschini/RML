@@ -1,4 +1,4 @@
-// random queues with repetitions
+// randomized queues with repetitions
 
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
 deq(val) matches  {event:'func_post',name:'dequeue',res:val};

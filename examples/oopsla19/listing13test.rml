@@ -3,7 +3,7 @@
 
 available(total) matches {event:'func_post',name:'available',res:total};
 use(total,used) matches {event:'func_pre',name:'use',args:[total,used]};
-filter matches available(_)|use(_,_);
+relevant matches available(_)|use(_,_);
 
 Use<total> = if(total>0) {let used; use(total,used) Use<total-used>} else empty;
-Main = filter >> {let total; (available(total) Use<total>) !};
+Main = relevant >> {let total; (available(total) Use<total>) !};

@@ -8,7 +8,7 @@ match(Event, toCheck(El)) :- match(Event, release(El)).
 match(Event, toCheck(El)) :- match(Event, no_rm(El)).
 match(Event, no_rm(El)) :- deep_subdict(_{'res':'false','args':[El],'name':"remove",'event':"func_post"}, Event).
 match(Event, no_rm) :- match(Event, no_rm(_)).
-match(Event, filter) :- match(Event, toCheck(_)).
-match(Event, filter) :- match(Event, use(_)).
+match(Event, relevant) :- match(Event, toCheck(_)).
+match(Event, relevant) :- match(Event, use(_)).
 match(_, any).
-trace_expression('Main', Main) :- Main=(((filter>>optional((star((no_rm:eps))*var(el, ((acquire(var(el)):eps)*((Main|(star((use(var(el)):eps))*(release(var(el)):eps)))/\(((toCheck(var(el))>>((release(var(el)):eps)*1));1))))))));1)).
+trace_expression('Main', Main) :- Main=(((relevant>>optional((star((no_rm:eps))*var(el, ((acquire(var(el)):eps)*((Main|(star((use(var(el)):eps))*(release(var(el)):eps)))/\(((toCheck(var(el))>>((release(var(el)):eps)*1));1))))))));1)).

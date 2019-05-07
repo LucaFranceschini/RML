@@ -3,7 +3,7 @@
 match(Event, enq(Val)) :- deep_subdict(_{'args':[Val],'name':"enqueue",'event':"func_pre"}, Event).
 match(Event, deq(Val)) :- deep_subdict(_{'res':Val,'name':"dequeue",'event':"func_post"}, Event).
 match(Event, deq) :- match(Event, deq(_)).
-match(Event, filter) :- match(Event, enq(_)).
-match(Event, filter) :- match(Event, deq).
+match(Event, relevant) :- match(Event, enq(_)).
+match(Event, relevant) :- match(Event, deq).
 match(_, any).
-trace_expression('Main', Main) :- Main=(((filter>>optional(var(val, ((enq(var(val)):eps)*((((deq>>((deq(var(val)):eps)*1));1))/\((deq:eps)|Main))))));1)).
+trace_expression('Main', Main) :- Main=(((relevant>>optional(var(val, ((enq(var(val)):eps)*((((deq>>((deq(var(val)):eps)*1));1))/\((deq:eps)|Main))))));1)).

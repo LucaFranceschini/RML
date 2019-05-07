@@ -4,7 +4,7 @@
 push(val) matches {event:'func_pre',name:'mypush',args:[val]};
 pop(val) matches  {event:'func_post',name:'mypop',res:val};
 size(s) matches {event:'func_post',name:'size',res:s};
-filter matches push(_)|pop(_)|size(_);
+relevant matches push(_)|pop(_)|size(_);
 
 Stack<s> = size(s)* { let val; push(val) Stack<s+1> pop(val) Stack<s> }?;
-Main=filter >> (Stack<0>); 
+Main=relevant >> (Stack<0>); 

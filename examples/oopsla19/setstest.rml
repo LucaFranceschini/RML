@@ -9,6 +9,6 @@ use(el) matches
 toCheck(el) matches acquire(el) | release(el) | no_rm(el);
 no_rm(el) matches {event:'func_post',name:'remove',args:[el],res:false};
 no_rm matches no_rm(_);
-filter matches toCheck(_) | use(_); 
+relevant matches toCheck(_) | use(_); 
 
-Main = filter >> (no_rm* {let el; acquire(el) ((Main | use(el)* release(el)) /\ toCheck(el) >> (release(el) all))})?;
+Main = relevant >> (no_rm* {let el; acquire(el) ((Main | use(el)* release(el)) /\ toCheck(el) >> (release(el) all))})?;

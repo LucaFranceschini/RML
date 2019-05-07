@@ -4,6 +4,6 @@
 acquire(id) matches {event:'func_pre',name:'acquire',args:[id,...]};
 release(id) matches {event:'func_pre',name:'release',args:[id,...]};
 use(id) matches {event:'func_pre',name:'use',args:[id,...]};
-filter matches acquire(_) | release(_) | use(_);
+relevant matches acquire(_) | release(_) | use(_);
 
-Main = filter >> ({let id; acquire(id) (Main |  use(id)* release(id))}?);
+Main = relevant >> ({let id; acquire(id) (Main |  use(id)* release(id))}?);

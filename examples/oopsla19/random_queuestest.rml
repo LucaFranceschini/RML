@@ -1,10 +1,10 @@
-// random queues with repetitions
+// randomized queues with repetitions
 
 enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
 deq(val) matches  {event:'func_post',name:'dequeue',res:val};
-filter matches enq(_) | deq(_);
+relevant matches enq(_) | deq(_);
 
-Main = (filter>>{let val; enq(val) ( deq(val) | Main)})!; 
+Main = (relevant>>{let val; enq(val) ( deq(val) | Main)})!; 
 
 
 
