@@ -3,8 +3,8 @@ deq(val) matches  {event:'func_post',name:'dequeue',result:val};
 deq matches deq(_);
 
 // works only for deterministic shuffle with left-to-right strategy
-Main={let val; enq(val) ((deq>>deq(val) all)/\(deq|Main))}?; 
+Main={let val; enq(val) ((deq>>deq(val) all)/\(deq|Main))}!; 
 
 // Main={let val; enq(val) ((deq>>deq(val) all)/\(deq(val)|Main))} // redundant version
 // remark: also this redundant version does not work for non-deterministic shuffle 
-// counter-example: enq(1) enq(1) enq(2) deq(1) deq(2) is accepted 
+// counter-example: enq(1) enq(1) enq(2) deq(1) deq(2) deq(1) is accepted 

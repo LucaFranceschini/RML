@@ -1,7 +1,8 @@
-temp_sensor(temp) matches {temperature:temp};
+// temp_sensor(temp) matches {temperature:temp};
+temp_sensor(temp,min,max) matches {temperature:temp} with temp>=min && temp <= max;
 
-Main = CheckTemp<20>;
-CheckTemp<temp> = if (temp>=15 && temp <= 35) {let temp; temp_sensor(temp) (empty \/ CheckTemp<temp>)} else none;  
+// Main = CheckTemp<20>;
+// CheckTemp<temp> = if (temp>=15 && temp <= 35) {let temp; temp_sensor(temp) (empty \/ CheckTemp<temp>)} else none;  
 
-// Main = Check<10,40>;
-// Check<min,max> = {let temp; temp_sensor(temp) with (temp>=min && temp <= max)}*;
+Main = Check<10,40>;
+Check<min,max> = {let temp; temp_sensor(temp)}*;

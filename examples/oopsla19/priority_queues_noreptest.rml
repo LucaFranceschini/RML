@@ -1,0 +1,16 @@
+// priority queues with no repetitions, full solution
+
+enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
+deq(val) matches  {event:'func_post',name:'dequeue',res:val};
+deq_geq(val,min) matches deq(val) with val >= min;
+deq matches deq(_);
+relevant matches deq | enq(_);
+
+Queue1 = {let val; enq(val) (enq(val)* deq(val) | Queue1)}; // works only if shuffle is left-preferential
+
+// Queue1 = {let val; enq(val) ((is_val(val) >> (enq(val)* deq(val) (enq(val)+ deq(val))*)) /\ is_not_val(val) >> Queue1)}; //less efficient version based on the standard calculus
+
+// values are dequeued in the right order: if val is enqueued, it is not possible that a larger value is dequeued before val 
+Queue2={let val; enq(val) (({let val2; deq_geq(val2,val) >> deq(val) all}) /\ Queue2)} \/ (deq Queue2);
+
+Main=relevant>>(Queue1/\Queue2)!;

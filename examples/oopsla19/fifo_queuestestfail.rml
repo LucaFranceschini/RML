@@ -1,0 +1,10 @@
+// FIFO queues with repetitions
+// wrong version showing that non deterministic shuffle does not work
+// to be checked with fifo_queuestracefail.txt
+
+enq(val) matches {event:'func_pre',name:'enqueue',args:[val]};
+deq(val) matches  {event:'func_post',name:'dequeue',res:val};
+deq matches deq(_);
+relevant matches enq(_) | deq;
+
+Main=relevant>>{let val; enq(val) ((deq>>deq(val) all)/\(Main|deq(val)))}!; 
