@@ -6,4 +6,4 @@ match(Event, deq) :- match(Event, deq(_)).
 match(Event, relevant) :- match(Event, enq(_)).
 match(Event, relevant) :- match(Event, deq).
 match(_, any).
-trace_expression('Main', Main) :- Main=(((relevant>>clos(var(val, ((enq(var(val)):eps)*((((deq>>((deq(var(val)):eps)*1));1))/\((star((enq(var(val)):eps))*(deq:eps))|Main))))));1)).
+trace_expression('Main', Main) :- Main=(((relevant>>clos(var(val, ((enq(var(val)):eps)*(((star((enq(var(val)):eps))*(deq:eps))|Main)/\(((deq>>((deq(var(val)):eps)*1));1)))))));1)).

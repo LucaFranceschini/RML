@@ -1,0 +1,23 @@
+Bugs
+
+1) variable 'event' not properly managed 
+et(event) matches {event:event};
+
+2) whole event matching parsed but not translated correctly
+et(obj) matches obj;
+translated into
+match(Event, et(Obj)) :- match(Event, obj).
+
+3) unary -, *, / and parentheses not supported in 'with' constraints
+
+4) == in 'with' constraints translated with '==', '=:=' should be used
+
+5) && in 'with' constraints not correctly translated: ,(Goal1,Goal2)  should be ','(Goal1,Goal2)
+
+Enhancements
+
+1) support for constant `declarations' in 'with' constraints, to avoid complex expressions such as
+
+-1 <= (temp2-temp1)/(time2-time1) && (temp2-temp1)/(time2-time1) <= 1
+
+

@@ -6,4 +6,4 @@ deq(val) matches  {event:'func_post',name:'dequeue',res:val};
 deq matches deq(_);
 relevant matches enq(_) | deq;
 
-Main=relevant>>{let val; enq(val) ((deq>>deq(val) all)/\(deq|Main))}!; 
+Main=relevant>>{let val; enq(val) ((deq|Main)/\(deq>>deq(val) all))}!; 

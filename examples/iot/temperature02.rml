@@ -1,4 +1,7 @@
-temp_sensor(temp) matches {temperature:temp};
+temp_sensor(temp,time) matches {temperature:temp,timestamp:time};
+check(temp1,time1,temp2,time2) matches temp_sensor(temp2,time2)
+			       with -1 <= (temp2-temp1)/(time2-time1) && (temp2-temp1)/(time2-time1) <= 1; 
 
-Main = Check<16.85,40>;
-Check<min,max> = {let temp; temp_sensor(temp) with (temp>=min && temp <= max)}*;
+Check<temp1,time1> = {let temp2, time2; check(temp1,time1,temp2,time2)}*;
+Main = {let temp1,time1; temp_sensor(temp1,time1) Check<temp1,time1>};
+
