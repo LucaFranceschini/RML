@@ -27,6 +27,7 @@
 
 :- current_prolog_flag(argv, [Spec|_]), use_module(Spec).
 
+
 server(Port) :- http_server(http_dispatch,[port('10.251.61.71':Port),workers(1)]). %% one worker to guarantee event sequentiality
 
 log(Log) :-
@@ -45,7 +46,8 @@ manage_event(WebSocket) :-
 	 E=Msg.data,
 	       nb_getval(state,TE1),
 	       log((TE1,E)),
-	       (next(TE1,E,TE2) -> nb_setval(state,TE2),Reply=E.put(_{error:false}); Reply=E.put(_{error:true})),
+	       (next(TE1,E,TE2) -> nb_setval(state,TE2),Reply=_{error:false,data:E}; Reply=_{error:true,data:E}),
+%%	       (next(TE1,E,TE2) -> nb_setval(state,TE2),Reply=E.put(_{error:false}); Reply=E.put(_{error:true})),
 	       atom_json_dict(Json,Reply,[as(string)]),
 	       ws_send(WebSocket,string(Json)),
 	       manage_event(WebSocket)).
