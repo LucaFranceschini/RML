@@ -1,0 +1,29 @@
+// checks temperature range, variation, and sampling interval
+
+temp_sensor(temp,time) matches {temperature:temp,timestamp:time};
+temp_sensor_in_range(temp,min,max) matches {temperature:temp} with min<=temp && temp<=max;
+temp_sample(time) matches temp_sensor(_,time);
+
+check_var(temp1,time1,temp2,time2,max) matches temp_sensor(temp2,time2)
+			       with delta=(temp2-temp1)/(time2-time1) && -max <= delta && delta <= max; 
+
+check_sample(time1,time2,max) matches temp_sample(time2)
+			       with time2-time1 <= max;
+
+CheckRange<min,max> = {let temp; temp_sensor_in_range(temp,min,max)}*;
+
+CheckVars<temp1,time1,max> = {let temp2, time2; check_var(temp1,time1,temp2,time2,max) CheckVars<temp2,time2,max>};
+CheckVar<max> = {let temp1,time1; temp_sensor(temp1,time1) CheckVars<temp1,time1,max>};
+
+CheckSamples<time1,max> = {let time2; check_sample(time1,time2,max) CheckSamples<time2,max>};
+CheckSample<max> = {let time1; temp_sample(time1) CheckSamples<time1,max>};
+
+Main = CheckRange<0,40> /\ CheckVar<1> /\ CheckSample<10>;
+
+
+
+
+
+
+
+

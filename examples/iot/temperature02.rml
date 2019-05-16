@@ -1,7 +1,11 @@
-temp_sensor(temp,time) matches {temperature:temp,timestamp:time};
-check(temp1,time1,temp2,time2) matches temp_sensor(temp2,time2)
-			       with -1 <= (temp2-temp1)/(time2-time1) && (temp2-temp1)/(time2-time1) <= 1; 
+// checks temperature variation
 
-Check<temp1,time1> = {let temp2, time2; check(temp1,time1,temp2,time2)}*;
-Main = {let temp1,time1; temp_sensor(temp1,time1) Check<temp1,time1>};
+temp_sensor(temp,time) matches {temperature:temp,timestamp:time};
+
+check_var(temp1,time1,temp2,time2) matches temp_sensor(temp2,time2)
+			       with delta=(temp2-temp1)/(time2-time1) && -1 <= delta && delta <= 1; 
+
+
+CheckVars<temp1,time1> = {let temp2, time2; check_var(temp1,time1,temp2,time2) CheckVars<temp2,time2>};
+Main = {let temp1,time1; temp_sensor(temp1,time1) CheckVars<temp1,time1>};
 

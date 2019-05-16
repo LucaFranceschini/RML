@@ -1,5 +1,5 @@
 :- module('spec', [trace_expression/2, match/2]).
 :- use_module(monitor('deep_subdict')).
-match(Event, temp_sensor(Temp, Min, Max)) :- deep_subdict(_{'temperature':Temp}, Event), ','((Temp>=Min), (Temp=<Max)).
+match(_event, temp_sensor_in_range(Temp, Min, Max)) :- deep_subdict(_{'temperature':Temp}, _event), ','((Min=<Temp), (Temp=<Max)).
 match(_, any).
-trace_expression('Main', Main) :- Main=app(Check, [25.4, 25.7]), Check=gen(['min', 'max'], star(var(temp, (temp_sensor(var(temp), var(min), var(max)):eps)))).
+trace_expression('Main', Main) :- Main=app(CheckRange, [0, 40]), CheckRange=gen(['min', 'max'], star(var(temp, (temp_sensor_in_range(var(temp), var(min), var(max)):eps)))).

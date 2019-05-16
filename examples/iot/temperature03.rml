@@ -1,0 +1,10 @@
+// checks temperature sampling interval
+
+temp_sample(time) matches {temperature:_,timestamp:time};
+
+check_sample(time1,time2) matches temp_sample(time2)
+			       with time2-time1 <= 10;
+
+
+CheckSamples<time1> = {let time2; check_sample(time1,time2) CheckSamples<time2>};
+Main = {let time1; temp_sample(time1) CheckSamples<time1>};
