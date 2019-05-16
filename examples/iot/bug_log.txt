@@ -1,8 +1,5 @@
 Bugs
 
-1) variable 'event' not properly managed 
-et(event) matches {event:event};
-
 2) whole event matching parsed but not translated correctly
 et(obj) matches obj;
 translated into

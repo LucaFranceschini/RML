@@ -29,7 +29,9 @@ fun toProlog(spec: Specification): LogicProgram {
 
 // build a match clause for each pattern if positive, or just one if negated
 fun toProlog(evtypeDecl: EvtypeDecl): List<Clause> {
-    val eventDict = VarTerm("Event")
+    // use an underscore, RML IDs cannot start with it
+    // but not followed by an uppercase letter, that's for singleton variables...
+    val eventDict = VarTerm("_event")
 
     // unfold patterns and collect atoms
     val patternAtoms: List<Atom> = when (evtypeDecl) {
