@@ -160,6 +160,12 @@ object ExpBuilder: rmlBaseVisitor<Exp>() {
     override fun visitSubExp(ctx: rmlParser.SubExpContext?) =
             visitBinExp(ctx!!.exp(0), ctx.exp(1), ::SubExp)
 
+    override fun visitMulExp(ctx: rmlParser.MulExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::MulExp)
+
+    override fun visitDivExp(ctx: rmlParser.DivExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::DivExp)
+
     override fun visitLessThanExp(ctx: rmlParser.LessThanExpContext?) =
             visitBinExp(ctx!!.exp(0), ctx.exp(1), ::LessThanExp)
 
@@ -180,6 +186,12 @@ object ExpBuilder: rmlBaseVisitor<Exp>() {
 
     override fun visitOrExp(ctx: rmlParser.OrExpContext?) =
             visitBinExp(ctx!!.exp(0), ctx.exp(1), ::OrExp)
+
+    override fun visitUnaryMinusExp(ctx: rmlParser.UnaryMinusExpContext?) =
+            UnaryMinusExp(ctx!!.exp().accept(this))
+
+    override fun visitParenExp(ctx: rmlParser.ParenExpContext?): Exp =
+            ctx!!.exp().accept(this)
 
     private fun visitBinExp(leftCtx: rmlParser.ExpContext,
                             rightCtx: rmlParser.ExpContext,

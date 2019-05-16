@@ -52,6 +52,9 @@ exp: BOOLEAN # boolExp
    | INT # intExp
    | FLOAT # floatExp
    | LOWERCASE_ID # varExp
+   | '-' exp # unaryMinusExp
+   | exp '*' exp # mulExp
+   | exp '/' exp # divExp
    | exp '+' exp # sumExp
    | exp '-' exp # subExp
    | exp '<' exp # lessThanExp
@@ -60,7 +63,8 @@ exp: BOOLEAN # boolExp
    | exp '>=' exp # greaterThanEqExp
    | exp '==' exp # equalToExp
    | exp '&&' exp # andExp
-   | exp '||' exp # orExp ;
+   | exp '||' exp # orExp
+   | '(' exp ')' # parenExp ;
 
 // put keywords before identifiers
 NOT: 'not' ;

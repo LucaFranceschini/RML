@@ -171,6 +171,8 @@ fun toProlog(exp: Exp, convertVars: Boolean = true): PrologTerm = when (exp) {
         else VarTerm(exp.varId.name.capitalize())
     is SumExp -> FunctionTerm("+", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is SubExp -> FunctionTerm("-", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is MulExp -> FunctionTerm("*", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is DivExp -> FunctionTerm("/", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is LessThanExp -> FunctionTerm("<", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is LessThanEqExp -> FunctionTerm("=<", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is GreaterThanExp -> FunctionTerm(">", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
@@ -178,6 +180,7 @@ fun toProlog(exp: Exp, convertVars: Boolean = true): PrologTerm = when (exp) {
     is EqualToExp -> FunctionTerm("==", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is AndExp -> FunctionTerm(",", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is OrExp -> FunctionTerm(";", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is UnaryMinusExp -> FunctionTerm("-", toProlog(exp.exp, convertVars))
 }
 
 // isMatchClause true when generating match clauses

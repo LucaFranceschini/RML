@@ -5,8 +5,6 @@ et(obj) matches obj;
 translated into
 match(Event, et(Obj)) :- match(Event, obj).
 
-3) unary -, *, / and parentheses not supported in 'with' constraints
-
 4) == in 'with' constraints translated with '==', '=:=' should be used
 
 5) && in 'with' constraints not correctly translated: ,(Goal1,Goal2)  should be ','(Goal1,Goal2)
