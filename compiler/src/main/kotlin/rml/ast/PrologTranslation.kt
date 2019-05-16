@@ -177,7 +177,7 @@ fun toProlog(exp: Exp, convertVars: Boolean = true): PrologTerm = when (exp) {
     is LessThanEqExp -> FunctionTerm("=<", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is GreaterThanExp -> FunctionTerm(">", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is GreaterThanEqExp -> FunctionTerm(">=", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
-    is EqualToExp -> FunctionTerm("==", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
+    is EqualToExp -> FunctionTerm("=:=", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is AndExp -> FunctionTerm(",", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is OrExp -> FunctionTerm(";", toProlog(exp.left, convertVars), toProlog(exp.right, convertVars))
     is UnaryMinusExp -> FunctionTerm("-", toProlog(exp.exp, convertVars))
