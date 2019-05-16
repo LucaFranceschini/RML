@@ -5,8 +5,6 @@ et(obj) matches obj;
 translated into
 match(Event, et(Obj)) :- match(Event, obj).
 
-5) && in 'with' constraints not correctly translated: ,(Goal1,Goal2)  should be ','(Goal1,Goal2)
-
 Enhancements
 
 1) support for constant `declarations' in 'with' constraints, to avoid complex expressions such as
