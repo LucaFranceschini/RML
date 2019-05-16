@@ -18,7 +18,7 @@ CheckVar<max> = {let temp1,time1; temp_sensor(temp1,time1) CheckVars<temp1,time1
 CheckSamples<time1,max> = {let time2; check_sample(time1,time2,max) CheckSamples<time2,max>};
 CheckSample<max> = {let time1; temp_sample(time1) CheckSamples<time1,max>};
 
-Main = CheckRange<0,40> /\ CheckVar<1> /\ CheckSample<10>;
+Main = CheckRange<0,40> /\ CheckVar<1> /\ CheckSample<60>;
 
 
 
