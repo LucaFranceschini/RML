@@ -58,14 +58,11 @@ class PrologCompiler(private val writer: BufferedWriter) {
     private fun compile(term: FunctionTerm) {
         val functor = term.functionSymbol.name
 
-        if (functor == ";" || functor == ",")
-            writer.write("(")
-
         // constants
         if (term.arity == 0)
             writer.write(functor)
-        // use infix notation for binary symbolic functors
-        else if (term.arity == 2 && functor.matches(Regex("[^a-zA-Z0-9_]*"))) {
+        // use infix notation for binary symbolic functors (unless it's something like ',' or ';')
+        else if (term.arity == 2 && functor.matches(Regex("[^a-zA-Z0-9_']*"))) {
             // avoid ambiguity using parentheses
             writer.write("(")
             compile(term.args[0])
@@ -82,9 +79,6 @@ class PrologCompiler(private val writer: BufferedWriter) {
             }
             writer.write(")")
         }
-
-        if (functor == ";" || functor == ",")
-            writer.write(")")
     }
 
     private fun compile(atom: Atom) {
