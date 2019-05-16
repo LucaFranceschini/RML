@@ -62,6 +62,7 @@ exp: BOOLEAN # boolExp
    | exp '>' exp # greaterThanExp
    | exp '>=' exp # greaterThanEqExp
    | exp '==' exp # equalToExp
+   | exp '=' exp # assignExp
    | exp '&&' exp # andExp
    | exp '||' exp # orExp
    | '(' exp ')' # parenExp ;

@@ -181,6 +181,9 @@ object ExpBuilder: rmlBaseVisitor<Exp>() {
     override fun visitEqualToExp(ctx: rmlParser.EqualToExpContext?) =
             visitBinExp(ctx!!.exp(0), ctx.exp(1), ::EqualToExp)
 
+    override fun visitAssignExp(ctx: rmlParser.AssignExpContext?) =
+            visitBinExp(ctx!!.exp(0), ctx.exp(1), ::AssignExp)
+
     override fun visitAndExp(ctx: rmlParser.AndExpContext?) =
             visitBinExp(ctx!!.exp(0), ctx.exp(1), ::AndExp)
 

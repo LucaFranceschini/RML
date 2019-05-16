@@ -5,10 +5,3 @@ et(obj) matches obj;
 translated into
 match(Event, et(Obj)) :- match(Event, obj).
 
-Enhancements
-
-1) support for constant `declarations' in 'with' constraints, to avoid complex expressions such as
-
--1 <= (temp2-temp1)/(time2-time1) && (temp2-temp1)/(time2-time1) <= 1
-
-
