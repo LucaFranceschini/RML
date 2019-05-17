@@ -5,3 +5,4 @@ et(obj) matches obj;
 translated into
 match(Event, et(Obj)) :- match(Event, obj).
 
+3) // Delay<delay> = {let time; clock_tick(time) clock_tick_within(time+delay)*}; // should not compile

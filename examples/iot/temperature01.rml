@@ -1,6 +1,6 @@
 // checks temperature range
 
-temp_sensor_in_range(temp,min,max) matches {temperature:temp} with min<=temp && temp<=max;
+temp_sensor_in_range(min,max) matches {temperature:temp} with min<=temp && temp<=max;
 
-Main = CheckRange<0,40>;
-CheckRange<min,max> = {let temp; temp_sensor_in_range(temp,min,max)}*;
+Main = CheckRange<22,24>;
+CheckRange<min,max> = temp_sensor_in_range(min,max)*;

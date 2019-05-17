@@ -29,6 +29,7 @@
 
 
 server(Port) :- http_server(http_dispatch,[port('10.251.61.71':Port),workers(1)]). %% one worker to guarantee event sequentiality
+%% server(Port) :- http_server(http_dispatch,[port('127.0.0.1':Port),workers(1)]). %% one worker to guarantee event sequentiality
 
 log(Log) :-
     nb_getval(log,Stream), Stream\==null->  %% optional logging of server activity

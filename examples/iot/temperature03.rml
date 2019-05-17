@@ -3,7 +3,7 @@
 temp_sample(time) matches {temperature:_,timestamp:time};
 
 check_sample(time1,time2) matches temp_sample(time2)
-			       with time2-time1 <= 10;
+			       with time2-time1 <= 1.005;
 
 
 CheckSamples<time1> = {let time2; check_sample(time1,time2) CheckSamples<time2>};
