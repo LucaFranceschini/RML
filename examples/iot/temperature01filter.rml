@@ -1,0 +1,7 @@
+// checks temperature range, works with non relevant events
+
+temp_sensor_in_range(min,max) matches {temperature:temp} with min<=temp && temp<=max;
+relevant matches {temperature:_};
+
+Main = relevant>>CheckRange<22,25>;
+CheckRange<min,max> = temp_sensor_in_range(min,max)*;

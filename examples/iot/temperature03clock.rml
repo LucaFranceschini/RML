@@ -1,0 +1,13 @@
+// checks temperature sampling interval with clock ticks
+
+clock_tick(time) matches {clock:time};
+
+clock_tick_within(max) matches clock_tick(time) with time<=max; 
+
+temp matches {temperature:_};
+
+CheckTime<max> = clock_tick_within(max)*;
+
+Delay<delay> = {let time; clock_tick(time) CheckTime<time+delay>};
+
+Main = (Delay<0.9>temp)*;
