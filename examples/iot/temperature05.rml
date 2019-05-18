@@ -1,0 +1,13 @@
+// checks average temperature variation per second 
+
+temp_sensor(temp,time) matches {temperature:temp,timestamp:time};
+
+CheckAverageVar<samples,max,temp1,time1,total,count> =
+    if(count<samples) 
+        {let temp2,time2; temp_sensor(temp2,time2) CheckAverageVar<samples,max,temp2,time2,total+(temp2-temp1)/(time2-time1),count+1>}
+    else if(-max <= total/samples && total/samples <= max) empty else none; // average=total/samples does not work
+    
+AverageVar<samples,max> = {let temp,time; temp_sensor(temp,time) CheckAverageVar<samples,max,temp,time,0,0>};
+
+Main = AverageVar<4,10>*;
+
