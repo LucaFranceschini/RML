@@ -8,6 +8,7 @@
 /*    Aug 11, 2017: fixed bug with coinduction                                                                   */
 /*    March 2, 2018: test with generic trace expressions                                                    */
 /*    January, 2019: support for RML                                                                                  */
+/*    May, 2019: support for const declarations                                                                  */
 /*******************************************************************************************/
 
 /* Transition rules */
@@ -83,7 +84,7 @@ next((ET>T), E, T1, S) :- !,match(E, ET, S1) -> next(T, E, T1, S2),merge(S1, S2,
 %% legacy clause for just one variable, no need to use a list in this case
 next(app(gen(X,T1),Arg), E, T3, S) :- atom(X),!,eval(Arg,Val),apply_sub_trace_exp([X=Val], T1, T2),!,next(T2, E, T3, S). %% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coinduction
 
-%% general clause
+%% general clause 
 next(app(gen(Vars,T1),Args), E, T3, S) :- eval_exps(Vars,Args,Sub),apply_sub_trace_exp(Sub,T1,T2),!,next(T2, E, T3, S).%% agaian here the cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coinduction
 
 %% proposal for guarded trace expressions 
@@ -114,6 +115,11 @@ next(optional(T1), E, T2, S) :- !, next(T1, E, T2, S).
 %% see the comment on solve/2 for guarded expressions
 
 next(with(ET,T,G), E, T, S) :- !,match(E, ET, S),apply_sub_pred(S,G,G2),G2.
+
+%% proposal for constant declarations
+next(const(Vars, Exps, T1), E, T3, RetSubs) :-
+    eval_exps(Vars,Exps,Subs),apply_sub_trace_exp(Subs,T1,T2),!,next(T2,E,T3,RetSubs). %% cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coinduction
+
 
 %% eval predicates for arguments of generics: for the moment only number/boolean expressions, strings and atoms are supported
 num_exp(Exp) :- Exp=..[Op|_],memberchk(Op,[+,-,/,*]).
@@ -162,7 +168,7 @@ may_halt((_>T;_)) :- !, may_halt(T).
 may_halt(app(gen(X,T1),Arg)) :- atom(X),!,eval(Arg,Val),apply_sub_trace_exp([X=Val],T1,T2),!,may_halt(T2). %% usual comment for the cut after apply_sub_trace_exp   
 
 %% generic clause
-may_halt(app(gen(Vars,T1),Args)) :- eval_exps(Vars,Args,Subs),apply_sub_trace_exp(Subs,T1,T2),!,may_halt(T2). %% usual comment for the cut after apply_su
+may_halt(app(gen(Vars,T1),Args)) :- eval_exps(Vars,Args,Subs),apply_sub_trace_exp(Subs,T1,T2),!,may_halt(T2). %% usual comment for the cut after apply_sub_trace_exp
 
 %% proposal for guarded trace expressions
 %% this should be more in line with the ecoop19/oopsla19 calculus
@@ -185,6 +191,9 @@ may_halt(optional(_)).
 %% proposal for the with operator, to be tested
 
 %% the with operator can never halt
+
+%% proposal for constant declarations
+may_halt(const(Vars, Exps, T)) :- eval_exps(Vars,Exps,Subs),apply_sub_trace_exp(Subs,T,T2),!,may_halt(T2). %% cut after apply_sub_trace_exp is essential to avoid divergence in case of failure due to coinduction
 
 % see if trace expression is equivalent to 1 (only sound, not complete)
 is1(1) :- !.
@@ -347,7 +356,10 @@ apply_sub_trace_exp(S, optional(T1), optional(T2)) :- !, apply_sub_trace_exp(S, 
 %% proposal for the with operator, to be tested
 
 apply_sub_trace_exp(S,with(ET,T,G),with(ET2,T2,G2)) :- !, apply_sub_event_type(S, ET, ET2), apply_sub_trace_exp(S, T, T2), apply_sub_pred(S,G,G2). 
-			      
+
+%% proposal for constant declarations
+apply_sub_trace_exp(S,const(Vars, Exps1, T1),const(Vars, Exps2, T2)) :- apply_sub_arg(S,Exps1,Exps2),split(Vars,S,_Svars,Srest),apply_sub_trace_exp(Srest,T1,T2).
+
 % substitution inside event types
 apply_sub_event_type([],ET,ET) :- !.
 %%apply_sub_event_type([X=V],var(Y),ET) :- !,(Y==X -> ET=V;ET=var(Y)).
