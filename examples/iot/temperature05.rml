@@ -9,5 +9,5 @@ CheckAverageVar<samples,max,temp1,time1,total,count> =
     
 AverageVar<samples,max> = {let temp,time; temp_sensor(temp,time) CheckAverageVar<samples,max,temp,time,0,0>};
 
-Main = AverageVar<4,10>*;
+Main = AverageVar<10,1>*;
 
