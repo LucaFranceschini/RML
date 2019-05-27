@@ -1,0 +1,68 @@
+package compiler.rml.ast
+
+import compiler.calculus.*
+import compiler.calculus.Equation
+import compiler.calculus.Identifier
+
+// compile (part of) RML to trace calculus, which is parametric w.r.t. event types and data expressions
+
+class Compiler(val specification: Specification) {
+    // result of the compilation of a specification
+    val result = mutableListOf<Equation<EventType, DataExpression>>()
+
+    fun compile(): compiler.calculus.Specification<EventType, DataExpression> {
+        specification.equations.map { compile(it) }
+        return Specification(result)
+    }
+
+    fun compile(equation: compiler.rml.ast.Equation) =
+            // non-generic equations compilation is straightforward
+            if (equation.parameters.isEmpty())
+                Equation(equation.identifier.name, compile(equation.expression))
+            // S<x1, ..., xN> = E  --->  S = <x1, ..., xN>.E'     (with E ---> E')
+            else
+                Equation(equation.identifier.name, GenericExpression(
+                        equation.parameters.map { Identifier(it.name) },
+                        compile(equation.expression)
+                ))
+
+    // return expressions but update result (lost of equations) along the way as needed
+    private fun compile(expression: Expression):
+            compiler.calculus.Expression<EventType, DataExpression> = when (expression) {
+        is StarExpression -> StarExpression(compile(expression.exp))
+        is PlusExpression -> PlusExpression(compile(expression.exp))
+        is OptionalExpression -> OptionalExpression(compile(expression.exp))
+        is PrefixClosureExpression -> PrefixClosureExpression(compile(expression.exp))
+        is ConcatExpression -> ConcatenationExpression(compile(expression.left), compile(expression.right))
+        is AndExpression -> AndExpression(compile(expression.left), compile(expression.right))
+        is OrExpression -> OrExpression(compile(expression.left), compile(expression.right))
+        is ShuffleExpression -> ShuffleExpression(compile(expression.left), compile(expression.right))
+        is FilterExpression -> FilterExpression(
+                expression.eventType,
+                compile(expression.filteredExpression),
+                compile(expression.unfilteredExpression ?: AllExpression)
+        )
+        is IfElseExpression -> ConditionalExpression(
+                expression.condition,
+                compile(expression.thenExpression),
+                compile(expression.elseExpression)
+        )
+        EmptyExpression -> compiler.calculus.EmptyExpression
+        NoneExpression -> ZeroExpression
+        AllExpression -> OneExpression
+        is BlockExpression -> // for the block work one variable at a time
+            if (expression.declaredVariables.isEmpty())
+                compile(expression.expression)
+            else {
+                val firstId = Identifier(expression.declaredVariables.first().name)
+                val tailBlock = BlockExpression(expression.declaredVariables.drop(1), expression.expression)
+                ParametricExpression(firstId, compile(tailBlock))
+            }
+        is VariableExpression -> // this could have generic arguments instantiation
+            if (expression.genericArguments.isEmpty())
+                VariableExpression(expression.id.name)
+            else
+                GenericApplication(VariableExpression(expression.id.name), expression.genericArguments)
+        is EventTypeExpression -> PrefixExpression(expression.eventType, compiler.calculus.EmptyExpression)
+    }
+}
