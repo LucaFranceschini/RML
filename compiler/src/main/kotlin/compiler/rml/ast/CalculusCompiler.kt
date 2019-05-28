@@ -6,7 +6,7 @@ import compiler.calculus.Identifier
 
 // compile (part of) RML to trace calculus, which is parametric w.r.t. event types and data expressions
 
-object Compiler {
+object CalculusCompiler {
     // intermediate results of compilation
     private var equations = mutableListOf<Equation<EventType, DataExpression>>()
 
