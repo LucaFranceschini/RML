@@ -3,7 +3,7 @@ package compiler.calculus
 // this calculus AST is parametric w.r.t. event types (ET) and data expressions (DE)
 // AST nodes are read-only so covariance is fine, and it allows singletons (see below)
 
-data class Specification<ET, DE>(val equations: List<Equation<ET, DE>>)
+data class Specification<ET, DE>(val equations: List<Equation<ET, DE>>, val mainIdentifier: Identifier)
 
 data class Equation<ET, DE>(val identifier: Identifier, val expression: Expression<ET, DE>) {
     // allow construction from String directly

@@ -1,6 +1,5 @@
 package compiler.rml.parser
 
-import compiler.Identifier
 import compiler.rml.ast.*
 import rml.parser.RMLBaseVisitor
 import rml.parser.RMLParser.*
@@ -11,7 +10,8 @@ import java.lang.RuntimeException
 
 fun buildSpecification(ctx: SpecificationContext) = Specification(
         ctx.eventTypeDeclaration().map { it.accept(EventTypeDeclarationBuilder) },
-        ctx.equation().map(::buildEquation)
+        ctx.equation().map(::buildEquation),
+        Identifier("Main")
 )
 
 fun buildEquation(ctx: EquationContext) = Equation(

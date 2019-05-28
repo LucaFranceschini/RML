@@ -12,7 +12,8 @@ class Compiler(val specification: Specification) {
 
     fun compile(): compiler.calculus.Specification<EventType, DataExpression> {
         specification.equations.map { compile(it) }
-        return Specification(result)
+        val mainIdentifier = Identifier(specification.mainIdentifier.name)
+        return Specification(result, mainIdentifier)
     }
 
     fun compile(equation: compiler.rml.ast.Equation) =
