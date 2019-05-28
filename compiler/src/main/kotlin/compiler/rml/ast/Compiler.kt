@@ -6,17 +6,23 @@ import compiler.calculus.Identifier
 
 // compile (part of) RML to trace calculus, which is parametric w.r.t. event types and data expressions
 
-class Compiler(val specification: Specification) {
-    // result of the compilation of a specification
-    val result = mutableListOf<Equation<EventType, DataExpression>>()
+object Compiler {
+    // intermediate results of compilation
+    private var equations = mutableListOf<Equation<EventType, DataExpression>>()
 
-    fun compile(): compiler.calculus.Specification<EventType, DataExpression> {
+    fun compile(specification: Specification): compiler.calculus.Specification<EventType, DataExpression> {
+        assert(equations.isEmpty())
         specification.equations.map { compile(it) }
         val mainIdentifier = Identifier(specification.mainIdentifier.name)
-        return Specification(result, mainIdentifier)
+        val result = Specification(equations, mainIdentifier)
+
+        // avoid memory leaks by emptying the intermediate equations list
+        equations = mutableListOf()
+
+        return result
     }
 
-    fun compile(equation: compiler.rml.ast.Equation) =
+    private fun compile(equation: compiler.rml.ast.Equation) =
             // non-generic equations compilation is straightforward
             if (equation.parameters.isEmpty())
                 Equation(equation.identifier.name, compile(equation.expression))
@@ -27,7 +33,7 @@ class Compiler(val specification: Specification) {
                         compile(equation.expression)
                 ))
 
-    // return expressions but update result (lost of equations) along the way as needed
+    // return expressions but update equations (lost of equations) along the way as needed
     private fun compile(expression: Expression):
             compiler.calculus.Expression<EventType, DataExpression> = when (expression) {
         is StarExpression -> StarExpression(compile(expression.exp))
