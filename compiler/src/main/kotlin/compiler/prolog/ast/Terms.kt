@@ -10,6 +10,10 @@ data class FloatTerm(val number: Double): Term()
 data class VariableTerm(val identifier: Identifier): Term() {
     // allow construction from strings
     constructor(identifier: String): this(Identifier(identifier))
+
+    companion object {
+        val ignored = VariableTerm("_")
+    }
 }
 
 // f(term1, ..., termN) (including constants, strings...)
