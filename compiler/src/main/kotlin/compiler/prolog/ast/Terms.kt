@@ -20,6 +20,9 @@ data class CompoundTerm(val functor: String, val args: List<Term>): Term() {
     constructor(functor: String, vararg args: Term): this(functor, args.toList())
 }
 
+// compound terms with arity 0 are often called atoms
+fun atom(string: String) = CompoundTerm(string)
+
 // tag{key1:value1, ..., keyN:valueN}
 // they are first-class citizens in SWI-Prolog
 data class DictionaryTerm(val tag: Term, val pairs: List<KeyValuePair>): Term() {
