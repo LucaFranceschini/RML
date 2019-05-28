@@ -16,7 +16,7 @@ dependencies {
 }
 
 // Define the main class for the application
-application { mainClassName = "rml.CompilerKt" }
+application { mainClassName = "rml.MainKt" }
 
 // make System.in reads blocking when using Gradle
 val run: JavaExec by tasks
@@ -25,7 +25,7 @@ run.standardInput = System.`in`
 // prepare JAR artifact
 val jar: Jar by tasks
 // make it executable
-jar.manifest { attributes["Main-Class"] = "rml.CompilerKt" }
+jar.manifest { attributes["Main-Class"] = "rml.MainKt" }
 // include dependencies (fat-JAR)
 jar.from(configurations.runtime.get().map { if (it.isDirectory) it else zipTree(it) })
 
