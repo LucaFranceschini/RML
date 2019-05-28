@@ -1,13 +1,15 @@
 package compiler.rml.ast
 
-sealed class EventTypeDeclaration
+sealed class EventTypeDeclaration {
+    abstract val eventType: EventType
+}
 
-data class DirectEventTypeDeclaration(val eventType: EventType,
+data class DirectEventTypeDeclaration(override val eventType: EventType,
                                       val eventExpression: EventExpression,
                                       val negated: Boolean,
                                       val withDataExpression: DataExpression?): EventTypeDeclaration()
 
-data class DerivedEventTypeDeclaration(val eventType: EventType,
+data class DerivedEventTypeDeclaration(override val eventType: EventType,
                                        val parents: List<EventType>,
                                        val negated: Boolean,
                                        val withDataExpression: DataExpression?): EventTypeDeclaration() {
@@ -16,7 +18,7 @@ data class DerivedEventTypeDeclaration(val eventType: EventType,
     }
 }
 
-data class EventType(val name: Identifier, val parameters: List<Parameter>) {
+data class EventType(val identifier: Identifier, val parameters: List<Parameter>) {
     // for some reason it only compiles if I put subclasses inside the sealed class...
     sealed class Parameter {
         data class Expression(val eventExpression: EventExpression): Parameter()
