@@ -22,6 +22,13 @@ data class CompoundTerm(val functor: String, val args: List<Term>): Term() {
 
     // allow varargs
     constructor(functor: String, vararg args: Term): this(functor, args.toList())
+
+    companion object {
+        // utility method to generate lists
+        fun list(vararg terms: Term): Term =
+                if (terms.isEmpty()) EmptyList
+                else CompoundTerm("[|]", terms.first(), list(*terms.drop(1).toTypedArray()))
+    }
 }
 
 // compound terms with arity 0 are often called atoms
