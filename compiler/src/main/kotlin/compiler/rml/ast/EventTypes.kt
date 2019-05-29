@@ -2,16 +2,17 @@ package compiler.rml.ast
 
 sealed class EventTypeDeclaration {
     abstract val eventType: EventType
+    abstract val negated: Boolean
 }
 
 data class DirectEventTypeDeclaration(override val eventType: EventType,
                                       val eventExpression: EventExpression,
-                                      val negated: Boolean,
+                                      override val negated: Boolean,
                                       val withDataExpression: DataExpression?): EventTypeDeclaration()
 
 data class DerivedEventTypeDeclaration(override val eventType: EventType,
                                        val parents: List<EventType>,
-                                       val negated: Boolean,
+                                       override val negated: Boolean,
                                        val withDataExpression: DataExpression?): EventTypeDeclaration() {
     init {
         require(parents.isNotEmpty()) { "at least one parent expected" }
