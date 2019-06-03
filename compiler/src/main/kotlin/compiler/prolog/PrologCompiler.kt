@@ -7,7 +7,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
     private fun compile(term: Term): Unit = when (term) {
         is IntTerm -> writer.write(term.number.toString())
         is FloatTerm -> writer.write(term.number.toString())
-        is VariableTerm -> writer.write(term.identifier.name)
+        is VariableTerm -> writer.write(term.identifier.string)
         is CompoundTerm -> compile(term)
         is DictionaryTerm -> {
             compile(term.tag)
