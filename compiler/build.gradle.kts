@@ -25,7 +25,7 @@ run.standardInput = System.`in`
 // prepare JAR artifact
 val jar: Jar by tasks
 // make it executable
-jar.manifest { attributes["Main-Class"] = "rml.MainKt" }
+jar.manifest { attributes["Main-Class"] = "compiler.MainKt" }
 // include dependencies (fat-JAR)
 jar.from(configurations.runtime.get().map { if (it.isDirectory) it else zipTree(it) })
 
