@@ -5,6 +5,9 @@ import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.DefaultHelpFormatter
 import com.xenomachina.argparser.default
 import com.xenomachina.argparser.mainBody
+import compiler.calculus.Compiler
+import compiler.prolog.ast.Program
+import compiler.rml.ast.*
 import compiler.rml.parser.buildSpecification
 import org.antlr.v4.runtime.*
 import rml.parser.RMLLexer
@@ -47,7 +50,11 @@ fun compile(inputStream: InputStream, outputStream: OutputStream) {
         }
         val parseTree = parser.specification()
         val rmlAst = buildSpecification(parseTree)
-        val prologAst = toProlog(rmlAst)
+        val calculusAst = CalculusCompiler.compile(rmlAst)
+        val declarationsClauses = compile(rmlAst.eventTypeDeclarations)
+        val calculusCompiler = Compiler<EventType, DataExpression>(::compile, ::compile)
+        val specificationClauses = calculusCompiler.compile(calculusAst, "Main")
+        val prologAst = Program(directives, declarationsClauses + specificationClauses)
         val writer = outputStream.bufferedWriter()
         PrologCompiler(writer).compile(prologAst)
         writer.close()

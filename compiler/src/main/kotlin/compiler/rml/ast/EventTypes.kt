@@ -22,7 +22,8 @@ data class DerivedEventTypeDeclaration(override val eventType: EventType,
 data class EventType(val identifier: Identifier, val parameters: List<Parameter>) {
     // for some reason it only compiles if I put subclasses inside the sealed class...
     sealed class Parameter {
-        data class Expression(val eventExpression: EventExpression): Parameter()
+        data class DataExpression(val dataExpression: compiler.rml.ast.DataExpression): Parameter()
+        data class EventExpression(val eventExpression: compiler.rml.ast.EventExpression): Parameter()
         data class Variable(val variable: Identifier): Parameter() {
             // allow construction from String directly
             constructor(variable: String): this(Identifier(variable))

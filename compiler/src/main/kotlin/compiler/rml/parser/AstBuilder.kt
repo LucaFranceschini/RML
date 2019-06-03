@@ -42,8 +42,11 @@ object EventTypeParameterBuilder: RMLBaseVisitor<EventType.Parameter>() {
     override fun visitEvtypeVarParam(ctx: EvtypeVarParamContext?) =
             EventType.Parameter.Variable(ctx!!.evtypeVar().LOWERCASE_ID().text)
 
-    override fun visitEvtypeExpParam(ctx: EvtypeExpParamContext?) =
-            EventType.Parameter.Expression(ctx!!.eventExp().accept(EventExpressionBuilder))
+    override fun visitEvtypeEventExpParam(ctx: EvtypeEventExpParamContext?) =
+            EventType.Parameter.EventExpression(ctx!!.eventExp().accept(EventExpressionBuilder))
+
+    override fun visitEvtypeDataExpParam(ctx: EvtypeDataExpParamContext?) =
+            EventType.Parameter.DataExpression(ctx!!.dataExp().accept(DataExpressionBuilder))
 }
 
 object EventExpressionBuilder: RMLBaseVisitor<EventExpression>() {
