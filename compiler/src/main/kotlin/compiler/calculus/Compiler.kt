@@ -8,7 +8,7 @@ class Compiler<ET, DE>(val eventTypeCompiler: (ET) -> Term, val dataExpressionCo
     // specifications have names in the underlying Prolog implementation
     fun compile(specification: Specification<ET, DE>, name: String): Clause {
         val head = CompoundTerm("trace_expression",
-                atom(specification.mainIdentifier.name),
+                atom(name),
                 VariableTerm(specification.mainIdentifier.name))
         val body = specification.equations.map { compile(it) }
         return Clause(head, body)
