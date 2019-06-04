@@ -23,6 +23,12 @@ class PrologCompiler(private val writer: BufferedWriter) {
     }
 
     private fun compile(term: CompoundTerm) {
+        // lists are handled in a special way
+        if (term.functor == "[|]" && term.args.size == 2) {
+            compileList(term)
+            return
+        }
+
         // if it's an atom just print it quoted
         if (term.arity == 0) {
             writer.write("'${term.functor}'")
@@ -39,6 +45,23 @@ class PrologCompiler(private val writer: BufferedWriter) {
         // otherwise use function notation
         writer.write(term.functor)
         intersperse(term.args, "(", ")")
+    }
+
+    private fun compileList(term: CompoundTerm) {
+        assert(term.args.size == 2) { "number of list constructor arguments should be 2" }
+        intersperse(unfoldList(term), prefix = "[", suffix = "]")
+    }
+
+    private fun unfoldList(term: Term): List<Term> {
+        if (term == EmptyList)
+            return emptyList()
+
+        if (term is CompoundTerm) {
+            assert(term.args.size == 2) { "number of list constructor arguments should be 2" }
+            return listOf(term.args[0]) + unfoldList(term.args[1])
+        }
+
+        error("unexpected constructor, list expected")
     }
 
     private fun compile(clause: Clause) {
