@@ -1,4 +1,4 @@
-// checks temperature range
+// checks temperature range for single or multiple sensors
 
 temp_sensor_in_range(min,max) matches {temperature:temp} with min<=temp && temp<=max;
 

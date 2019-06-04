@@ -1,0 +1,10 @@
+// checks temperature sampling interval for multiple sensors
+
+temp_sample(id,time) matches {id:id,temperature:_,timestamp:time};
+
+check_sample(id,time1,time2) matches temp_sample(id,time2)
+			       with time2-time1 <= 1.005;
+
+
+CheckSamples<id,time1> = {let time2; check_sample(id,time1,time2) CheckSamples<id,time2>};
+Main = {let id, time1; temp_sample(id,time1) (CheckSamples<id,time1> | Main)};

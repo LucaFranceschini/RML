@@ -1,0 +1,10 @@
+// checks temperature variation for multiple sensors
+
+temp_sensor(id,temp,time) matches {id:id,temperature:temp,timestamp:time};
+
+check_var(id,temp1,time1,temp2,time2) matches temp_sensor(id,temp2,time2)
+			       with delta=(temp2-temp1)/(time2-time1) && -0.1 <= delta && delta <= 0.1; 
+
+
+CheckVars<id,temp1,time1> = {let temp2, time2; check_var(id,temp1,time1,temp2,time2) CheckVars<id,temp2,time2>};
+Main = {let id,temp1,time1; temp_sensor(id,temp1,time1) (CheckVars<id,temp1,time1> | Main)};

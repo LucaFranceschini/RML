@@ -1,4 +1,4 @@
-// checks temperature variation
+// checks temperature variation for a single sensor
 
 temp_sensor(temp,time) matches {temperature:temp,timestamp:time};
 

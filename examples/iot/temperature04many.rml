@@ -1,0 +1,21 @@
+// checks temperature range, variation, and sampling interval for a multiple sensors
+// to be completed
+temp_sensor(id,temp,time) matches {id:id,temperature:temp,timestamp:time};
+temp_sensor_in_range(temp,min,max) matches {temperature:temp} with min<=temp && temp<=max;
+temp_sample(id,time) matches temp_sensor(id,_,time);
+
+check_var(id,temp1,time1,temp2,time2,max) matches temp_sensor(id,temp2,time2)
+			       with delta==(temp2-temp1)/(time2-time1) && -max <= delta && delta <= max; 
+
+check_sample(id,time1,time2,max) matches temp_sample(id,time2)
+			       with time2-time1 <= max;
+
+CheckRange<min,max> = {let temp; temp_sensor_in_range(temp,min,max)}*;
+
+CheckVars<id,temp1,time1,max> = {let temp2, time2; check_var(id,temp1,time1,temp2,time2,max) CheckVars<id,temp2,time2,max>};
+CheckVar<max> = {let temp1,time1; temp_sensor(id,temp1,time1) CheckVars<id,temp1,time1,max>};
+
+CheckSamples<id,time1,max> = {let time2; check_sample(id,time1,time2,max) CheckSamples<id,time2,max>};
+CheckSample<id,max> = {let time1; temp_sample(time1) CheckSamples<time1,max>};
+
+Main = CheckRange<25,26> /\ CheckVar<1> /\ CheckSample<1.5>;
