@@ -2,7 +2,7 @@ plugins {
     java // Java support
     application // Executable JVM application support
     antlr // ANTLR parser generator
-    kotlin("jvm").version("1.3.21") // JVM target for Kotlin compiler
+    kotlin("jvm") version "1.3.31" // JVM target for Kotlin compiler
 }
 
 repositories {
