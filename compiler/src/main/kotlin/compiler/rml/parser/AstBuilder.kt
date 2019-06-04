@@ -34,7 +34,7 @@ object EventTypeDeclarationBuilder: RMLBaseVisitor<EventTypeDeclaration>() {
                     buildEventType(ctx!!.evtype()),
                     ctx.eventExp().accept(EventExpressionBuilder),
                     ctx.NOT() != null,
-                    ctx.dataExp().accept(DataExpressionBuilder)
+                    ctx.dataExp()?.accept(DataExpressionBuilder)
             )
 }
 
