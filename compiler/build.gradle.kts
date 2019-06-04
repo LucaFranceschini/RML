@@ -27,7 +27,7 @@ val jar: Jar by tasks
 // make it executable
 jar.manifest { attributes["Main-Class"] = "compiler.MainKt" }
 // include dependencies (fat-JAR)
-jar.from(configurations.runtime.get().map { if (it.isDirectory) it else zipTree(it) })
+jar.from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 
 tasks {
     // first generate ANTLR parser, then compile source code
