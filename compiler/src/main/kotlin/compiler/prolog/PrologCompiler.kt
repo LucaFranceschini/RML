@@ -29,13 +29,16 @@ class PrologCompiler(private val writer: BufferedWriter) {
             return
         }
 
-        // always use parentheses to avoid precedence problems
-        writer.write("(")
+        // if functor is binary and not a word, print as infix
+        if (term.args.size == 2 && !term.functor.first().isLetter()) {
+            // use parentheses to avoid precedence problems
+            intersperse(term.args, prefix = "(", suffix = ")", separator = term.functor)
+            return
+        }
 
+        // otherwise use function notation
         writer.write(term.functor)
         intersperse(term.args, "(", ")")
-
-        writer.write(")")
     }
 
     private fun compile(clause: Clause) {
