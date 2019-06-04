@@ -16,7 +16,7 @@ dependencies {
 }
 
 // Define the main class for the application
-application { mainClassName = "rml.MainKt" }
+application { mainClassName = "compiler.MainKt" }
 
 // make System.in reads blocking when using Gradle
 val run: JavaExec by tasks
