@@ -126,7 +126,7 @@ private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence
 
 private fun compile(objectExpression: ObjectEventExpression): Sequence<DictionaryTerm> = sequence {
     if (objectExpression.fields.isEmpty())
-        yield(DictionaryTerm(atom("_"), emptyList()))
+        yield(DictionaryTerm(VariableTerm("_"), emptyList()))
     else {
         val firstField = objectExpression.fields.first()
         val otherFields = objectExpression.fields.drop(1)
