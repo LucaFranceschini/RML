@@ -1,4 +1,4 @@
-// checks temperature range, variation, and sampling interval
+// checks temperature range, variation, and sampling interval for a single sensor
 
 temp_sensor(temp,time) matches {temperature:temp,timestamp:time};
 temp_sensor_in_range(temp,min,max) matches {temperature:temp} with min<=temp && temp<=max;

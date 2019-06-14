@@ -1,4 +1,4 @@
-// checks temperature sampling interval
+// checks temperature sampling interval for a single sensor
 
 temp_sample(time) matches {temperature:_,timestamp:time};
 
