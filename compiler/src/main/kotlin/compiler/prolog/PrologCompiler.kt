@@ -74,7 +74,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
 
         if (clause.body.isNotEmpty()) {
             writer.write(" :- ")
-            intersperse(clause.body)
+            intersperse(clause.body, separator = ",\n\t")
         }
 
         writer.write(".\n")
