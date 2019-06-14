@@ -23,6 +23,13 @@ class PrologCompiler(private val writer: BufferedWriter) {
     }
 
     private fun compile(term: CompoundTerm) {
+        // print alphabetical atoms in the simplest way
+        // make sure they start with a lowercase not to generate variables
+        if (term.args.isEmpty() && term.functor.matches(Regex("[a-z]\\w*"))) {
+            writer.write(term.functor)
+            return
+        }
+
         // lists are handled in a special way
         if (term.functor == "[|]" && term.args.size == 2) {
             compileList(term)
