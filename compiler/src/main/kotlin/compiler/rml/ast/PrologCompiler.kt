@@ -120,7 +120,7 @@ private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence
         is FloatEventExpression -> yield(FloatTerm(eventExpression.number))
         is BoolEventExpression -> yield(atom(eventExpression.value.toString()))
         is VariableEventExpression -> yield(VariableTerm(eventExpression.variable.name))
-        is ObjectEventExpression -> compile(eventExpression)
+        is ObjectEventExpression -> yieldAll(compile(eventExpression))
     }
 }
 
