@@ -22,36 +22,30 @@ class PrologCompiler(private val writer: BufferedWriter) {
         compile(pair.value)
     }
 
+    // this function does some effort to pretty print terms
     private fun compile(term: CompoundTerm) {
         // print alphabetical atoms in the simplest way
         // make sure they start with a lowercase not to generate variables
         if (term.args.isEmpty() && term.functor.matches(Regex("[a-z]\\w*"))) {
             writer.write(term.functor)
-            return
         }
-
         // lists are handled in a special way
-        if (term.functor == "[|]" && term.args.size == 2) {
+        else if (term.functor == "[|]" && term.args.size == 2) {
             compileList(term)
-            return
         }
-
         // if it's an atom just print it quoted
-        if (term.arity == 0) {
+        else if (term.arity == 0) {
             writer.write("'${term.functor}'")
-            return
         }
-
         // if functor is binary and not a word, print as infix
-        if (term.args.size == 2 && !term.functor.first().isLetter()) {
+        else if (term.args.size == 2 && !term.functor.first().isLetter()) {
             // use parentheses to avoid precedence problems
             intersperse(term.args, prefix = "(", suffix = ")", separator = term.functor)
-            return
+        } else {
+            // otherwise use function notation
+            writer.write(term.functor)
+            intersperse(term.args, "(", ")")
         }
-
-        // otherwise use function notation
-        writer.write(term.functor)
-        intersperse(term.args, "(", ")")
     }
 
     private fun compileList(term: CompoundTerm) {
