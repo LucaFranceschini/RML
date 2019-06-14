@@ -138,7 +138,7 @@ private fun compile(objectExpression: ObjectEventExpression): Sequence<Dictionar
             compile(otherFieldsObject).forEach { objectTerm ->
                 // now combine the result
                 val firstKeyValuePair = DictionaryTerm.KeyValuePair(atom(firstField.key.name), valueTerm)
-                yield(DictionaryTerm(atom("_"), listOf(firstKeyValuePair) + objectTerm.pairs))
+                yield(DictionaryTerm(VariableTerm("_"), listOf(firstKeyValuePair) + objectTerm.pairs))
             }
         }
     }
