@@ -9,6 +9,10 @@ class PrologCompiler(private val writer: BufferedWriter) {
         is FloatTerm -> writer.write(term.number.toString())
         is VariableTerm -> writer.write(term.identifier.string)
         is CompoundTerm -> compile(term)
+        is StringTerm -> {
+            val escaped = term.string.replace("\"", "\\\"")
+            writer.write("\"$escaped\"")
+        }
         is DictionaryTerm -> {
             compile(term.tag)
             intersperse(term.pairs, PrologCompiler::compile, "{", "}")

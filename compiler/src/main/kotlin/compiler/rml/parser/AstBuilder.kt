@@ -62,7 +62,7 @@ object EventExpressionBuilder: RMLBaseVisitor<EventExpression>() {
     override fun visitParenEventExp(ctx: ParenEventExpContext?): EventExpression = ctx!!.eventExp().accept(this)
 
     override fun visitStringEventExp(ctx: StringEventExpContext?) =
-            StringEventExpression(ctx!!.STRING().text)
+            StringEventExpression(ctx!!.STRING().text.removeSurrounding("'"))
 
     override fun visitIntEventExp(ctx: IntEventExpContext?) =
             IntEventExpression(ctx!!.INT().text.toInt())

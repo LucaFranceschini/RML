@@ -115,7 +115,7 @@ private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence
                 }
             }
         }
-        is StringEventExpression -> yield(atom(eventExpression.string))
+        is StringEventExpression -> yield(StringTerm(eventExpression.string))
         is IntEventExpression -> yield(IntTerm(eventExpression.number))
         is FloatEventExpression -> yield(FloatTerm(eventExpression.number))
         is BoolEventExpression -> yield(atom(eventExpression.value.toString()))
