@@ -15,8 +15,8 @@ eventTypeDeclaration: evtype NOT? 'matches' evtype ('|' evtype)* ('with' dataExp
 // event types are parametric
 evtype: evtypeId ('(' evtypeParam (',' evtypeParam)* ')')? ;
 evtypeParam: evtypeVar # evtypeVarParam
-           | eventExp # evtypeEventExpParam
            | dataExp # evtypeDataExpParam
+           | eventExp # evtypeEventExpParam
            ;
 
 // patterns for JSON events from the underlying event domain
