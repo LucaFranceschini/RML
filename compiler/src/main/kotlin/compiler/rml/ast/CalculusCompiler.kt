@@ -12,7 +12,7 @@ object CalculusCompiler {
 
     fun compile(specification: Specification): compiler.calculus.Specification<EventType, DataExpression> {
         assert(equations.isEmpty())
-        specification.equations.map { compile(it) }
+        equations = specification.equations.map { compile(it) }.toMutableList()
         val mainIdentifier = Identifier(specification.mainIdentifier.name)
         val result = Specification(equations, mainIdentifier)
 
