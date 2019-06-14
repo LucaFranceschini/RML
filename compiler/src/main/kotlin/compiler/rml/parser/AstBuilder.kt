@@ -26,7 +26,7 @@ object EventTypeDeclarationBuilder: RMLBaseVisitor<EventTypeDeclaration>() {
                     buildEventType(ctx!!.evtype(0)),
                     ctx.evtype().drop(1).map(::buildEventType),
                     ctx.NOT() != null,
-                    ctx.dataExp().accept(DataExpressionBuilder)
+                    ctx.dataExp()?.accept(DataExpressionBuilder)
             )
 
     override fun visitDirectEvtypeDecl(ctx: DirectEvtypeDeclContext?) =
