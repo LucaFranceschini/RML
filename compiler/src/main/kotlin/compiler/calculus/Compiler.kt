@@ -42,11 +42,11 @@ class Compiler<ET, DE>(val eventTypeCompiler: (ET) -> Term, val dataExpressionCo
                 VariableTerm(expression.identifier.name),
                 compile(expression.expression))
         is GenericExpression -> CompoundTerm("gen",
-                expression.variables.map { atom(it.name) }.fold(EmptyList, ::reduceList),
+                ListTerm(expression.variables.map { atom(it.name) }),
                 compile(expression.expression))
         is GenericApplication -> CompoundTerm("app",
                 compile(expression.expression),
-                expression.arguments.map(dataExpressionCompiler).fold(EmptyList, ::reduceList))
+                ListTerm(expression.arguments.map(dataExpressionCompiler)))
         is ConditionalExpression -> CompoundTerm("guarded",
                 compile(expression.thenBranch),
                 compile(expression.elseBranch))

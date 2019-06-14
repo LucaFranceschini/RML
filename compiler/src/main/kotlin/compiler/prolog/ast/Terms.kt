@@ -22,13 +22,6 @@ data class CompoundTerm(val functor: String, val args: List<Term>): Term() {
 
     // allow varargs
     constructor(functor: String, vararg args: Term): this(functor, args.toList())
-
-    companion object {
-        // utility method to generate lists
-        fun list(vararg terms: Term): Term =
-                if (terms.isEmpty()) EmptyList
-                else CompoundTerm("[|]", terms.first(), list(*terms.drop(1).toTypedArray()))
-    }
 }
 
 // compound terms with arity 0 are often called atoms
@@ -40,8 +33,15 @@ data class DictionaryTerm(val tag: Term, val pairs: List<KeyValuePair>): Term() 
     data class KeyValuePair(val key: Term, val value: Term)
 }
 
-// empty lists are special from SWI-Prolog v7
-object EmptyList: Term()
+// handle lists in a special way
+data class ListTerm(val list: List<Term> = emptyList(), val moreAllowed: Boolean = false): Term() {
+    constructor(vararg terms: Term, moreAllowed: Boolean = false): this(terms.toList(), moreAllowed)
+
+    init {
+        if (list.isEmpty() && moreAllowed)
+            error("unbound tail not allowed without head elements")
+    }
+}
 
 // SWI-Prolog v7 strings
 data class StringTerm(val string: String): Term()

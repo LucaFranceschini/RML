@@ -57,7 +57,7 @@ object EventExpressionBuilder: RMLBaseVisitor<EventExpression>() {
             ObjectEventExpression(ctx!!.field().map { buildField(it) })
 
     override fun visitListEventExp(ctx: ListEventExpContext?) =
-            ListEventExpression(ctx!!.eventExp().map { it.accept(this) })
+            ListEventExpression(ctx!!.eventExp().map { it.accept(this) }, ctx.ELLIPSIS() != null)
 
     override fun visitParenEventExp(ctx: ParenEventExpContext?): EventExpression = ctx!!.eventExp().accept(this)
 

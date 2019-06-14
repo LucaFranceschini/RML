@@ -4,7 +4,7 @@ import compiler.prolog.ast.*
 
 val directives: List<Directive> = listOf(
         // :- module('spec', [trace_expression/2, match/2]).
-        Directive(CompoundTerm("module", atom("spec"), CompoundTerm.list(
+        Directive(CompoundTerm("module", atom("spec"), ListTerm(
                 CompoundTerm("/", atom("trace_expression"), IntTerm(2)),
                 CompoundTerm("/", atom("match"), IntTerm(2))
         ))),
@@ -100,20 +100,8 @@ private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence
             yieldAll(compile(eventExpression.left))
             yieldAll(compile(eventExpression.right))
         }
-        is ListEventExpression -> {
-            val list = eventExpression.list
-            if (list.isEmpty()) yield(EmptyList)
-            else {
-                val head = list.first()
-                val tail = list.drop(1)
-
-                // combine each term from the compilation of the head with each term from the compilation of the tail
-                compile(head).forEach { headTerm ->
-                    compile(ListEventExpression(tail)).forEach { tailTerm ->
-                        yield(CompoundTerm("[|]", headTerm, tailTerm))
-                    }
-                }
-            }
+        is ListEventExpression -> compileListEventExpression(eventExpression.list).forEach {
+            yield(ListTerm(it, eventExpression.moreAllowed))
         }
         is StringEventExpression -> yield(StringTerm(eventExpression.string))
         is IntEventExpression -> yield(IntTerm(eventExpression.number))
@@ -121,6 +109,18 @@ private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence
         is BoolEventExpression -> yield(atom(eventExpression.value.toString()))
         is VariableEventExpression -> yield(VariableTerm(eventExpression.variable.name))
         is ObjectEventExpression -> yieldAll(compile(eventExpression))
+    }
+}
+
+// recursively work on the list
+private fun compileListEventExpression(list: List<EventExpression>): Sequence<List<Term>> = sequence {
+    if (list.isEmpty()) yield(emptyList())
+    else {
+        compile(list.first()).forEach { head ->
+            compileListEventExpression(list.drop(1)).forEach { tail ->
+                yield(listOf(head) + tail)
+            }
+        }
     }
 }
 

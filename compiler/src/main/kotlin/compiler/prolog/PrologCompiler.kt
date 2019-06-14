@@ -17,7 +17,7 @@ class PrologCompiler(private val writer: BufferedWriter) {
             compile(term.tag)
             intersperse(term.pairs, PrologCompiler::compile, "{", "}")
         }
-        EmptyList -> writer.write("[]")
+        is ListTerm -> compileList(term)
     }
 
     private fun compile(pair: DictionaryTerm.KeyValuePair) {
@@ -32,10 +32,6 @@ class PrologCompiler(private val writer: BufferedWriter) {
         // make sure they start with a lowercase not to generate variables
         if (term.args.isEmpty() && term.functor.matches(Regex("[a-z]\\w*"))) {
             writer.write(term.functor)
-        }
-        // lists are handled in a special way
-        else if (term.functor == "[|]" && term.args.size == 2) {
-            compileList(term)
         }
         // if it's an atom just print it quoted
         else if (term.arity == 0) {
@@ -52,14 +48,16 @@ class PrologCompiler(private val writer: BufferedWriter) {
         }
     }
 
-    private fun compileList(term: CompoundTerm) {
-        assert(term.args.size == 2) { "number of list constructor arguments should be 2" }
-        intersperse(unfoldList(term), prefix = "[", suffix = "]")
+    private fun compileList(listTerm: ListTerm) {
+        writer.write("[")
+        intersperse(listTerm.list)
+        if (listTerm.moreAllowed) writer.write("|_")
+        writer.write("]")
     }
 
     private fun unfoldList(term: Term): List<Term> {
-        if (term == EmptyList)
-            return emptyList()
+        if (term == VariableTerm("_"))
+            return listOf(term)
 
         if (term is CompoundTerm) {
             assert(term.args.size == 2) { "number of list constructor arguments should be 2" }
