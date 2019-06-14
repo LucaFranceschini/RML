@@ -9,8 +9,6 @@ The instrumentation observes relevant events, encodes them in JSON and send them
 
 ## Step #1: Specification
 The specification is written in RML and compiled to Prolog.
-
-In order to build the compiler you need the [Gradle build tool](https://gradle.org/).
 The compiler is written in ANTLR, Java and Kotlin.
 
 To build the compiler, `cd` into `compiler` and type:
