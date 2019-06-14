@@ -48,6 +48,7 @@ class Compiler<ET, DE>(val eventTypeCompiler: (ET) -> Term, val dataExpressionCo
                 compile(expression.expression),
                 ListTerm(expression.arguments.map(dataExpressionCompiler)))
         is ConditionalExpression -> CompoundTerm("guarded",
+                dataExpressionCompiler(expression.condition),
                 compile(expression.thenBranch),
                 compile(expression.elseBranch))
         is StarExpression -> CompoundTerm("star", compile(expression.expression))
