@@ -62,8 +62,12 @@ object CalculusCompiler {
                 compile(expression.expression)
             else {
                 val firstId = Identifier(expression.declaredVariables.first().name)
-                val tailBlock = BlockExpression(expression.declaredVariables.drop(1), expression.expression)
-                ParametricExpression(firstId, compile(tailBlock))
+                val remainingVariables = expression.declaredVariables.drop(1)
+                // only create a block if there are actually variables left
+                val tailExp =
+                        if (remainingVariables.isNotEmpty()) BlockExpression(remainingVariables, expression.expression)
+                        else expression.expression
+                ParametricExpression(firstId, compile(tailExp))
             }
         is VariableExpression -> // this could have generic arguments instantiation
             if (expression.genericArguments.isEmpty())
