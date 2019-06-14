@@ -61,7 +61,4 @@ class Compiler<ET, DE>(val eventTypeCompiler: (ET) -> Term, val dataExpressionCo
                         compile(expression.filteredExpression)),
                 compile(expression.unfilteredExpression))
     }
-
-    // reduce-style operation to combine a list of terms into a Prolog list
-    private fun reduceList(acc: Term, element: Term) = CompoundTerm("[|]", element, acc)
 }
