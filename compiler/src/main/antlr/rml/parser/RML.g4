@@ -62,7 +62,15 @@ dataExp: BOOLEAN # boolDataExp
        | INT # intDataExp
        | FLOAT # floatDataExp
        | evtypeVar # varDataExp
-       | dataExp DATA_EXP_BIN_OP dataExp # binaryDataExp
+       | dataExp '+' dataExp # sumDataExp
+       | dataExp '-' dataExp # subDataExp
+       | dataExp '<' dataExp # lessThanDataExp
+       | dataExp '<=' dataExp # lessThanEqualToDataExp
+       | dataExp '>' dataExp # greaterThanDataExp
+       | dataExp '>=' dataExp # greaterThanEqualToDataExp
+       | dataExp '==' dataExp # equalToDataExp
+       | dataExp '&&' dataExp # andDataExp
+       | dataExp '||' dataExp # orDataExp
        ;
 
 // identifier classes (don't make them lexical, they will get priority over each other)
@@ -82,7 +90,6 @@ LOWERCASE_ID: [a-z] ID_CHAR* ;
 fragment ID_CHAR: [a-zA-Z0-9_] ;
 
 // other
-DATA_EXP_BIN_OP: '+' | '-' | '<' | '<=' | '>' | '>=' | '==' | '&&' | '||' ;
 ELLIPSIS: '...' ;
 INT: [0-9]+ ;
 FLOAT: INT '.' INT ;

@@ -156,24 +156,29 @@ object DataExpressionBuilder: RMLBaseVisitor<DataExpression>() {
     override fun visitVarDataExp(ctx: VarDataExpContext?) =
             VariableDataExpression(ctx!!.evtypeVar().LOWERCASE_ID().text)
 
-    override fun visitBinaryDataExp(ctx: BinaryDataExpContext?): DataExpression {
-        val left = ctx!!.dataExp(0).accept(this)
-        val right = ctx.dataExp(1).accept(this)
-        val astConstructor: (DataExpression, DataExpression) -> DataExpression =
-                when (ctx.DATA_EXP_BIN_OP().text) {
-                    "+"  -> ::SumDataExpression
-                    "-"  -> ::SubDataExpression
-                    "<"  -> ::LessThanDataExpression
-                    "<=" -> ::LessThanEqualDataExpression
-                    ">"  -> ::GreaterThanDataExpression
-                    ">=" -> ::GreaterThanEqualDataExpression
-                    "==" -> ::EqualToDataExpression
-                    "&&" -> ::AndDataExpression
-                    "||" -> ::OrDataExpression
-                    else -> throw RuntimeException("Unknown binary data expression operator")
-        }
-        return astConstructor(left, right)
-    }
+    override fun visitSumDataExp(ctx: SumDataExpContext?) =
+            SumDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitSubDataExp(ctx: SubDataExpContext?) =
+            SubDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitLessThanDataExp(ctx: LessThanDataExpContext?) =
+            LessThanDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitLessThanEqualToDataExp(ctx: LessThanEqualToDataExpContext?) =
+            LessThanEqualDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitGreaterThanDataExp(ctx: GreaterThanDataExpContext?) =
+            GreaterThanDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitGreaterThanEqualToDataExp(ctx: GreaterThanEqualToDataExpContext?) =
+            GreaterThanEqualDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitAndDataExp(ctx: AndDataExpContext?) =
+            AndDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
+
+    override fun visitOrDataExp(ctx: OrDataExpContext?) =
+            OrDataExpression(ctx!!.dataExp(0).accept(this), ctx.dataExp(1).accept(this))
 }
 
 fun buildEventType(ctx: EvtypeContext) = EventType(
