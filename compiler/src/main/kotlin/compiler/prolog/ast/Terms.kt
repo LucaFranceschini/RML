@@ -11,6 +11,12 @@ data class VariableTerm(val identifier: Identifier): Term() {
     // allow construction from strings
     constructor(identifier: String): this(Identifier(identifier))
 
+    init {
+        require(identifier.string.first().isUpperCase() || identifier.string.first() == '_') {
+            "Prolog variables must start with uppercase letter or underscore"
+        }
+    }
+
     companion object {
         val ignored = VariableTerm("_")
     }

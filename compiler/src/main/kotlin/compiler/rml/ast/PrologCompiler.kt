@@ -66,7 +66,7 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
     val eventVariable = VariableTerm(eventName)
     val eventTypeTerm = CompoundTerm(
             declaration.eventType.identifier.name,
-            parameters.map { VariableTerm(it.variable.name) })
+            parameters.map { VariableTerm(it.variable.name.capitalize()) })
     val head = CompoundTerm("match", eventVariable, eventTypeTerm)
 
     // generate a predicate for each parent event type or object pattern
@@ -107,7 +107,7 @@ private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence
         is IntEventExpression -> yield(IntTerm(eventExpression.number))
         is FloatEventExpression -> yield(FloatTerm(eventExpression.number))
         is BoolEventExpression -> yield(atom(eventExpression.value.toString()))
-        is VariableEventExpression -> yield(VariableTerm(eventExpression.variable.name))
+        is VariableEventExpression -> yield(VariableTerm(eventExpression.variable.name.capitalize()))
         is ObjectEventExpression -> yieldAll(compile(eventExpression))
     }
 }
