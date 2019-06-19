@@ -34,21 +34,23 @@ fun compile(eventType: EventType): CompoundTerm {
     return CompoundTerm(eventType.identifier.name, parameters)
 }
 
-// directly compile data expressions to Prolog (variables here should be wrapped as var(x))
-fun compile(dataExpression: DataExpression): Term = when (dataExpression) {
+// directly compile data expressions to Prolog
+fun compile(dataExpression: DataExpression, wrapVariables: Boolean = true): Term = when (dataExpression) {
     is BoolDataExpression -> atom(dataExpression.boolean.toString())
     is IntDataExpression -> IntTerm(dataExpression.int)
     is FloatDataExpression -> FloatTerm(dataExpression.double)
-    is VariableDataExpression -> CompoundTerm("var", atom(dataExpression.variable.name))
-    is SumDataExpression -> CompoundTerm("+", compile(dataExpression.left), compile(dataExpression.right))
-    is SubDataExpression -> CompoundTerm("-", compile(dataExpression.left), compile(dataExpression.right))
-    is LessThanDataExpression -> CompoundTerm("<", compile(dataExpression.left), compile(dataExpression.right))
-    is LessThanEqualDataExpression -> CompoundTerm("=<", compile(dataExpression.left), compile(dataExpression.right))
-    is GreaterThanDataExpression -> CompoundTerm(">", compile(dataExpression.left), compile(dataExpression.right))
-    is GreaterThanEqualDataExpression -> CompoundTerm(">=", compile(dataExpression.left), compile(dataExpression.right))
-    is EqualToDataExpression -> CompoundTerm("=:=", compile(dataExpression.left), compile(dataExpression.right))
-    is AndDataExpression -> CompoundTerm(",", compile(dataExpression.left), compile(dataExpression.right))
-    is OrDataExpression -> CompoundTerm(";", compile(dataExpression.left), compile(dataExpression.right))
+    is VariableDataExpression ->
+        if (wrapVariables) CompoundTerm("var", atom(dataExpression.variable.name))
+        else VariableTerm(dataExpression.variable.name.capitalize())
+    is SumDataExpression -> CompoundTerm("+", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is SubDataExpression -> CompoundTerm("-", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is LessThanDataExpression -> CompoundTerm("<", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is LessThanEqualDataExpression -> CompoundTerm("=<", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is GreaterThanDataExpression -> CompoundTerm(">", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is GreaterThanEqualDataExpression -> CompoundTerm(">=", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is EqualToDataExpression -> CompoundTerm("=:=", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is AndDataExpression -> CompoundTerm(",", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
+    is OrDataExpression -> CompoundTerm(";", compile(dataExpression.left, wrapVariables), compile(dataExpression.right, wrapVariables))
 }
 
 private fun compile(declaration: EventTypeDeclaration, eventName: String = "_event"): List<Clause> {
@@ -70,7 +72,7 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
     val head = CompoundTerm("match", eventVariable, eventTypeTerm)
 
     // generate a predicate for each parent event type or object pattern
-    val parentPredicates = when (declaration) {
+    val parentPredicates: List<Term> = when (declaration) {
         // generate a deep_subdict (matching) predicate for every pattern instantiation
         is DirectEventTypeDeclaration -> compile(declaration.eventExpression).map {
             CompoundTerm("deep_subdict", it, eventVariable)
@@ -85,12 +87,18 @@ private fun compile(declaration: EventTypeDeclaration, eventName: String = "_eve
         }
     }
 
+    // with data expression
+    val guardPredicate: List<Term> =
+            if (declaration.withDataExpression != null)
+                listOf(compile(declaration.withDataExpression!!, wrapVariables = false))
+            else emptyList()
+
     // if not negated, just generate a clause for every predicate
     if (!declaration.negated)
-        return parentPredicates.map { Clause(head, it) }
+        return parentPredicates.map { Clause(head, listOf(it) + guardPredicate) }
 
     // otherwise just generate one clause with all the negated predicates in the body
-    return listOf(Clause(head, parentPredicates.map { CompoundTerm("not", it) }))
+    return listOf(Clause(head, parentPredicates.map { CompoundTerm("not", it) } + guardPredicate))
 }
 
 private fun compile(eventExpression: EventExpression): Sequence<Term> = sequence {

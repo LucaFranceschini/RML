@@ -52,7 +52,7 @@ fun compile(inputStream: InputStream, outputStream: OutputStream) {
         val rmlAst = buildSpecification(parseTree)
         val calculusAst = CalculusCompiler.compile(rmlAst)
         val declarationsClauses = compile(rmlAst.eventTypeDeclarations)
-        val calculusCompiler = Compiler<EventType, DataExpression>(::compile, ::compile)
+        val calculusCompiler = Compiler<EventType, DataExpression>(::compile) { de -> compile(de) }
         val specificationClauses = calculusCompiler.compile(calculusAst, "Main")
         val prologAst = Program(directives, declarationsClauses + specificationClauses)
         val writer = outputStream.bufferedWriter()
